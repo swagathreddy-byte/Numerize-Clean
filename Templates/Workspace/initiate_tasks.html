@@ -1,0 +1,1348 @@
+
+{% include "head.html" %}
+{% load static %}
+{% load home_extras %}
+<body>
+<div class="wrapper">
+    <div id="app">
+
+        <div class="main-panel" id="main-panel">
+            <!-- Navbar -->
+            {% include "navbar.html" %}
+            <div class="content">
+                <section id="workspace" class="shadow p-3 mb-5 rounded-lg" style="margin-top:50px;height:100%;">
+                    <ul class="nav nav-pills nav-pills-warning" role="tablist">
+                        {% if perms.insights.add_reportrecords %}
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#link11" role="tablist" aria-expanded="true">
+                                    Original Tasks
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.insights.add_comment %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#link12" role="tablist" aria-expanded="false">
+                                    Review Tasks
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if perms.insights.add_anomaly %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#link13" role="tablist" aria-expanded="false">
+                                    Peer Review Tasks
+                                </a>
+                            </li>
+                        {% endif %}
+<!--                        <li class="nav-item">-->
+<!--                            <a class="nav-link" data-toggle="tab" href="#link14" role="tablist" aria-expanded="false">-->
+<!--                                Check report generation-->
+<!--                            </a>-->
+<!--                        </li>-->
+                    </ul>
+                    <div class="tab-content tab-space">
+                        {% if perms.insights.add_reportrecords %}
+                            <div class="tab-pane active" id="link11" aria-expanded="true">
+                            <div class="modal fade" id="PLTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">PL Dialog</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" enctype="multipart/form-data" id="P_Lform1">
+                                                <div class="card card-login card-plain">
+                                                    {% csrf_token %}
+                                                    <div class="card-header ">
+                                                        <h5>Profit and Loss Statement</h5>
+                                                    </div>
+                                                    <div class="card-body">
+
+                                                        <label>
+                                                            From QB Input File
+                                                            <input type="file" name="pl_qb_in_file1" id="id_pl_qb_in_file1" class="form-control-file" required>
+                                                        </label>
+
+                                                        <label>
+                                                            Category list
+                                                            <input type="file" name="pl_cat_in_file1" id="id_pl_cat_in_file1" class="form-control-file" required>
+                                                        </label>
+
+                                                        <input type="number" name="report_id" id="id_report_id" :value="current_report_id" hidden class="form-control">
+                                                        <input type="text" name="report_type" id="id_report_type" value="P_L" hidden class="form-control-file">
+
+                                                    </div>
+
+                                                    <div class="card-footer ">
+                                                        <input id="PLSubmit1" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate P-L Report">
+                                                        <input type="hidden" name="next" value="{{ next }}">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="GSTTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">GST Dialog</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" enctype="multipart/form-data" id="GSTform1">
+                                                    <div class="card card-login card-plain">
+                                                        {% csrf_token %}
+                                                        <div class="card-header ">
+                                                            <h5>GST Statement</h5>
+                                                        </div>
+                                                        <div class="card-body">
+
+
+                                                            <label>
+                                                                Input for Input Tax Credit
+                                                                <input type="file" name="gst_input_tax_credit" id="id_gst_input_tax_credit1" class="form-control-file">
+                                                            </label>
+
+                                                            <label>
+                                                                B2C Input File
+                                                                <input type="file" name="gst_input_b2c" id="id_gst_input_b2c1" class="form-control-file">
+                                                            </label>
+
+                                                            <label>
+                                                                B2B Input File
+                                                                <input type="file" name="gst_input_b2b" id="id_gst_input_b2b1" class="form-control-file">
+                                                            </label>
+
+                                                            <input type="number" name="report_id" id="id_report_id" :value="current_report_id" hidden class="form-control">
+                                                            <input type="text" name="report_type" id="id_report_type" value="GST" hidden class="form-control-file">
+
+                                                        </div>
+
+                                                        <div class="card-footer ">
+                                                            <input id="GSTSubmit1" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate GST Report">
+                                                            <input type="hidden" name="next" value="{{ next }}">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="modal fade" id="SDLRTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Swiggy Dump Level Reconciliation</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" enctype="multipart/form-data" id="SW_DUMP_Form1" >
+                                                    <div class="card card-login card-plain">
+                                                        {% csrf_token %}
+                                                        <div class="card-body">
+
+                                                            <label>
+                                                                Input Data
+                                                                <input type="file" name="input_data_upload" id="id_input_data_upload" class="form-control-file">
+                                                            </label>
+                                                            <label>
+                                                                Weekly Mail
+                                                                <input type="file" name="weekly_mail_upload" id="id_weekly_mail_upload" class="form-control-file">
+                                                            </label>
+                                                            <label>
+                                                                Master Data
+                                                                <input type="file" name="master_data_upload" id="id_master_data_upload" class="form-control-file">
+                                                            </label>
+
+                                                            <input type="number" name="report_id" id="id_report_id" :value="current_report_id" hidden class="form-control">
+                                                            <input type="text" name="report_type" id="id_report_type" value="SW_DUMP" hidden class="form-control-file">
+                                                        </div>
+
+                                                        <div class="card-footer ">
+                                                            <input id="SW_DUMP_Submit1" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate Swiggy Dump Level Report">
+                                                            <input type="hidden" name="next" value="{{ next }}">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Id</th>
+                                    <th>Outlet Name</th>
+                                    <th>Report Type</th>
+                                    <th>Report Status</th>
+                                    <th>Generated At</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="t in tasks">
+                                    <td class="text-center">[[ t.id ]]</td>
+                                    <td>[[ t.customer ]]</td>
+                                    <td>[[ t.record_type ]]</td>
+                                    <td>[[ t.status ]]</td>
+                                    <td>[[ t.generated_at ]]</td>
+                                    <td class="td-actions text-right">
+                                        <a href="#" @click="processtask(t.record_type,t.id)" class="actiontask btn btn-success btn-sm btn-icon">
+                                            <i class="now-ui-icons media-1_button-play"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <h5>Report Records</h5>
+                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters">
+                                Toggle Table Filters
+                            </button>
+                            <div id="filters" class="collapse card shadow-none bg-light">
+                                <div class="card-body">
+                                    <h4>Filter your records</h4>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <label>
+                                                Customers
+                                            </label>
+                                            <select name="customer_name_table" class="customer_select_table form-control" style="width: 100%;" multiple="multiple">
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <label>
+                                                Report Types
+                                            </label>
+                                            <select name="record_name_table" class="record_type_table form-control" style="width: 100%;" multiple="multiple">
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <label>
+                                                No of records per page
+                                            </label>
+                                            <select name="views_per_page" id="page_per_view" class="form-control bg-white">
+
+                                                <option value="5" selected>5</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                                <option value="20">20</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination justify-content-end">
+                                            <li class="page-item">
+                                                <a class="page-link"  tabindex="-1">Previous</a>
+                                            </li>
+                                            <li class="page-item active" value="0" v-on:click="updatepagination"><a class="page-link">1</a></li>
+                                            <li class="page-item" v-on:click="updatepagination" v-for="page in no_pages" :key="page"  :value="page"><a class="page-link" >[[ page+1 ]]</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" >Next</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <table class="table  bg-light">
+                                <thead>
+                                <tr >
+                                    <th class="text-center">#</th>
+                                    <th>Customer Name</th>
+                                    <th>Report Type</th>
+                                    <th>Time</th>
+                                    <th class="text-right">Status</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(item,index) in records">
+                                    <td class="text-center">[[ index+1 ]]</td>
+                                    <td>[[item.customer]]</td>
+                                    <td>[[item.record_type]]</td>
+                                    <td>[[item.generated_at]]</td>
+                                    <td class="text-right">[[item.status]]</td>
+                                    <td class="td-actions text-right">
+
+                                        <button type="button" rel="tooltip" class="btn btn-info btn-sm btn-icon">
+                                            <a style="color:white" :href="'/insights/get/file/'+(item.id)+'/0/excel/'" target="_blank"><i class="now-ui-icons users_single-02"></i></a>
+                                        </button>
+                                        <button type="button" rel="tooltip" class="btn btn-info btn-sm btn-icon">
+                                            <a style="color:white" :href="'/insights/get/file/'+(item.id)+'/0/pdf/'" target="_blank"><i class="now-ui-icons files_single-copy-04"></i></a>
+                                        </button>
+                                        <button type="button" v-if="item.record_type=='Closing Stock'" rel="tooltip" class="btn btn-info btn-sm btn-icon">
+                                            <a :href="'/insights/get/file/'+(item.id)+'/1/excel'" target="_blank"><i class="now-ui-icons users_single-02"></i></a>
+                                        </button>
+                                        <button type="button" v-if="item.record_type=='Swiggy Dump Level Reconciliation'" rel="tooltip" class="btn btn-info btn-sm btn-icon">
+                                            <a :href="'/insights/get/file/'+(item.id)+'/1/excel'" target="_blank"><i class="now-ui-icons users_single-02"></i></a>
+                                        </button>
+
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                        {% if perms.insights.add_comment %}
+                            <div class="tab-pane" id="link12" aria-expanded="false">
+                                <table class="table  bg-light">
+                                    <thead>
+                                    <tr >
+                                        <th class="text-center">#</th>
+                                        <th>Owner</th>
+                                        <th>Customer Name</th>
+                                        <th>Report Type</th>
+                                        <th>Time</th>
+                                        <th class="text-right">Status</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="(item,index) in records">
+                                        <td class="text-center">[[ index+1 ]]</td>
+                                        <td>[[item.owner]]</td>
+                                        <td>[[item.customer]]</td>
+                                        <td>[[item.record_type]]</td>
+                                        <td>[[item.generated_at]]</td>
+                                        <td class="text-right">[[item.status]]</td>
+                                        <td class="td-actions text-right">
+
+                                            <button type="button" rel="tooltip" class="btn btn-info btn-sm btn-icon">
+                                                <a style="color:white" :href="'/tasks/view/'+(item.id)" target="_blank"><i class="now-ui-icons arrows-1_minimal-right"></i></a>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                        {% if perms.insights.add_anomaly %}
+                            <div class="tab-pane" id="link13" aria-expanded="false">
+                            </div>
+                        {% endif %}
+<!--                        <div class="tab-pane" id="link14" aria-expanded="false">-->
+<!--                            <div class="row" style="dislay:none;">-->
+<!--                                <div class="col-3">-->
+<!--                                    <div class="nav flex-column nav-pills" id="nav-tab" role="tablist">-->
+<!--                                        <a class="nav-item nav-link active" id="nav-pl-tab" data-toggle="pill" href="#nav-pl" role="tab" aria-controls="nav-home" aria-selected="true">Profit and Loss Statement</a>-->
+<!--                                        <a class="nav-item nav-link" id="nav-cs-tab" data-toggle="pill" href="#nav-cs" role="tab" aria-controls="nav-profile" aria-selected="false">Closing Stock</a>-->
+<!--                                        <a class="nav-item nav-link" id="nav-gst-tab" data-toggle="pill" href="#nav-gst" role="tab" aria-controls="nav-contact" aria-selected="false">GST Summary</a>-->
+<!--                                        <a class="nav-item nav-link" id="nav-scr-tab" data-toggle="pill" href="#nav-scr" role="tab" aria-controls="nav-contact" aria-selected="false">Sales Channel Reconciliation</a>-->
+<!--                                        <a class="nav-item nav-link" id="nav-silr-tab" data-toggle="pill" href="#nav-silr" role="tab" aria-controls="nav-contact" aria-selected="false">Swiggy Invoice Level Reconciliation</a>-->
+<!--                                        <a class="nav-item nav-link" id="nav-sdlr-tab" data-toggle="pill" href="#nav-sdlr" role="tab" aria-controls="nav-contact" aria-selected="false">Swiggy Dump Level Reconciliation</a>-->
+<!--                                        <a class="nav-item nav-link" id="nav-tds-tab" data-toggle="pill" href="#nav-tds" role="tab" aria-controls="nav-contact" aria-selected="false">TDS Summary</a>-->
+<!--                                        <a class="nav-item nav-link" id="nav-ca-tab" data-toggle="pill" href="#nav-ca" role="tab" aria-controls="nav-contact" aria-selected="false">Consumption Analysis</a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col-9">-->
+<!--                                    <div class="spinner-border spinner align-middle text-primary d-none" role="status">-->
+<!--                                        <span class="sr-only">Loading...</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="tab-content" id="nav-tabContent">-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade show active" id="nav-pl" role="tabpanel" aria-labelledby="nav-pl-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="P_Lform">-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+<!--                                                                    <h5>Profit and Loss Statement</h5>-->
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label >-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+
+<!--                                                                    <label>-->
+<!--                                                                        From QB Input File-->
+<!--                                                                        <input type="file" name="pl_qb_in_file" id="id_pl_qb_in_file" class="form-control-file" required>-->
+<!--                                                                    </label>-->
+
+<!--                                                                    <label>-->
+<!--                                                                        Category list-->
+<!--                                                                        <input type="file" name="pl_cat_in_file" id="id_pl_cat_in_file" class="form-control-file" required>-->
+<!--                                                                    </label>-->
+
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="P_L" hidden class="form-control-file">-->
+<!--                                                                </div>-->
+
+<!--                                                                <div class="card-footer ">-->
+<!--                                                                    <input id="PLSubmit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate P-L Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade" id="nav-cs" role="tabpanel" aria-labelledby="nav-cs-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="CSform">-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+<!--                                                                    <h5>Closing Stock Summary</h5>-->
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label >-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+<!--                                                                    <label >-->
+<!--                                                                        Closing Stock Input File-->
+<!--                                                                        <input type="file" name="cl_st_in_file" id="id_cl_st_in_file" class="form-control-file">-->
+<!--                                                                    </label>-->
+<!--                                                                    <label>-->
+<!--                                                                        Quick Book Input File-->
+<!--                                                                        <input type="file" name="cl_qb_in_file" id="id_qb_in_file" class="form-control-file">-->
+<!--                                                                    </label>-->
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="CL_ST" hidden class="form-control-file">-->
+<!--                                                                </div>-->
+<!--                                                                <div class="card-footer">-->
+<!--                                                                    <input id="CSSubmit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate Closing Stock Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade" id="nav-gst" role="tabpanel" aria-labelledby="nav-gst-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="GSTform">-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+
+<!--                                                                    <h5>GST Summary</h5>-->
+
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label for="id_label_single">-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+<!--                                                                    <label>-->
+<!--                                                                        Input for Input Tax Credit-->
+<!--                                                                        <input type="file" name="gst_input_tax_credit" id="id_gst_input_tax_credit" class="form-control-file">-->
+<!--                                                                    </label>-->
+
+<!--                                                                    <label>-->
+<!--                                                                        B2C Input File-->
+<!--                                                                        <input type="file" name="gst_input_b2c" id="id_gst_input_b2c" class="form-control-file">-->
+<!--                                                                    </label>-->
+
+<!--                                                                    <label>-->
+<!--                                                                        B2B Input File-->
+<!--                                                                        <input type="file" name="gst_input_b2b" id="id_gst_input_b2b" class="form-control-file">-->
+<!--                                                                    </label>-->
+
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="GST" hidden class="form-control-file">-->
+
+<!--                                                                </div>-->
+
+<!--                                                                <div class="card-footer ">-->
+<!--                                                                    <input id="GSTSubmit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate GST Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade" id="nav-scr" role="tabpanel" aria-labelledby="nav-scr-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="Salesform">-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+
+<!--                                                                    <h5>Sales Channel Reconciliation</h5>-->
+
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label for="id_label_single">-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+<!--                                                                    <input type="file" name="upload" id="id_upload" class="form-control-file">-->
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="S_C_R" hidden class="form-control-file">-->
+<!--                                                                </div>-->
+
+<!--                                                                <div class="card-footer ">-->
+<!--                                                                    <input id="SalesSubmit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate Sales Channel Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade" id="nav-silr" role="tabpanel" aria-labelledby="nav-silr-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="SW_IN_form">-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+
+<!--                                                                    <h5>Swiggy Invoice Level Reconciliation</h5>-->
+
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label for="id_label_single">-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+<!--                                                                    <input type="file" name="upload" id="id_upload" class="form-control-file">-->
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="SW_IN" hidden class="form-control-file">-->
+<!--                                                                </div>-->
+
+<!--                                                                <div class="card-footer ">-->
+<!--                                                                    <input id="SW_IN_Submit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate Swiggy Invoice Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade" id="nav-sdlr" role="tabpanel" aria-labelledby="nav-sdlr-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="SW_DUMP_Form" >-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+
+<!--                                                                    <h5>Swiggy Dump Level Reconciliation</h5>-->
+
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label for="id_label_single">-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+<!--                                                                    <label>-->
+<!--                                                                        Input Data-->
+<!--                                                                        <input type="file" name="input_data_upload" id="id_input_data_upload" class="form-control-file">-->
+<!--                                                                    </label>-->
+<!--                                                                    <label>-->
+<!--                                                                        Weekly Mail-->
+<!--                                                                        <input type="file" name="weekly_mail_upload" id="id_weekly_mail_upload" class="form-control-file">-->
+<!--                                                                    </label>-->
+<!--                                                                    <label>-->
+<!--                                                                        Master Data-->
+<!--                                                                        <input type="file" name="master_data_upload" id="id_master_data_upload" class="form-control-file">-->
+<!--                                                                    </label>-->
+
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="SW_DUMP" hidden class="form-control-file">-->
+<!--                                                                </div>-->
+
+<!--                                                                <div class="card-footer ">-->
+<!--                                                                    <input id="SW_DUMP_Submit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate Swiggy Dump Level Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade" id="nav-tds" role="tabpanel" aria-labelledby="nav-tds-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="TDS_Form">-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+
+<!--                                                                    <h5>TDS Summary</h5>-->
+
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label for="id_label_single">-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+<!--                                                                    <input type="file" name="upload" id="id_upload" class="form-control-file">-->
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="TDS" hidden class="form-control-file">-->
+<!--                                                                </div>-->
+
+<!--                                                                <div class="card-footer ">-->
+<!--                                                                    <input id="TDS_Submit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate TDS Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane bg-combo rounded-lg fade" id="nav-ca" role="tabpanel" aria-labelledby="nav-ca-tab">-->
+<!--                                            <div class="filesubmit">-->
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+<!--                                                        <form method="post" enctype="multipart/form-data" id="CON_ANA_Form">-->
+<!--                                                            <div class="card card-login card-plain">-->
+<!--                                                                {% csrf_token %}-->
+<!--                                                                <div class="card-header ">-->
+
+<!--                                                                    <h5>Consumption Analysis</h5>-->
+
+<!--                                                                </div>-->
+<!--                                                                <div class="card-body">-->
+<!--                                                                    <label for="id_label_single">-->
+<!--                                                                        Please choose a customer-->
+<!--                                                                        <select name="customer_name" class="customer_select form-control" style="width: 100%;">-->
+<!--                                                                            <option></option>-->
+<!--                                                                        </select>-->
+<!--                                                                    </label>-->
+<!--                                                                    <input type="file" name="upload" id="id_upload" class="form-control-file">-->
+<!--                                                                    <input type="text" name="report_type" id="id_report_type" value="CON_ANA" hidden class="form-control-file">-->
+<!--                                                                </div>-->
+
+<!--                                                                <div class="card-footer ">-->
+<!--                                                                    <input id="CON_ANA_Submit" class="reportsubmit btn btn-primary btn-round btn-lg btn-block mb-3" type="button" value="Generate Consumption Report">-->
+<!--                                                                    <input type="hidden" name="next" value="{{ next }}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+                </section>
+            </div>
+            <footer class="footer">
+                <div class=" container-fluid ">
+                    <nav>
+                        <ul>
+                            <li>
+                                <a href="#">
+                                    Smart CA
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    About Us
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Blog
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="copyright" id="copyright">
+                        <!--            &copy;-->
+                        <!--            <script>-->
+                        <!--              document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))-->
+                        <!--            </script>, Designed by-->
+                        <!--            <a href="https://www.invisionapp.com" target="_blank">Invision</a>. Coded by-->
+                        <!--            <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>.-->
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}
+<script src="{% static 'js/insights.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $("#page_per_view").on('change',function(){
+
+            app.page_per_view=$(this).val();
+            app.no_pages=Math.ceil(app.no_records/app.page_per_view-1);
+            console.log("No of pages");
+            console.log(app.no_pages);
+            app.filterselections();
+        });
+
+
+        $('.customer_select_table').select2({
+            placeholder: "Select the restaurant",
+            allowClear: true,
+            tags: true,
+            ajax: {
+
+                url: '/insights/get/customers/',
+                type: 'GET',
+                dataType: 'json',
+
+                data: function (params) {
+                    console.log(params.term);
+                    var query = {
+
+                        name: params.term,
+                    }
+                    // Query parameters will be ?search=[term]&type=public
+                    return query;
+                },
+                processResults: function (data) {
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    console.log("Process Results called");
+                    console.log(data);
+                    var data = $.map(data, function (obj) {
+                        obj.text = obj.name + "," + obj.branch+","+obj.city; // replace name with the property used for the text
+                        return obj;
+                    });
+
+                    return {
+                        results: data
+                    };
+                },
+                cache: false
+            },
+        });
+
+        $('.customer_select_table').on('change',function(){
+            console.log("customer select changed");
+            app.filterselections();
+
+        });
+
+        $('.record_type_table').on('change',function(){
+            console.log("record select changed");
+            app.filterselections();
+        });
+
+        $('.customer_select').select2({
+            placeholder: "Select the restaurant",
+            allowClear: true,
+            ajax: {
+                url: '/insights/get/customers/',
+                type: 'GET',
+                dataType: 'json',
+
+                data: function (params) {
+                    console.log(params.term);
+                    var query = {
+                        name: params.term,
+                    }
+                    // Query parameters will be ?search=[term]&type=public
+                    return query;
+                },
+                processResults: function (data) {
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    console.log("Process Results called");
+                    console.log(data);
+                    var data = $.map(data, function (obj) {
+                        obj.text = obj.name + "," + obj.branch+","+obj.city; // replace name with the property used for the text
+                        return obj;
+                    });
+
+                    return {
+                        results: data
+                    };
+                },
+                cache: false
+            },
+        });
+
+
+        function showNotification(from, align,color,message){
+            $.notify({
+                icon: "now-ui-icons ui-1_bell-53",
+                message: message
+
+            },{
+                type: color,
+                timer: 2000,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+        var csrftoken = Cookies.get('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        axios.interceptors.request.use(config => {
+            // log a message before any HTTP request is sent
+            console.log('Request was sent');
+            addspinner();
+
+
+            return config;
+        });
+
+
+
+        $("#PLSubmit1").on('click', function(event){
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            console.log("Hey PL Submit1 Clicked")
+
+            let formData = new FormData();
+            formData.append('report_id',$("#P_Lform1").find('input[name="report_id"]').val());
+            formData.append('report_type',$("#P_Lform1").find('input[name="report_type"]').val());
+            formData.append('pl_qb_in_file', $("#P_Lform1").find('input[name="pl_qb_in_file1"]')[0].files[0]);
+            formData.append('pl_cat_in_file', $("#P_Lform1").find('input[name="pl_cat_in_file1"]')[0].files[0]);
+            console.log($("#P_Lform1").find('input[name="report_id"]').val());
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                showNotification("top","right","success",data1.data.message);
+
+                app.updatetable();
+                $('#PLTask').modal('hide');
+                $("#P_Lform1").trigger("reset");
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                showNotification("top","right","danger",error.response.data.message);
+            });
+        });
+
+        $("#CSSubmit").on('click', function(event){
+
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            console.log($("#CSform").find('input[name="report_type"]').val());
+            let formData = new FormData();
+            formData.append('report_type',$("#CSform").find('input[name="report_type"]').val());
+            formData.append('customer_name',$("#CSform").find('select[name="customer_name"]').val());
+            formData.append('cl_st_in_file', $("#CSform").find('input[name="cl_st_in_file"]')[0].files[0]);
+            formData.append('cl_qb_in_file', $("#CSform").find('input[name="cl_qb_in_file"]')[0].files[0]);
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                //console.log(data.message);
+                showNotification("top","right","success",data1.data.message);
+                $("#CSform").trigger("reset");
+                app.updatetable();
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                console.log(error.response);
+
+                showNotification("top","right","danger",error.response.data.message);
+            });
+
+        });
+        function addspinner(){
+
+            $(".spinner-border").removeClass("d-none");
+            $(".spinner-border").addClass("d-block",400);
+            $(".tab-content").addClass("opacity50",400);
+            $('.customer_select').val(null).trigger('change');
+
+        }
+        function removespinner(){
+
+            $(".spinner-border").removeClass("d-block",400);
+            $(".spinner-border").addClass("d-none",400);
+            $(".tab-content").removeClass("opacity50",400);
+
+        }
+        axios.interceptors.response.use(function (response) {
+            // Any status code that lie within the range of 2xx cause this function to trigger
+            // Do something with response data
+            removespinner();
+            return response;
+        }, function (error) {
+            // Any status codes that falls outside the range of 2xx cause this function to trigger
+            // Do something with response error
+            removespinner();
+            return Promise.reject(error);
+        });
+
+        $("#GSTSubmit1").on('click', function(event){
+
+            console.log("GST submit called");
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+            let formData = new FormData();
+            formData.append('report_type',$("#GSTform1").find('input[name="report_type"]').val());
+            formData.append('report_id',$("#GSTform1").find('input[name="report_id"]').val());
+            formData.append('gst_input_tax_credit', $("#GSTform1").find('input[name="gst_input_tax_credit"]')[0].files[0]);
+            formData.append('gst_input_b2b', $("#GSTform1").find('input[name="gst_input_b2b"]')[0].files[0]);
+            formData.append('gst_input_b2c', $("#GSTform1").find('input[name="gst_input_b2c"]')[0].files[0]);
+
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                //console.log(data.message);
+                showNotification("top","right","success",data1.data.message);
+                $("#GSTform1").trigger("reset");
+                $('#GSTTask').modal('hide');
+                app.updatetable();
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                showNotification("top","right","danger",error.response.data.message);
+            });
+
+        });
+
+
+
+        $("#SalesSubmit").on('click', function(event){
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            console.log($("#Salesform").find('input[name="report_type"]').val());
+            let formData = new FormData();
+            formData.append('report_type',$("#Salesform").find('input[name="report_type"]').val());
+            formData.append('customer_name',$("#Salesform").find('select[name="customer_name"]').val());
+            formData.append('upload', $("#Salesform").find('input[type=file]')[0].files[0]);
+
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                //console.log(data.message);
+                showNotification("top","right","success",data1.data.message);
+                $("#Salesform").trigger("reset");
+                app.updatetable();
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                showNotification("top","right","danger",error.response.data.message);
+            });
+        });
+
+        $("#SW_IN_Submit").on('click', function(event){
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            console.log($("#SW_IN_form").find('input[name="report_type"]').val());
+            let formData = new FormData();
+            formData.append('report_type',$("#SW_IN_form").find('input[name="report_type"]').val());
+            formData.append('customer_name',$("#SW_IN_form").find('select[name="customer_name"]').val());
+            formData.append('upload', $("#SW_IN_form").find('input[type=file]')[0].files[0]);
+
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                //console.log(data.message);
+                showNotification("top","right","success",data1.data.message);
+                $("#SW_IN_form").trigger("reset");
+                app.updatetable();
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                showNotification("top","right","danger",error.response.data.message);
+            });
+        });
+
+        // $("#SW_DUMP_Submit").on('click', function(event){
+        //     axios.defaults.xsrfCookieName = csrftoken;
+        //     axios.defaults.xsrfHeaderName = "X-CSRFToken";
+        //     console.log($("#SW_DUMP_Form").find('input[name="report_type"]').val());
+        //     let formData = new FormData();
+        //     formData.append('report_type',$("#SW_DUMP_Form").find('input[name="report_type"]').val());
+        //     formData.append('customer_name',$("#SW_DUMP_Form").find('select[name="customer_name"]').val());
+        //     formData.append('input_data_in_file', $("#SW_DUMP_Form").find('input[name="input_data_upload"]')[0].files[0]);
+        //     formData.append('weekly_mail_in_file', $("#SW_DUMP_Form").find('input[name="weekly_mail_upload"]')[0].files[0]);
+        //     formData.append('master_data_in_file', $("#SW_DUMP_Form").find('input[name="master_data_upload"]')[0].files[0]);
+        //
+        //     axios.post( '/insights/process/report/',
+        //         formData,
+        //         {
+        //             headers: {
+        //                 'Content-Type': 'multipart/form-data',
+        //                 'X-CSRFToken':csrftoken
+        //             }
+        //         }
+        //     ).then(function(data1){
+        //         console.log('SUCCESS!!');
+        //         console.log(data1);
+        //         showNotification("top","right","success",data1.data.message);
+        //         $("#SW_DUMP_Form").trigger("reset");
+        //         app.updatetable();
+        //         // window.location.href = "/dashboard";
+        //
+        //     }).catch(function(error){
+        //         showNotification("top","right","danger",error.response.data.message);
+        //     });
+        // });
+
+        $("#SW_DUMP_Submit1").on('click', function(event){
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            console.log($("#SW_DUMP_Form1").find('input[name="report_id"]').val());
+            let formData = new FormData();
+            formData.append('report_type',$("#SW_DUMP_Form1").find('input[name="report_type"]').val());
+            formData.append('report_id',$("#SW_DUMP_Form1").find('input[name="report_id"]').val());
+            formData.append('input_data_in_file', $("#SW_DUMP_Form1").find('input[name="input_data_upload"]')[0].files[0]);
+            formData.append('weekly_mail_in_file', $("#SW_DUMP_Form1").find('input[name="weekly_mail_upload"]')[0].files[0]);
+            formData.append('master_data_in_file', $("#SW_DUMP_Form1").find('input[name="master_data_upload"]')[0].files[0]);
+
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                console.log(data1);
+                showNotification("top","right","success",data1.data.message);
+                $("#SW_DUMP_Form").trigger("reset");
+                app.updatetable();
+                $('#SDLRTask').modal('hide');
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                showNotification("top","right","danger",error.response.data.message);
+            });
+        });
+
+
+        $("#TDS_Submit").on('click', function(event){
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            console.log($("#TDS_Form").find('input[name="report_type"]').val());
+            let formData = new FormData();
+            formData.append('report_type',$("#TDS_Form").find('input[name="report_type"]').val());
+            formData.append('customer_name',$("#TDS_Form").find('select[name="customer_name"]').val());
+            formData.append('upload', $("#TDS_Form").find('input[type=file]')[0].files[0]);
+
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data){
+                console.log('SUCCESS!!');
+                //console.log(data.message);
+                showNotification("top","right","success",data.response.message);
+                $("#TDS_Form").trigger("reset");
+                app.updatetable();
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                showNotification("top","right","danger",error.response.data.message);
+            });
+        });
+
+        $("#CON_ANA_Submit").on('click', function(event){
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            console.log($("#CON_ANA_Form").find('input[name="report_type"]').val());
+            let formData = new FormData();
+            formData.append('report_type',$("#CON_ANA_Form").find('input[name="report_type"]').val());
+            formData.append('customer_name',$("#CON_ANA_Form").find('select[name="customer_name"]').val());
+            formData.append('upload', $("#CON_ANA_Form").find('input[type=file]')[0].files[0]);
+
+            axios.post( '/insights/process/report/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                //console.log(data.message);
+                showNotification("top","right","success",data1.data.message);
+                $("#CON_ANA_Form").trigger("reset");
+                app.updatetable();
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                showNotification("top","right","danger",error.response.data.message);
+            });
+        });
+
+    });
+</script>
+
+<script type="text/javascript">
+    var app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            no_records: 0,
+            customers:null,
+            records:null,
+            tasks:null,
+            status_types:null,
+            report_types:null,
+            current_page:0,
+            page_per_view:2,
+            no_pages:0,
+            current_report_id:0
+        },
+        methods:{
+            getnotifications: function(){
+
+            },
+            printnotifications: function(){
+
+            },
+            processtask:function(type,id){
+                this.current_report_id=id;
+                if(type === "Profit Statement")
+                {
+                    $('#PLTask').modal('show');
+
+                }
+                else if(type == "GST Summary")
+                {
+                    $("#GSTTask").modal('show');
+
+                }
+                else if(type == "Swiggy Dump Level Reconciliation")
+                {
+                    $("#SDLRTask").modal('show');
+
+                }
+
+            },
+            updatepagination: function(event){
+
+                this.current_page=event.target.parentNode.value;
+                this.filterselections();
+            },
+            updatetable : function(){
+                console.log("update table");
+                var params = {
+                    no_per_page:this.page_per_view,
+                    page:this.current_page
+                };
+                axios.get('/insights/get/records/',{params})
+                    .then(function (response) {
+                        app.records=response.data.records;
+
+                    }).catch(function(error){
+                    console.log("Error");
+                });
+
+                var url='/insights/get/tasks/';
+                axios.get(url,{params})
+                    .then(function (response) {
+                        app.tasks=response.data.tasks;
+
+                    }).catch(function(error){
+                    console.log("Error");
+                });
+
+            },
+            filterselections : function(){
+                console.log("filter selections");
+                var customers = $('.customer_select_table').val();
+                customers=customers.map(Number);
+                var rtype=$('.record_type_table').val();
+                var page=app.current_page;
+                var view_per_page=app.page_per_view;
+                var params = {
+                    customer: customers,
+                    rtype:rtype,
+                    no_per_page:view_per_page,
+                    page:page
+                };
+
+                var url='/insights/get/records/';
+                axios.get(url,{params})
+                    .then(function (response) {
+                        app.records=response.data.records;
+
+                    }).catch(function(error){
+                    console.log("Error");
+                });
+
+
+
+            }
+
+
+        },
+        mounted: function(){
+            console.log("mounted");
+            $("#fcdashboard").addClass("active");
+            $("#fcdashboard").addClass("show");
+            var params = {
+                no_per_page:5,
+                page:0
+            };
+            axios.get('/insights/get/records/',{params})
+                .then(function (response) {
+                    console.log("After mounted");
+                    console.log(response.data.count);
+                    app.records=response.data.records;
+                    app.no_records=response.data.count;
+                    app.page_per_view=$("#page_per_view").val();
+                    app.no_pages=Math.ceil(app.no_records/app.page_per_view-1);
+                    console.log(app.no_pages);
+                }).catch(function(error){
+                console.log("Error");
+            });
+
+            var data123=[];
+            axios.get('/insights/get/choices/')
+                .then(function (response) {
+                    console.log(response)
+                    app.report_types=response.data.report_type;
+                    app.status_types=response.data.status_type;
+                    var count = 1;
+                    for(i=0;i<app.report_types.length;i++){
+                        data123.push({"id":app.report_types[i][0],"text":app.report_types[i][1]});
+                    }
+                    console.log(data123);
+                    $('.record_type_table').select2({
+                        placeholder: "Select the report type",
+                        allowClear: true,
+                        tags: true,
+                        data:data123,
+
+                    });
+
+
+                }).catch(function(error){
+                console.log("Error");
+            });
+
+            axios.get('/insights/get/customers/?format=json')
+                .then(function (response) {
+                    // handle success
+                    app.customers=response.data;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log("error");
+                });
+
+            var url='/insights/get/tasks/';
+            axios.get(url,{params})
+                .then(function (response) {
+                    app.tasks=response.data.tasks;
+
+                }).catch(function(error){
+                console.log("Error");
+            });
+
+
+
+
+        },
+        updated: function(){
+
+            $('.page-item').click(function() {
+                $(this).addClass('active').siblings().removeClass('active');
+
+            });
+
+        }
+    });
+</script>
+</body>
+</html>
+

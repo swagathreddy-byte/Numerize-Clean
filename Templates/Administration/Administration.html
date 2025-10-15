@@ -1,0 +1,325 @@
+
+{% include "head.html" %}
+{% load static %}
+{% load home_extras %}
+<body>
+
+
+{% include "sidebarlinks.html" %}
+<div class="main-content" id="panel">
+    <!-- Navbar -->
+    {% include "navbar.html" %}
+    <div class="header bg-primary pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <!--                                <h6 class="h2 text-white d-inline-block mb-0">Default</h6>-->
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                                <!--                                        <li class="breadcrumb-item active" aria-current="page">Default</li>-->
+                            </ol>
+                        </nav>
+                    </div>
+                    <!--                            <div class="col-lg-6 col-5 text-right">-->
+                    <!--                                <a href="#" class="btn btn-sm btn-neutral">New</a>-->
+                    <!--                                <a href="#" class="btn btn-sm btn-neutral">Filters</a>-->
+                    <!--                            </div>-->
+                </div>
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-4 col-md-4">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">No of Customers</h5>
+                                        <span class="h2 font-weight-bold mb-0" v-if="havecustomers">[[ customers.length]]</span>
+                                        <span class="h2 font-weight-bold mb-0" v-if="!havecustomers">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="ni ni-active-40"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <!--                                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>-->
+                                    <!--                                            <span class="text-nowrap">Since last month</span>-->
+                                    <a href="#" class="btn btn-primary btn-sm"> See all</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-4">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">No of Employees </h5>
+                                        <span class="h2 font-weight-bold mb-0" v-if="haveemployees">[[ employees.length]]</span>
+                                        <span class="h2 font-weight-bold mb-0" v-if="!haveemployees">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                            <i class="ni ni-chart-bar-32"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <!--                                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>-->
+                                    <!--                                            <span class="text-nowrap">Since last month</span>-->
+                                    <a href="#" class="btn btn-warning btn-sm"> See all</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-4">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0"> Avg no of Logins from Customers</h5>
+                                        <span class="h2 font-weight-bold mb-0">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                            <i class="ni ni-chart-pie-35"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <!--                                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>-->
+                                    <!--                                            <span class="text-nowrap">Since last month</span>-->
+                                    <a href="#" class="btn btn-success btn-sm"> See all</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Customer Management</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a href="#" class="btn btn-sm btn-primary">See all</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="havecustomers" class="table-responsive">
+                        <!-- Projects table -->
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col"> Date of Joining</th>
+                                <th scope="col">Accountant</th>
+                                <th scope="col">QC</th>
+                                <th scope="col">CRM</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="pt in customers">
+                                <th scope="row">
+                                    [[ pt.name ]]
+                                </th>
+                                <td>
+                                    [[ pt.start_date]]
+                                </td>
+                                <td>
+                                    [[ pt.accountant]]
+                                </td>
+                                <td>
+                                    [[ pt.qc ]]
+                                </td>
+                                <td>
+                                    [[ pt.crm ]]
+                                </td>
+                                <td>
+                                    <a class="btn btn-sm btn-success" :href="'/administration/manage/customer/'+(pt.id)+'/'" target="_blank"><span><i class="bold-right"></i> Go </span></a>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Employee Management</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a href="#" class="btn btn-sm btn-primary">See all</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="haveemployees" class="table-responsive">
+                        <!-- Projects table -->
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Username</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="pt in employees">
+                                <th scope="row">
+                                    [[ pt.username ]]
+                                </th>
+                                <td>
+                                    [[ pt.email ]]
+                                </td>
+                                <td>
+                                    [[ pt.first_name ]]
+                                </td>
+                                <td>
+                                    [[ pt.last_name ]]
+                                </td>
+                                <td>
+                                    [[ pt.all_groups ]]
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <footer class="footer pt-0">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6">
+                    <div class="copyright text-center text-lg-left text-muted">
+                        &copy; 2019 <a href="https://www.firstcourse.in" class="font-weight-bold ml-1" target="_blank">FirstCourse</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                        <li class="nav-item">
+                            <a href="https://www.firstcourse.in" class="nav-link" target="_blank">FirstCourse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.firstcourse.in/aboutus" class="nav-link" target="_blank">About Us</a>
+                        </li>
+                        <!--                                <li class="nav-item">-->
+                        <!--                                    <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>-->
+                        <!--                                </li>-->
+                        <!--                                <li class="nav-item">-->
+                        <!--                                    <a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>-->
+                        <!--                                </li>-->
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+</div>
+
+
+{% include 'footer.html' %}
+<script src="{% static 'argon/assets/vendor/moment/min/moment.min.js' %}"></script>
+<script src="{% static 'argon/assets/vendor/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+
+<script src="{% static 'js/insights.js' %}"></script>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script type="text/javascript">
+    var mydashboard = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#panel',
+        data: {
+            customers:[],
+            havecustomers:false,
+            employees:[],
+            haveemployees:false,
+        },
+        methods: {
+            get_customers:function(){
+                axios.get('/customers/admin/get/all')
+                    .then(function (response) {
+                        if(response.data.customers!=null && response.data.customers!='' && response.data.customers.length!=0 && (typeof response.data.customers !== "undefined") ){
+                            mydashboard.customers=response.data.customers;
+                            mydashboard.havecustomers=true;
+                        }
+
+
+                    }).catch(function(error){
+                    console.log("Error");
+                }).finally(function(){
+
+                });
+            },
+            get_employees:function(){
+                axios.get('/employees/admin/get/all')
+                    .then(function (response) {
+                        console.log(response)
+                        if(response.data!=null && response.data!='' && response.data.length!=0 && (typeof response.data !== "undefined") ){
+                            console.log(response.data)
+                            mydashboard.employees=response.data;
+                            mydashboard.haveemployees=true;
+                        }
+
+
+                    }).catch(function(error){
+                    console.log("Error");
+                }).finally(function(){
+
+                });
+            },
+        },
+        updated: function(){
+
+        },
+        mounted: function(){
+            this.get_customers();
+            this.get_employees();
+
+        },
+        computed: {
+
+        },
+        filters: {
+
+        }
+
+    });
+</script>
+</body>
+
+
+
+</html>

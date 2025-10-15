@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+<style>
+    .overlay{
+        height:100%;
+        position:fixed;
+        width:100%;
+        z-index:2000;
+        left:0px;
+        top:0px;
+        background-color: rgba(50,50,50,0.5);
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position:fixed;
+        top:calc(50% - 60px);
+        left:calc(50% - 60px);
+        z-index:2001;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+        .select2-selection--single{
+        height:100%!important;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+        <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+        <li class="breadcrumb-item"><a href="#">Modules</a></li>
+        <li class="breadcrumb-item active" aria-current="page">OCR</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block headercontent %}
+
+    <section id="OCR" class="shadow p-3 rounded-lg ">
+    <div class="overlay d-none">
+        <div class="loader d-none">
+
+        </div>
+    </div>
+    <div class="card card-body">
+        <form>
+            <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group">
+                    <label>
+                        Customer
+                    </label>
+                    <select name="customer_name_table" class="customer_select_table form-control" style="width: 100%;"  required>
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                <div class="form-group">
+                    <label>
+                        Month of Interest
+                    </label>
+                    <div class="input-group input-group-alternative mb-4">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                        </div>
+                        <input class="form-control datepicker" id="month_of_interest" placeholder="Select date" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-3 col-md-6 col-12 text-center">
+                <button type="button" class="btn btn-success" @click="getimagelist">
+                    <span class="btn-inner--icon"><i class="fas fa-search"></i></span>
+                    <span class="btn-inner--text">Search</span>
+                </button>
+            </div>
+        </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block maincontent %}
+<section id="gallery" class="bg-default p-5">
+    <div class="card-columns">
+        <div class="card p-2 bg-light text-white border border-dark" v-for="im in imglist">
+                        <a target="_blank" :href="'/ocr/textconv?key='+ im.key +'&imgsrc='+im.url+'&name='+im.name+'&date='+date+'&customer='+customerid" >
+                <img
+
+                        :src=" im.url "
+                        alt="invoice image"
+
+                        height="400"
+                        class="card-img-top border border-dark"
+                />
+            </a>
+            <div class="card-body">
+                <h3 class="card-title text-dark">[[ im.filename ]]</h3>
+                <a target="_blank" :href="'/ocr/textconv?key='+ im.key+'&imgsrc='+im.url+'&name='+im.name+'&date='+date+'&customer='+customerid" class="btn btn-warning"> Go </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extrafooter %}
+<script src="{% static 'js/insights.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script>
+    $(document).ready(function(){
+
+
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+                imglist:'',
+                customerid:'',
+                hasMore:false,
+                next:'',
+                date:'',
+            },
+            methods:{
+                getimagelist:function(){
+
+                    var csrftoken = Cookies.get('csrftoken');
+                    function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    }
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        }
+                    });
+                    axios.interceptors.request.use(config => {
+                        // log a message before any HTTP request is sent
+                        app.addspinner();
+                        return config;
+                    });
+                    axios.interceptors.response.use(function (response) {
+                        // Any status code that lie within the range of 2xx cause this function to trigger
+                        // Do something with response data
+                        app.removespinner();
+                        return response;
+                    }, function (error) {
+                        // Any status codes that falls outside the range of 2xx cause this function to trigger
+                        // Do something with response error
+                        app.removespinner();
+                        return Promise.reject(error);
+                    });
+
+                       var params = {
+                        'customer':$(".customer_select_table").val(),
+                        'month-year':app.date
+                    };
+                    axios.get('/ocr/get/imglist/',{params})
+                        .then(function (response) {
+                            console.log("Called Image list");
+                            app.imglist=response.data.imgList;
+                            app.customerid=response.data.customerid;
+                            app.hasMore=response.data.hasMore;
+                            app.next=response.data.next;
+                            console.log("End get imglist");
+                        }).catch(function(error){
+                        console.log("Error");
+                    });
+                    console.log("Done IMG LISt method");
+                },
+                showNotification: function (from, align,color,message){
+                    $.notify({
+                        icon: "now-ui-icons ui-1_bell-53",
+                        message: message
+
+                    },{
+                        type: color,
+                        timer: 2000,
+                        placement: {
+                            from: from,
+                            align: align
+                        }
+                    });
+                },
+                addspinner:function(){
+                        $(".overlay").addClass("d-block");
+                        $(".overlay").removeClass("d-none");
+                        $(".loader").removeClass("d-none");
+                        $(".loader").addClass("d-block",400);
+                        //$('.customer_select_table').val(null).trigger('change');
+                },
+                removespinner:function (){
+                    $(".overlay").addClass("d-none");
+                    $(".overlay").removeClass("d-block");
+                    $(".loader").removeClass("d-block",400);
+                    $(".loader").addClass("d-none",400);
+                },
+                showLoadMoreButton:function () {
+                    if (!this.hasMore) {
+                        $("#load-more").hide();
+                    }
+                }
+            },
+            mounted:function(){
+
+                $('.customer_select_table').select2({
+                    placeholder: "Select the restaurant",
+                    allowClear: true,
+                    tags: true,
+                    ajax: {
+
+                        url: '/insights/get/customers/',
+                        type: 'GET',
+                        dataType: 'json',
+
+                        data: function (params) {
+                            console.log(params.term);
+                            var query = {
+
+                                name: params.term,
+                            }
+                            // Query parameters will be ?search=[term]&type=public
+                            return query;
+                        },
+                        processResults: function (data) {
+                            // Transforms the top-level key of the response object from 'items' to 'results'
+                            console.log("Process Results called");
+                            console.log(data);
+                            var data = $.map(data, function (obj) {
+                                obj.text = obj.name + "," + obj.branch+","+obj.city; // replace name with the property used for the text
+                                return obj;
+                            });
+
+                            return {
+                                results: data
+                            };
+                        },
+                        cache: false
+                    },
+                });
+
+                $('.datepicker').datepicker({
+                    format: "mm yyyy",
+                    startView: "months",
+                    minViewMode: "months",
+                    autoclose: true
+                }).on('changeDate',function(e){
+                app.date=$('.datepicker').val();
+            });
+
+
+
+
+
+                this.showLoadMoreButton();
+
+
+                $("#load-more").on("click", () => {
+                    if (app.hasMore) {
+                        $.get("/load-more", { cursor: next, customerid: customerid }, (data) => {
+                            let jsonData = JSON.parse(data);
+                            console.log(`LOAD MORE RESPONSE ${jsonData}`);
+
+                            app.hasMore = jsonData["hasMore"];
+                            app.next = jsonData["next"];
+                            let images = jsonData["imgList"];
+
+                            images.forEach((image) => {
+                                console.log("IMAGE", image);
+                                let divElement = `<div class='gallery'> <a target='_blank' href='/textconv?key=${image["key"]}'> <img src='${image["url"]}' alt='invoice image' width='400' height='600' /> </a> <div class='desc'>${image["filename"]}</div> </div>`;
+                                $("#images-container").append(divElement);
+                            });
+
+                            app.showLoadMoreButton();
+                        });
+                    }
+                });
+
+
+
+            }
+        });
+
+
+    });
+</script>
+
+{% endblock %}
+

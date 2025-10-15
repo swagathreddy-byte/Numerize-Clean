@@ -1,0 +1,317 @@
+{%  extends "base.html" %}
+{% load static %}
+{% load home_extras %}
+
+{% block extra_heads %}
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-alpine.css">
+    <link rel="stylesheet" href="{% static 'argon/assets/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'argon/assets/vendor/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'argon/assets/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css' %}">
+{% endblock %}
+
+{% block extrastyle %}
+    <style>
+        .select2-selection--single{
+            height:100%!important;
+        }
+
+        .overlay{
+            height:100%;
+            position:fixed;
+            width:100%;
+            z-index:2000;
+            left:0px;
+            top:0px;
+            background-color: rgba(50,50,50,0.5);
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            position:fixed;
+            top:calc(50% - 60px);
+            left:calc(50% - 60px);
+            z-index:2001;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+            <li class="breadcrumb-item"><a href="#">Qb API Management</a></li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block maincontent %}
+    <div class="overlay d-none">
+    <div class="loader d-none">
+
+    </div>
+</div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">QB Connection Status</h3>
+                        </div>
+
+                    </div>
+                </div>
+                <div v-if="qbtoken_status_loaded" class="table-responsive">
+                    <!-- Projects table -->
+                    <table class="table align-items-center table-flush" id="datatable-basic1">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">LegalEntity</th>
+                            <th scope="col">Active?</th>
+                            <th scope="col">Qb ID</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Last Message</th>
+                            <th scope="col">Date Time</th>
+                            <th scope="col">CRM</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="pt in legalentities">
+                            <th scope="row">
+                                [[ pt.customer_name ]]
+                            </th>
+                            <td>
+                                [[ pt.name ]]
+                            </td>
+                            <td>
+                                [[ pt.active ]]
+                            </td>
+                            <td>
+                                [[ pt.qb_id]]
+                            </td>
+                            <td>
+                                <button v-if="get_token_id(pt.qb_id,'status')" class="btn btn-sm btn-success">Active</button>
+                                <button v-if="!get_token_id(pt.qb_id,'status')" class="btn btn-sm btn-danger">Not Activated</button>
+                            </td>
+                            <td>
+                                [[ get_token_id(pt.qb_id,'message') ]]
+                            </td>
+                            <td>
+                                [[ get_token_id(pt.qb_id,'date') ]]
+                            </td>
+                            <td>`
+                                [[ get_token_id(pt.qb_id,'crm') ]]
+                            </td>
+                            <td>
+
+                                <a v-if="!get_token_id(pt.qb_id,'status') && pt.active" class="imgLink" href="#" onclick="launchPopup('/ext_api/qb/connect/')">
+                                    <img
+                                            style="height: 40px"
+                                            src="{% static 'C2QB_white_btn_lg_default.png' %}"
+                                            onmouseover="this.src='{% static 'C2QB_white_btn_lg_hover.png' %}'"
+                                            onmouseout="this.src='{% static 'C2QB_white_btn_lg_default.png' %}'"
+                                    />
+                                </a>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extrafooter %}
+    <script src="{% static 'argon/assets/vendor/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'js/insights.js' %}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+
+    <script>
+        function launchPopup(path) {
+            var win;
+            var checkConnect;
+            var parameters = "location=1,width=800,height=650";
+            parameters += ",left=" + (screen.width - 800) / 2 + ",top=" + (screen.height - 650) / 2;
+
+            // Launch Popup
+            win = window.open(path, 'connectPopup', parameters);
+            win.onbeforeunload=function(){
+                location.reload();
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Javascript method's body can be found in assets/js/demos.js
+
+            var qbapi = new Vue({
+                delimiters: ['[[', ']]'],
+                el: '#panel',
+                data: {
+                    legalentities:{},
+                    legalentities_loaded:false,
+                    qbtoken_status:{},
+                    qbtoken_status_loaded:false
+                },
+                methods: {
+                    get_legalentities:function(){
+                        axios.get('https://client.firstcourse.in/api/entities/legalentity/get')
+                            .then(function (response) {
+                                console.log(response.data.result);
+                                qbapi.legalentities=response.data.result;
+                                qbapi.legalentities_loaded=true;
+
+                            }).catch(function(error){
+
+                        }).finally(function(){
+                            qbapi.get_qbtoken_status();
+                        });
+                    },
+                    get_qbtoken_status:function(){
+                        axios.get('/ext_api/qb/get/qbevent/status/latest/qb_token/')
+                            .then(function (response) {
+                                console.log(response.data);
+                                qbapi.qbtoken_status=response.data;
+                                qbapi.qbtoken_status_loaded=true;
+                            }).catch(function(error){
+
+                        }).finally(function(){
+                            $('#datatable-basic1').DataTable();
+
+                        });
+                    },
+                    get_legalentities_by_id:function(id){
+                        var value1='';
+                        $.each(qbapi.legalentities,function(index,value){
+                            if(value.id === id){
+                                value1=value.name;
+                                return;
+                            }
+                        });
+                        return value1;
+                    },
+                    get_legalentities_status_by_id:function(id){
+                        var value1='';
+                        $.each(qbapi.legalentities,function(index,value){
+                            if(value.id === id){
+                                value1=value.active;
+                                return;
+                            }
+                        });
+                        return value1;
+                    },
+                    get_token_id:function(id,field){
+
+                        var value1='';
+
+                        $.each(qbapi.qbtoken_status,function(index,value){
+                           if(value.qb_id === id){
+                               value1=index;
+                               return false;
+                           }
+                        });
+
+                        if(value1 === ''){
+                            if(field === "status")
+                            {
+                                return false;
+                            }
+                            else{
+                                return "NA";
+                            }
+
+                        }
+                        else{
+                            if(field === "status")
+                            {
+                                return qbapi.qbtoken_status[value1].status;
+                            }
+
+                            if(field === "crm")
+                            {
+                                return qbapi.qbtoken_status[value1].crm;
+                            }
+
+                            if(field === "message")
+                            {
+                                return qbapi.qbtoken_status[value1].message;
+                            }
+
+                            if(field === "date")
+                            {
+                                return qbapi.qbtoken_status[value1].date;
+                            }
+                        }
+
+
+                    },
+                    get_customer_by_id:function(id){
+                        var value1='';
+                        $.each(qbapi.legalentities,function(index,value){
+                            console.log(value);
+                            if(value.id === id){
+                                value1=value.customer;
+                                return;
+                            }
+                        });
+                        return value1;
+                    },
+                },
+                updated: function(){
+
+                },
+                mounted: function(){
+                    this.get_legalentities();
+
+                },
+                computed: {
+
+                },
+                filters: {
+
+                },
+                created: function(){
+
+                },
+                watch:{
+                    qbtoken_status_loaded:function(){
+
+                    }
+                }
+
+            });
+
+
+        });
+    </script>
+{% endblock %}

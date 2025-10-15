@@ -1,0 +1,1045 @@
+{% extends "ClientDashboard/ui8-nazox/mobile/client_base.html" %}
+
+{% load static %}
+
+
+
+{% block content %}
+    <div class="page-content">
+    <div class="container-fluid">
+
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" v-if="pl_loaded">
+                    <div class="card" >
+                        <div class="card-body">
+                            <div class="dropdown float-right" style="z-index:100;">
+                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item">View Profit & Loss Report</a>
+                                    <a href="javascript:void(0);" class="dropdown-item">Download P & L Report</a>
+                                    <!-- item-->
+                                </div>
+                            </div>
+                            <div class="float-left" style="top:-10px;position:relative">
+                                <img src="{% static 'ui8-nazox/assets/images/flat-icons/money-printing.png' %}"
+                                     class="mr-3 avatar-xs">
+                            </div>
+                            <h4 class="card-title mb-4">Profit & Loss
+
+                            </h4>
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div>
+                                            <div class="mb-3">
+                                                <div id="income-chart" class="apex-charts" ref="radialchart1"></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">[[pl_data.results.Page2.table1.records[3].Col1]]</p>
+                                            <h5 class="mb-0">&#8377  [[pl_data.results.Page2.table1.records[3].Col4 | toCurrency]]</h5>
+
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="mt-5 mt-sm-0">
+                                            <div class="mb-3">
+                                                <div id="expenses-chart" class="apex-charts"></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">[[pl_data.results.Page2.table1.records[12].Col1]]</p>
+                                            <h5 class="mb-0">&#8377 [[pl_data.results.Page2.table1.records[12].Col4 | toCurrency]]</h5>
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="mt-5 mt-sm-0">
+                                            <div class="mb-3">
+                                                <div id="profit-chart" class="apex-charts"></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">[[pl_data.results.Page2.table1.records[14].Col1]]</p>
+                                            <h5 class="mb-0">&#8377 [[pl_data.results.Page2.table1.records[14].Col4 | toCurrency]]</h5>
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item" v-if="gst_loaded">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="dropdown float-right" style="z-index:100;">
+                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item">View GST Report</a>
+                                    <a href="javascript:void(0);" class="dropdown-item">Download GST Report</a>
+                                    <!-- item-->
+                                </div>
+                            </div>
+                            <div class="float-left" style="top:-10px;position:relative">
+                                <img src="{% static 'ui8-nazox/assets/images/flat-icons/payout-1.png' %}"
+                                     class="mr-3 avatar-xs">
+                            </div>
+                            <h4 class="card-title mb-4">GST</h4>
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <div>
+                                            <div class="mb-3">
+                                                <div id="gst2" class="apex-charts" ref="radialchart1"></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">Net GST Payable</p>
+                                            <h5 class="mb-0">&#8377 [[gst_data.net_gst_payable| toCurrency ]]</h5>
+
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="mt-5 mt-sm-0">
+                                            <div class="mb-3">
+                                                <div id="b2b-chart" class="apex-charts" ></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">B2B Costs</p>
+                                            <h5 class="mb-0">&#8377  [[gst_data.net_gst_payable| toCurrency ]]</h5>
+
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="mt-5 mt-sm-0">
+                                            <div class="mb-3">
+                                                <div id="b2c-chart" class="apex-charts" ></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">B2C</p>
+                                            <h5 class="mb-0">&#8377  [[gst_data.net_gst_payable| toCurrency ]]</h5>
+
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="carousel-item" v-if="pe_loaded">
+                    <div class="card" >
+                        <div class="card-body">
+                            <div class="dropdown float-right" style="z-index:100;">
+                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item">View Purchase Efficiency Report</a>
+                                    <a href="javascript:void(0);" class="dropdown-item">Download Purchase Efficiency Report</a>
+                                    <!-- item-->
+                                </div>
+                            </div>
+                            <div class="float-left" style="top:-10px;position:relative">
+                                <img src="{% static 'ui8-nazox/assets/images/flat-icons/investments.png' %}"
+                                     class="mr-3 avatar-xs">
+                            </div>
+                            <h4 class="card-title mb-4">
+                                Purchase Efficiency
+                            </h4>
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div>
+                                            <div class="mb-3">
+                                                <div id="pe-loss-chart" class="apex-charts" ></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">Purchase Efficiency Loss</p>
+                                            <h5 class="mb-0">&#8377  [[pe_data.results.summary.EfficiencyLoss | toCurrency]]</h5>
+
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="mt-5 mt-sm-0">
+                                            <div class="mb-3">
+                                                <div id="ideal-cost-chart" class="apex-charts" ></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">Ideal Purchasing Cost</p>
+                                            <h5 class="mb-0">&#8377  [[pe_data.results.summary.IdealPurchasingCost | toCurrency]]</h5>
+
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="mt-5 mt-sm-0">
+                                            <div class="mb-3">
+                                                <div id="actual-cost-chart" class="apex-charts" ></div>
+                                            </div>
+                                            <p class="text-muted text-truncate mb-2">Actual Purchasing Cost</p>
+                                            <h5 class="mb-0">&#8377  [[pe_data.results.summary.ActualPurchasingCost | toCurrency]]</h5>
+
+                                            <div class="text-truncate pt-3">
+                                                <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>
+                                                <span class="text-muted ml-2">From previous period</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+<!--        <div class="row">-->
+<!--            <div class="col-xl-8">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-4">-->
+<!--                        <div class="card" v-if="pl_loaded">-->
+<!--                            <div class="card-body">-->
+<!--                                <div class="dropdown float-right">-->
+<!--                                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">-->
+<!--                                        <i class="mdi mdi-dots-vertical"></i>-->
+<!--                                    </a>-->
+<!--                                    <div class="dropdown-menu dropdown-menu-right">-->
+<!--                                        &lt;!&ndash; item&ndash;&gt;-->
+<!--                                        <a href="javascript:void(0);" class="dropdown-item">View Profit & Loss Report</a>-->
+<!--                                        <a href="javascript:void(0);" class="dropdown-item">Download P & L Report</a>-->
+<!--                                        &lt;!&ndash; item&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <h4 class="card-title mb-4">Profit & Loss</h4>-->
+<!--                                <div class="text-center">-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col-xs-6">-->
+<!--                                            <div>-->
+<!--                                                <div class="mb-3">-->
+<!--                                                    <div id="income-chart" class="apex-charts" ref="radialchart1"></div>-->
+<!--                                                </div>-->
+<!--                                                <p class="text-muted text-truncate mb-2">[[pl_data.results.Page2.table1.records[3].Col1]]</p>-->
+<!--                                                <h5 class="mb-0">&#8377  [[pl_data.results.Page2.table1.records[3].Col4 | toCurrency]]</h5>-->
+
+<!--                                                <div class="text-truncate pt-3">-->
+<!--                                                    <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>-->
+<!--                                                    <span class="text-muted ml-2">From previous period</span>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="col-xs-6">-->
+<!--                                            <div class="mt-5 mt-sm-0">-->
+<!--                                                <div class="mb-3">-->
+<!--                                                    <div id="expenses-chart" class="apex-charts"></div>-->
+<!--                                                </div>-->
+<!--                                                <p class="text-muted text-truncate mb-2">[[pl_data.results.Page2.table1.records[12].Col1]]</p>-->
+<!--                                                <h5 class="mb-0">&#8377 [[pl_data.results.Page2.table1.records[12].Col4 | toCurrency]]</h5>-->
+<!--                                                <div class="text-truncate pt-3">-->
+<!--                                                    <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>-->
+<!--                                                    <span class="text-muted ml-2">From previous period</span>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="col-xs-6">-->
+<!--                                            <div class="mt-5 mt-sm-0">-->
+<!--                                                <div class="mb-3">-->
+<!--                                                    <div id="profit-chart" class="apex-charts"></div>-->
+<!--                                                </div>-->
+<!--                                                <p class="text-muted text-truncate mb-2">[[pl_data.results.Page2.table1.records[14].Col1]]</p>-->
+<!--                                                <h5 class="mb-0">&#8377 [[pl_data.results.Page2.table1.records[14].Col4 | toCurrency]]</h5>-->
+<!--                                                <div class="text-truncate pt-3">-->
+<!--                                                    <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>-->
+<!--                                                    <span class="text-muted ml-2">From previous period</span>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4">-->
+<!--                        <div class="card">-->
+<!--                            <div class="card-header bg-info text-white">-->
+<!--                                Profit & Loss-->
+<!--                            </div>-->
+<!--                            <div class="card-body">-->
+<!--                                <div class="media">-->
+<!--                                    <div class="media-body overflow-hidden">-->
+<!--                                        <p class="text-truncate font-size-14 mb-2">Total Profit</p>-->
+<!--                                        <h4 class="mb-0">1452</h4>-->
+<!--                                    </div>-->
+<!--                                    <div class="text-primary">-->
+<!--                                        <i class="ri-stack-line font-size-24"></i>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <div class="card-body border-top py-3">-->
+<!--                                <div class="text-truncate">-->
+<!--                                    <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>-->
+<!--                                    <span class="text-muted ml-2">From previous month</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4">-->
+<!--                        <div class="card">-->
+<!--                            <div class="card-body">-->
+<!--                                <div class="media">-->
+<!--                                    <div class="media-body overflow-hidden">-->
+<!--                                        <p class="text-truncate font-size-14 mb-2">Sales Revenue</p>-->
+<!--                                        <h4 class="mb-0">$ 38452</h4>-->
+<!--                                    </div>-->
+<!--                                    <div class="text-primary">-->
+<!--                                        <i class="ri-store-2-line font-size-24"></i>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="card-body border-top py-3">-->
+<!--                                <div class="text-truncate">-->
+<!--                                    <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>-->
+<!--                                    <span class="text-muted ml-2">From previous period</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4">-->
+<!--                        <div class="card">-->
+<!--                            <div class="card-body">-->
+<!--                                <div class="media">-->
+<!--                                    <div class="media-body overflow-hidden">-->
+<!--                                        <p class="text-truncate font-size-14 mb-2">Average Price</p>-->
+<!--                                        <h4 class="mb-0">$ 15.4</h4>-->
+<!--                                    </div>-->
+<!--                                    <div class="text-primary">-->
+<!--                                        <i class="ri-briefcase-4-line font-size-24"></i>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="card-body border-top py-3">-->
+<!--                                <div class="text-truncate">-->
+<!--                                    <span class="badge badge-soft-success font-size-11"><i class="mdi mdi-menu-up"> </i> 2.4% </span>-->
+<!--                                    <span class="text-muted ml-2">From previous period</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                </div>-->
+<!--                &lt;!&ndash; end row &ndash;&gt;-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+
+    </div> <!-- container-fluid -->
+</div>
+{% endblock %}
+
+{% block extrascript %}
+<script src="{% static 'assets/js/jsonQ.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script>
+    // $('#dropdownsummary .collapse').collapse('show');
+
+    const vueApp = new Vue({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data: {
+            pl_data:'',
+            gst_data:'',
+            pe_data:'',
+            ca_data:'',
+            custid:0,
+            userinfo:[],
+            results:'',
+            ismobile:false,
+            pl_loaded:false,
+            gst_loaded:false,
+            pe_loaded:false,
+            ca_loaded:false,
+        },
+        mounted:function(){
+            // console.log(this.custid);
+
+            var userinfourl='/get/myinfo';
+            axios.get(userinfourl)
+                .then(function (response) {
+                    //console.log(response.data.id);
+                    vueApp.userinfo=response.data;
+                    vueApp.custid=response.data.id;
+                }).catch(function(error){
+                //console.log("Error");
+            });
+
+
+
+            // var resulturl='/insights/get/result/all/';
+            // axios.get(resulturl)
+            //     .then(function (response) {
+            //         vueApp.results=response.data.result;
+            //     }).catch(function(error){
+            //     //console.log("Error");
+            // });
+
+
+            this.detectmobile();
+            //console.log("Before mapping data");
+
+
+
+            this.initialize_pl_data();
+            this.initialize_gst_data();
+            this.initialize_pe_data();
+
+
+            this.initPreloader();
+
+            //console.log("After Axios PL API Pull")
+            //console.log(current_result);
+
+
+        },
+        computed:{
+
+        },
+        updated:function(){
+
+            $('#TotalSales').on('shown.bs.collapse', function () {
+                setTimeout(function() {
+                    if(vueApp.saleschart == null)
+                        vueApp.createChart();
+
+                },200);
+            });
+
+        },
+        methods: {
+
+
+            initPreloader: function () {
+                $(window).on('load', function () {
+                    $('#status').fadeOut();
+                    $('#preloader').delay(350).fadeOut('slow');
+                });
+            },
+            initialize_pl_data:function(){
+                var resulturl='/insights/get/result/latest/';
+                //console.log("Map PL Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "P_L"
+                    }
+                }).then(function (response) {
+                    //console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        console.log("Hey its map PL API");
+                        current_result=response.data.result;
+                        vueApp.pl_data=response.data.result;
+                        vueApp.pl_loaded=true;
+                        vueApp.$nextTick(function(){
+                            vueApp.initplcharts();
+                        });
+                        // var value1 = 50, value2= 90
+                        // var ctx = document.getElementById("income-chart");
+                        // var data = {
+                        //     labels: [
+                        //         "Element1",
+                        //         "Element2",
+                        //         ""
+                        //     ],
+                        //     datasets: [
+                        //         {
+                        //             data: [value1, 0, 100 - value1],
+                        //             backgroundColor: [
+                        //                 "#FF6384",
+                        //                 "#00CCFF",
+                        //                 "white"
+                        //             ]
+                        //         },
+                        //         {
+                        //             data: [0, value2, 100 - value2],
+                        //             backgroundColor: [
+                        //                 "#FF6384",
+                        //                 "#00CCFF",
+                        //                 "white"
+                        //             ]
+                        //         }
+                        //     ]
+                        // };
+                        // var options = {
+                        //     rotation: Math.PI,
+                        //     circumference: Math.PI,
+                        //     cutoutPercentage: 77
+                        // }
+                        // var myDoughnutChart = new Chart(ctx, {
+                        //     type: 'doughnut',
+                        //     data: data,
+                        //     options: options
+                        // });
+                        // var radialoptions = {
+                        //     series: [72],
+                        //     chart: {
+                        //         type: 'radialBar',
+                        //         wight: 60,
+                        //         height: 60,
+                        //         sparkline: {
+                        //             enabled: true
+                        //         }
+                        //     },
+                        //     dataLabels: {
+                        //         enabled: false
+                        //     },
+                        //     colors: ['#5664d2'],
+                        //     stroke: {
+                        //         lineCap: 'round'
+                        //     },
+                        //     plotOptions: {
+                        //         radialBar: {
+                        //             hollow: {
+                        //                 margin: 0,
+                        //                 size: '70%'
+                        //             },
+                        //             track: {
+                        //                 margin: 0,
+                        //             },
+                        //
+                        //             dataLabels: {
+                        //                 show: false
+                        //             }
+                        //         }
+                        //     }
+                        // };
+                        // console.log(vueApp.$refs.radialchart1);
+                        // var radialchart = new ApexCharts(document.querySelector("#income-chart"), radialoptions);
+                        // radialchart.render();
+
+                        //console.log(vueApp.pl_data.results);
+
+                        //console.log("Printing PL results")
+                        //console.log(current_result);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            initialize_gst_data:function(){
+                var resulturl='/insights/get/result/latest/';
+                var current_result='';
+                //console.log("Map GST Data");
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "GST"
+                    }
+                }).then(function (response) {
+                    console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        console.log("Map GST Data");
+                        current_result=response.data.result;
+                        vueApp.gst_data = response.data.result.results;
+                        var b2b_total=0;
+                        var b2c_total=0;
+                        vueApp.gst_loaded=true;
+                        $.each(vueApp.gst_data.b2b,function(index,value){
+                            b2b_total+=value.total_gst;
+                            //console.log(value.total_gst);
+                        });
+                        //console.log(b2b_total);
+                        vueApp.gst_data.b2b_total=b2b_total;
+
+                        //console.log(vueApp.gst_data.b2b_total);
+                        $.each(vueApp.gst_data.b2c,function(index,value){
+                            b2c_total+=value.total_gst;
+                            //console.log(value.total_gst);
+                        });
+                        //console.log(b2c_total);
+                        vueApp.gst_data.b2c_total=b2c_total;
+                        vueApp.$nextTick(function(){
+                            vueApp.initgstcharts();
+                        });
+
+                        //console.log(vueApp.gst_data.b2c_total);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            initialize_pe_data:function(){
+                var resulturl='/insights/get/result/latest/';
+                console.log("Map PE Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "PUR_EFF"
+                    }
+                }).then(function (response) {
+                    //console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        //console.log("Hey its map PL API");
+                        current_result=response.data.result;
+                        vueApp.pe_data=response.data.result;
+                        var detailedlist=[];
+                        var itemlist=[];
+                        var finaldetailedlist=[]
+                        $.each(vueApp.pe_data.results.itemsummaryTable,function(index,item){
+                            itemlist.push(item.ItemName);
+                        });
+                        console.log(itemlist);
+                        // var jsonQobj=jsonQ(vueApp.pe_data.results.billdetailedTable);
+
+                        $.each(itemlist,function(index,value){
+                            var values1=[];
+                            $.each(vueApp.pe_data.results.billdetailedTable,function(ind,val){
+                                if(val.ItemName === itemlist[index])
+                                {
+                                    values1.push(val)
+                                }
+                            });
+                            detailedlist.push(values1);
+                        });
+                        var summary={
+                            "EfficiencyLoss":0,
+                            "IdealPurchasingCost":0,
+                            "ActualPurchasingCost":0
+                        };
+                        $.each(vueApp.pe_data.results.datesummaryTable,function(index,item){
+                            summary.EfficiencyLoss+=item.EfficiencyLoss;
+                            summary.IdealPurchasingCost+=item.IdealPurchasingCost;
+                            summary.ActualPurchasingCost+=item.ActualPurchasingCost;
+                        });
+                        vueApp.pe_data.results.summary=summary;
+                        vueApp.pe_data.detailedlist=detailedlist;
+                        vueApp.pe_loaded=true;
+                        vueApp.$nextTick(function(){
+                            vueApp.initpecharts();
+                        });
+
+                        //console.log(vueApp.pl_data.results);
+
+                        //console.log("Printing PL results")
+                        //console.log(current_result);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            initialize_ca_data:function(){
+                var resulturl='/insights/get/result/latest/';
+                console.log("Map CA Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "CON_ANA"
+                    }
+                }).then(function (response) {
+                    //console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        //console.log("Hey its map PL API");
+                        current_result=response.data.result;
+                        vueApp.ca_data=response.data.result;
+                        console.log(itemlist);
+                        vueApp.ca_loaded=true;
+
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+
+            detectmobile:function(){
+                if(window.matchMedia("(max-width: 767px)").matches){
+                    this.ismobile=true;
+                }
+            },
+            initplcharts:function(){
+                var radialoptions = {
+                    series: [72],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#1985A1'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#income-chart"), radialoptions);
+                radialchart.render();
+                // Radialchart 2
+
+                var radialoptions = {
+                    series: [65],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#A3320B'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#expenses-chart"), radialoptions);
+                radialchart.render();
+
+                var radialoptions = {
+                    series: [65],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#5FAD56'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#profit-chart"), radialoptions);
+                radialchart.render();
+            },
+            initgstcharts:function(){
+                var radialoptions = {
+                    series: [72],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#1985A1'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#b2b-chart"), radialoptions);
+                radialchart.render();
+                // Radialchart 2
+
+                var radialoptions = {
+                    series: [65],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#A3320B'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#b2c-chart"), radialoptions);
+                radialchart.render();
+
+            },
+            initpecharts:function(){
+                var radialoptions = {
+                    series: [72],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#1985A1'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#pe-loss-chart"), radialoptions);
+                radialchart.render();
+                // Radialchart 2
+
+                var radialoptions = {
+                    series: [65],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#A3320B'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#ideal-cost-chart"), radialoptions);
+                radialchart.render();
+
+                var radialoptions = {
+                    series: [65],
+                    chart: {
+                        type: 'radialBar',
+                        wight: 60,
+                        height: 60,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#5FAD56'],
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%'
+                            },
+                            track: {
+                                margin: 0,
+                            },
+
+                            dataLabels: {
+                                show: false
+                            }
+                        }
+                    }
+                };
+                var radialchart = new ApexCharts(document.querySelector("#actual-cost-chart"), radialoptions);
+                radialchart.render();
+            },
+        },
+        watch:{
+            pl_loaded: function(){
+                //console.log("Hey Called PL watch");
+
+            },
+        },
+        filters: {
+            toCurrency: function (x) {
+                if (!x) return ''
+                x=x.toString();
+                var afterPoint = '';
+                if(x.indexOf('.') > 0)
+                    afterPoint = x.substring(x.indexOf('.'),x.length);
+                afterPoint=afterPoint.substring(0,3);
+                x = Math.floor(x);
+                x=x.toString();
+                var lastThree = x.substring(x.length-3);
+                var otherNumbers = x.substring(0,x.length-3);
+                if(otherNumbers != '')
+                    lastThree = ',' + lastThree;
+                var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+
+                return res;
+            },
+            toPercent: function(x,y) {
+                var value=parseFloat(x)/parseFloat(y);
+                value=value*100;
+                value=value.toFixed(2);
+
+                // console.log("Percentage Value is ");
+                // console.log(value);
+                return value;
+            }
+        }
+    });
+
+</script>
+{% endblock %}
+

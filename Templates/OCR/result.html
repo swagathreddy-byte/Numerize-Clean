@@ -1,0 +1,913 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_heads %}
+<link src="{% static 'assets/vendor/nouislider/distribute/nouislider.min.css' %}">
+{% endblock %}
+
+{% block extrastyle %}
+
+<style>
+    .overlay{
+        height:100%;
+        position:fixed;
+        width:100%;
+        z-index:2000;
+        left:0px;
+        top:0px;
+        background-color: rgba(50,50,50,0.5);
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position:fixed;
+        top:calc(50% - 60px);
+        left:calc(50% - 60px);
+        z-index:2001;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    #image-canvas {
+        z-index: 1;
+    }
+
+    #draw-canvas {
+        z-index: 2;
+    }
+
+    canvas {
+        cursor: crosshair;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        overflow: hidden;
+    }
+
+    #canvas-wrapper {
+        overflow: scroll;
+        height: 800px;
+        position: relative;
+    }
+
+    img {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+        <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+        <li class="breadcrumb-item"><a href="#">Modules</a></li>
+        <li class="breadcrumb-item active" aria-current="page">OCR Image Analysis</li>
+    </ol>
+</nav>
+{% endblock %}
+
+
+{% block headercontent %}
+
+{% endblock %}
+
+{% block maincontent %}
+<section id="OCR" class="shadow p-3 rounded-lg bg-default">
+    <div class="overlay d-none">
+        <div class="loader d-none">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-12">
+                    <div id="canvas-wrapper">
+                        <canvas id="image-canvas"></canvas>
+                        <canvas id="draw-canvas"></canvas>
+                    </div>
+
+                    <img id="image" :src="imgurl" ismap style="position:relative;width:100%;"/>
+
+                    <div class="input-slider-container m-2">
+                        <div class="row">
+                            <div class="col-md-10 col-sm-12">
+                                <div id="invoice-slider" class="input-slider" data-range-value-min="1" data-range-value-max="2"></div>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <input type="text" id="input-slider-value" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card bg-gradient-white border border-dark rounded p-3">
+                        <form class="border border-dark p-3 rounded" >
+
+                            <div class="form-group row">
+                                <label for="GSTInput" class="col-sm-12 col-md-4 col-form-label">GST No</label>
+                                <div class="col-md-8 col-sm-12">
+                                    <input type="text" class="form-control" id="GSTInput"  v-model="gst_no" placeholder="GST Number">
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="vendorname" class="col-sm-12 col-md-4 col-form-label">Vendor Name</label>
+                                <div class="col-md-8 col-sm-12">
+                                    <input type="text" class="form-control" id="vendorname" v-model="vendor_name" placeholder="Vendor name">
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="invoice_date" class="col-sm-12 col-md-4 col-form-label">Date</label>
+                                <div class="col-md-8 col-sm-12">
+                                    <input type="text" class="form-control" id="invoice_date" v-model="invoice_date" placeholder="Invoice date">
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="invoice_no" class="col-sm-12 col-md-4 col-form-label">Invoice Number</label>
+                                <div class="col-md-8 col-sm-12">
+                                    <input type="text" class="form-control" id="invoice_no" v-model="invoice_no" placeholder="Invoice number">
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+
+                <div class="card bg-white rounded p-3 ">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card bg-gradient-white border border-dark rounded p-1">
+                                <div class="card-header">
+                                    <h3 class="text-center"> Particulars </h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-responsive table-bordered">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th class="text-white"> Category </th>
+                                            <th class="text-white" v-for="(val,index) in tableData.values[1].values">
+                                                <button class="btn btn-sm btn-success" @click="addcolumn(index)"><i class="fa fa-plus"></i></button>
+                                                <button v-if="index > 0" class="btn btn-sm btn-danger" @click="removecolumn(index)"><i class="fa fa-minus"></i></button>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[0].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[0].values">
+
+                                                <input type="text" :id="tableData.values[0].label+'_item_'+String(index)" class="form-control" data-name="particulars" :data-category="0" :data-index="index" v-model="tableData.values[0].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[1].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[1].values">
+
+                                                <input type="text" class="form-control" :id="tableData.values[1].label+'_item_'+String(index)" data-name="particulars" :data-category="1" :data-index="index" v-model="tableData.values[1].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[2].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[2].values">
+                                                <input type="text" :id="tableData.values[2].label+'_item_'+String(index)" class="form-control" data-name="particulars" :data-category="2" :data-index="index" v-model="tableData.values[2].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[3].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[3].values">
+                                                <input type="text" class="form-control" :id="tableData.values[3].label+'_item_'+String(index)" data-name="particulars" :data-category="3" :data-index="index" v-model="tableData.values[3].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[4].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[4].values">
+                                                <input type="text" class="form-control" :id="tableData.values[4].label+'_item_'+String(index)" data-name="particulars" :data-category="4" :data-index="index" v-model="tableData.values[4].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[5].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[5].values">
+                                                <input type="text" class="form-control" :id="tableData.values[5].label+'_item_'+String(index)" data-name="particulars" :data-category="5" :data-index="index" v-model="tableData.values[5].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[6].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[6].values">
+                                                <input type="text" class="form-control" :id="tableData.values[6].label+'_item_'+String(index)" data-name="particulars" :data-category="6" :data-index="index" v-model="tableData.values[6].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[7].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[7].values">
+                                                <input type="text" class="form-control" :id="tableData.values[7].label+'_item_'+String(index)" data-name="particulars" :data-category="7" :data-index="index" v-model="tableData.values[7].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[8].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[8].values">
+                                                <input type="text" class="form-control" :id="tableData.values[8].label+'_item_'+String(index)"  data-name="particulars" :data-category="8" :data-index="index" v-model="tableData.values[8].values[index]">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-info" scope="row">[[ tableData.values[9].label ]]</th>
+                                            <td v-for="(val,index) in tableData.values[9].values">
+                                                <input type="text" class="form-control"  :id="tableData.values[9].label+'_item_'+String(index)" data-name="particulars" :data-category="9" :data-index="index" v-model="tableData.values[9].values[index]">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-12">
+                            <div class="card bg-gradient-white border border-dark rounded p-3">
+                                <form class=" p-3 rounded" >
+
+                                    <div class="form-group row">
+                                        <label for="GSTInput" class="col-sm-12 col-md-2 col-form-label">Gross Total</label>
+                                        <div class="col-md-10 col-sm-12">
+                                            <input type="number" class="form-control" id="Gross Total"  v-model="gross_total" placeholder="Total">
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="vendorname" class="col-sm-12 col-md-2 col-form-label">Bill Discounts</label>
+                                        <div class="col-md-10 col-sm-12">
+                                            <input type="text" class="form-control" id="discounts" v-model="discounts" placeholder="50%">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="invoice_date" class="col-sm-12 col-md-2 col-form-label">Delivery Charges</label>
+                                        <div class="col-md-10 col-sm-12">
+                                            <input type="number" class="form-control" id="delivery_charges" v-model="delivery_charges" placeholder="50 Rs">
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="invoice_no" class="col-sm-12 col-md-2 col-form-label">Net Total</label>
+                                        <div class="col-md-10 col-sm-12">
+                                            <input type="number" class="form-control" id="net_total" v-model="net_total" placeholder="5000">
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="invoice_no" class="col-sm-12 col-md-2 col-form-label">Rounding Off</label>
+                                        <div class="col-md-10 col-sm-12">
+                                            <input type="number" class="form-control" id="rounding off" v-model="rounded_total" placeholder="40000">
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="invoice_no" class="col-sm-12 col-md-2 col-form-label">Bill Amount</label>
+                                        <div class="col-md-10 col-sm-12">
+                                            <input type="number" class="form-control" id="bill_amount" v-model="bill_amount" placeholder="6000">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="button" class="btn btn-success" @click="submit_data">Submit Data</button>
+                        </div>
+                    </div>
+
+                </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+
+{% block extrafooter %}
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
+<script>
+    $(document).ready(function(){
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+                textExtract :'',
+                invoice_no:'',
+                invoice_date:'',
+                gst_no:'',
+                vendor_name:'',
+                imgurl:'',
+                tableData: {
+                    "values":[
+                        {"label": "Product/Service", "inputkey": "product","values":[""]},
+                        {"label": "Quantity", "inputkey": "quantity","values":[""]},
+                        {"label": "UoM", "inputkey": "uom","values":[""]},
+                        {"label": "HSN Code", "inputkey": "hsn","values":[""]},
+                        {"label": "Price", "inputkey": "price","values":[""]},
+                        {"label": "CGST rate", "inputkey": "cgst","values":[""]},
+                        {"label": "SGST rate", "inputkey": "sgst","values":[""]},
+                        {"label": "IGST rate", "inputkey": "igst","values":[""]},
+                        {"label": "Discount", "inputkey": "discount","values":[""]},
+                        {"label": "Total Amount", "inputkey": "total","values":[""]}
+                    ]
+                },
+                hasPrepared: false,
+                key:'',
+                gross_total:'',
+                discounts:'',
+                net_total:'',
+                bill_amount:'',
+                delivery_charges:'',
+                rounded_total:'',
+                key:'',
+                name:'',
+                date:'',
+            },
+
+            methods:{
+                initialize_ocrimage:function(){
+
+                    console.log("doc ready");
+                    var imageCanvas = document.getElementById("image-canvas");
+                    var drawCanvas = document.getElementById("draw-canvas");
+                    var image = document.getElementById("image");
+                    console.log(image);
+                    var imageCtx = imageCanvas.getContext("2d");
+                    var drawCtx = drawCanvas.getContext("2d");
+                    var currentActiveElement = document.activeElement;
+                    var parentWidth = document.getElementById("canvas-wrapper").clientWidth;
+                    var parentHeight=imageCanvas.clientHeight;
+
+                    var scale = 1.0;
+                    // let numberInputs = ["quantity", "price", "cgst", "sgst", "igst", "total"];
+                    drawInvoiceImage(parentWidth,parentHeight);
+
+                    // Properties for drawRect (for multiple text selection)
+                    var originX = (originY = 0);
+                    var mouseDown = false;
+                    var selectionRect = {};
+
+                    const bg = new Image();
+
+                    window.onload = function () {
+                        drawImageAndUnderlineTextOnCanvas();
+                    };
+                    var c = document.getElementById("invoice-slider"),
+                        d = document.getElementById("input-slider-value");
+
+                    c.noUiSlider.on('update', function (a, b) {
+                        d.value = a[b];
+                        imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+
+                        var defaultWidth = imageCanvas.width / scale;
+                        var defaultHeight = imageCanvas.height / scale;
+
+                        scale = a[b];
+
+                        setCanvasSize();
+
+                        var newWidth = defaultWidth * scale;
+                        var newHeight = defaultHeight * scale;
+
+                        drawInvoiceImage(newWidth, newHeight);
+                        drawLinesUnderText();
+                        drawTransparentImage(newWidth, newHeight);
+                    });
+
+                    c.noUiSlider.set(1);
+
+                    drawCanvas.onmouseup = function (e) {
+                        mouseDown = false;
+                        var output = "";
+
+                        var clickX = parseInt(e.offsetX - imageCanvas.offsetLeft);
+                        var clickY = parseInt(e.offsetY - imageCanvas.offsetTop);
+
+                        var textExtractCopy = JSON.parse(JSON.stringify(app.textExtract));
+
+                        textExtractCopy.forEach(function (textDoc) {
+                            var vertices = textDoc.boundingPoly.vertices;
+
+                            let verts = [
+                                getConvertedCoordinate(vertices[0]),
+                                getConvertedCoordinate(vertices[1]),
+                                getConvertedCoordinate(vertices[2]),
+                                getConvertedCoordinate(vertices[3]),
+                            ];
+
+                            // Selection Rectangle
+                            if ((selectionRect.width, selectionRect.height)) {
+                                if (containsAllPoints(verts)) {
+                                    //        if (containsAtLeastTwoPoints(verts)) {
+                                    output += " " + textDoc.description;
+                                }
+                            } else {
+                                // On Click
+                                if (
+                                    verts[0].x < clickX &&
+                                    verts[0].y < clickY &&
+                                    verts[1].x > clickX &&
+                                    verts[1].y < clickY &&
+                                    verts[2].x > clickX &&
+                                    verts[2].y > clickY &&
+                                    verts[3].x < clickX &&
+                                    verts[3].y > clickY
+                                ) {
+                                    drawTransparentImage(drawCanvas.width, drawCanvas.height);
+                                    copyTextToClipboard(textDoc.description);
+                                    return;
+                                }
+                            }
+                        });
+
+                        if ((selectionRect.width, selectionRect.height)) {
+                            copyTextToClipboard(output.trim());
+                            drawTransparentImage(drawCanvas.width, drawCanvas.height);
+                        }
+                    };
+
+                    drawCanvas.onmousedown = function (e) {
+                        console.log("MOUSE DOWN");
+                        currentActiveElement = document.activeElement;
+                        console.log(document.activeElement);
+                        selectionRect = {};
+                        originX = parseInt(e.offsetX - imageCanvas.offsetLeft);
+                        originY = parseInt(e.offsetY - imageCanvas.offsetTop);
+                        selectionRect.x = originX;
+                        selectionRect.y = originY;
+                        mouseDown = true;
+                    };
+
+                    drawCanvas.onmousemove = function (e) {
+                        mouseX = parseInt(e.offsetX - imageCanvas.offsetLeft);
+                        mouseY = parseInt(e.offsetY - imageCanvas.offsetTop);
+                        if (mouseDown) {
+                            // Clear Canvas and draw rect again.
+                            drawTransparentImage(drawCanvas.width, drawCanvas.height);
+                            drawCtx.beginPath();
+                            var width = mouseX - originX;
+                            var height = mouseY - originY;
+                            drawCtx.rect(originX, originY, width, height);
+                            drawCtx.strokeStyle = "black";
+                            drawCtx.lineWidth = 1;
+                            drawCtx.stroke();
+                            selectionRect.width = width;
+                            selectionRect.height = height;
+                        }
+                    };
+
+                    // FIXME: Empty Field Check, Show Error
+                    $("#submit-btn").on("click", () => {
+                        console.log("SUBMITTING FORM");
+                        var companyInfo = getCompanyDetails();
+                        const productList = getProductsList();
+
+                        if (companyInfo) {
+                            if (productList) {
+                                companyInfo["product_list"] = productList;
+                                const queryString = window.location.search;
+                                const urlParams = new URLSearchParams(queryString);
+                                if (urlParams.has("key")) {
+                                    companyInfo["image_path"] = urlParams.get("key");
+                                }
+
+                                if (companyInfo) {
+                                    let jsonData = JSON.stringify(companyInfo);
+                                    console.log("JSON DATA", jsonData);
+                                    let posting = { data: jsonData };
+                                    $.post("/submit-form", posting, (response, status) => {
+                                        if (status == "success") {
+                                            alert("Data saved successfully!");
+                                        } else {
+                                            alert("Error saving data!");
+                                        }
+                                    });
+                                }
+                            } else {
+                                alert("Please enter required product details");
+                            }
+                        }
+                    });
+
+
+                    function getConvertedCoordinate(coordinate) {
+                        // console.log("Get converted coordinate")
+                        // console.log("COORD BEFORE", coordinate.x, coordinate.y);
+                        coordinate.x = (imageCanvas.width * coordinate.x) / image.naturalWidth;
+                        coordinate.y = (imageCanvas.height * coordinate.y) / image.naturalHeight;
+                        // console.log("COORD AFTER", coordinate.x, coordinate.y);
+                        return coordinate;
+                    }
+
+                    function drawImageAndUnderlineTextOnCanvas() {
+                        console.log("drawImageAndUnderlineTextOnCanvas")
+                        setCanvasSize();
+                        // Draw image on canvas
+                        var ratio = image.width / image.height;
+                        drawInvoiceImage(parentWidth, parentWidth / ratio);
+
+                        drawLinesUnderText();
+
+                        bg.src = "{% static 'assets/img/bg_ocr.png' %}";
+                        bg.onload = function () {
+                            drawTransparentImage(parentWidth, parentWidth / ratio);
+                        };
+
+                        // Draw line under recognized text on canvas
+                        app.textExtract.shift();
+                    }
+
+                    function drawInvoiceImage(imageWidth, imageHeight) {
+                        console.log("drawInvoiceImage")
+                        imageCtx.drawImage(
+                            image,
+                            0,
+                            0,
+                            image.naturalWidth,
+                            image.naturalHeight,
+                            0,
+                            0,
+                            imageWidth,
+                            imageHeight
+                        );
+                    }
+
+                    function drawLinesUnderText() {
+                        console.log("drawLinesUnderText")
+                        var textExtractCopy = JSON.parse(JSON.stringify(app.textExtract));
+                        textExtractCopy.forEach((textDoc) => {
+                            var vertices = textDoc.boundingPoly.vertices;
+
+                            var start = getConvertedCoordinate(vertices[3]);
+                            var end = getConvertedCoordinate(vertices[2]);
+
+                            imageCtx.beginPath();
+                            imageCtx.moveTo(start.x, start.y);
+                            imageCtx.lineTo(end.x, end.y);
+                            imageCtx.strokeStyle = "green";
+                            imageCtx.stroke();
+                        });
+                    }
+
+                    function drawTransparentImage(drawWidth, drawHeight) {
+                        // console.log("drawTransparentImage")
+                        drawCtx.clearRect(0, 0, drawWidth, drawHeight);
+                        drawCtx.drawImage(
+                            bg,
+                            0,
+                            0,
+                            image.naturalWidth,
+                            image.naturalHeight,
+                            0,
+                            0,
+                            drawWidth,
+                            drawHeight
+                        );
+                    }
+
+                    function setCanvasSize() {
+                        console.log("setCanvasSize")
+                        var ratio = image.width / image.height;
+
+                        imageCanvas.width = parentWidth * scale;
+                        imageCanvas.height = (parentWidth / ratio) * scale;
+                        drawCanvas.width = parentWidth * scale;
+                        drawCanvas.height = (parentWidth / ratio) * scale;
+                    }
+
+                    function containsAllPoints(vertex) {
+                        // console.log("containsAllPoints")
+                        return (
+                            drawCtx.isPointInPath(vertex[0].x, vertex[0].y) &&
+                            drawCtx.isPointInPath(vertex[1].x, vertex[1].y) &&
+                            drawCtx.isPointInPath(vertex[2].x, vertex[2].y) &&
+                            drawCtx.isPointInPath(vertex[3].x, vertex[3].y)
+                        );
+                    }
+
+                    function containsAtLeastTwoPoints(vertices) {
+                        // console.log("containsAtLeastTwoPoints")
+                        var condition = false;
+
+                        vertices.forEach((vertex) => {
+                            if (!condition) {
+                                condition = condition || drawCtx.isPointInPath(vertex.x, vertex.y);
+                            } else {
+                                // One point falls inside the selected rect.
+                                // Check if another point falls inside the rect.
+                                if (drawCtx.isPointInPath(vertex.x, vertex.y)) {
+                                    condition = true;
+                                }
+                            }
+                        });
+
+                        return condition;
+                    }
+
+                    function copyTextToClipboard(text) {
+                        console.log("copyTextToClipboard")
+                        console.log(text);
+                        console.log(currentActiveElement);
+                        var catname=currentActiveElement.dataset.name;
+                        var catid=parseInt(currentActiveElement.dataset.category);
+                        var valueindex=parseInt(currentActiveElement.dataset.index);
+                        console.log(catname);
+                        console.log(catid);
+                        console.log(valueindex);
+                        if(catname == "particulars"){
+                            console.log("Its particulars");
+                            console.log(app.tableData.values[catid].values[valueindex]);
+                            app.tableData.values[catid].values[valueindex]=text;
+                            console.log(app.tableData.values[catid].values[valueindex]);
+                            currentActiveElement.value=text;
+                            // currentActiveElement.dispatchEvent(new Event('input'));
+                            // currentActiveElement.value=text
+                        }
+
+                    }
+                },
+                addcolumn:function(index){
+                    $.each(this.tableData.values,function(ind,val){
+                       val.values.push("");
+                    });
+
+                },
+                removecolumn:function(index){
+                    $.each(this.tableData.values,function(ind,val){
+                        val.values.splice(index,1);
+                    });
+                },
+                submit_data:function(){
+                    var csrftoken = Cookies.get('csrftoken');
+                    function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    }
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        }
+                    });
+                    axios.interceptors.request.use(config => {
+                        // log a message before any HTTP request is sent
+                        console.log('Request was sent');
+                         //$("#OCR").find('input[name="imagefiles"]')[0].val('');
+                         //$(".customer_select_table").val('');
+                         //$(".datepicker").val('');
+                        app.addspinner();
+                        return config;
+                    });
+
+                    axios.interceptors.response.use(function (response) {
+                        // Any status code that lie within the range of 2xx cause this function to trigger
+                        // Do something with response data
+                        app.removespinner();
+                        return response;
+                    }, function (error) {
+                        // Any status codes that falls outside the range of 2xx cause this function to trigger
+                        // Do something with response error
+                        app.removespinner();
+                        return Promise.reject(error);
+                    });
+
+                    axios.defaults.xsrfCookieName = csrftoken;
+                    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+                    let formData = new FormData();
+
+                    var data={
+                        "invoice_date":this.invoice_date,
+                        "gst_no":this.gst_no,
+                        "vendor_name":this.vendor_name,
+                        "details":this.tableData,
+                        "gross_total":this.gross_total,
+                        "discounts":this.discounts,
+                        "net_total":this.net_total,
+                        "bill_amount":this.bill_amount,
+                        "delivery_charges":this.delivery_charges,
+                        "rounded_total":this.rounded_total,
+                        "key":this.key,
+                        "name":this.name,
+                        "date":this.date,
+                        "customer":this.customer
+                    }
+                    console.log("Before submitting");
+                    console.log(this.date)
+                    formData.append('data',JSON.stringify(data));
+
+                    axios.post( '/ocr/publish/invoicedata/',
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                'X-CSRFToken':csrftoken
+                            }
+                        }
+                    ).then(function(data1){
+                         app.showNotification("top","right","success",data1.data.message);
+
+                        // window.location.href = "/dashboard";
+
+                    }).catch(function(error){
+                        console.log(error.response.data.message)
+                        app.showNotification("top","right","danger",error.response.data.message);
+                    });
+                },
+                showNotification: function (from, align,color,message){
+                    $.notify({
+                        icon: "now-ui-icons ui-1_bell-53",
+                        message: message
+
+                    },{
+                        type: color,
+                        timer: 2000,
+                        placement: {
+                            from: from,
+                            align: align
+                        }
+                    });
+                },
+                addspinner:function(){
+                        $(".overlay").addClass("d-block");
+                        $(".overlay").removeClass("d-none");
+                        $(".loader").removeClass("d-none");
+                        $(".loader").addClass("d-block",400);
+                        $('.customer_select_table').val(null).trigger('change');
+                },
+                removespinner:function (){
+                    $(".overlay").addClass("d-none");
+                    $(".overlay").removeClass("d-block");
+                    $(".loader").removeClass("d-block",400);
+                    $(".loader").addClass("d-none",400);
+                },
+            },
+            mounted:function(){
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                if (urlParams.has("key")) {
+                   this.key = urlParams.get("key");
+                   this.imgurl=urlParams.get("imgsrc");
+                   this.name=urlParams.get('name');
+                   this.date=urlParams.get('date');
+                   this.customer=urlParams.get("customer");
+                }
+                console.log(this.date);
+                var csrftoken = Cookies.get('csrftoken');
+                function csrfSafeMethod(method) {
+                    // these HTTP methods do not require CSRF protection
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    }
+                });
+                axios.interceptors.request.use(config => {
+                    // log a message before any HTTP request is sent
+                    console.log('Request was sent');
+                    addspinner();
+                    return config;
+                });
+                function showNotification(from, align,color,message){
+                    $.notify({
+                        icon: "now-ui-icons ui-1_bell-53",
+                        message: message
+
+                    },{
+                        type: color,
+                        timer: 2000,
+                        placement: {
+                            from: from,
+                            align: align
+                        }
+                    });
+                }
+                function addspinner(){
+
+                    $(".overlay").addClass("d-block");
+                    $(".overlay").removeClass("d-none");
+                    $(".loader").removeClass("d-none");
+                    $(".loader").addClass("d-block",400);
+                    $('#customer_select_table').val(null).trigger('change');
+
+                }
+                function removespinner(){
+
+                    $(".overlay").addClass("d-none");
+                    $(".overlay").removeClass("d-block");
+                    $(".loader").removeClass("d-block",400);
+                    $(".loader").addClass("d-none",400);
+
+                }
+                axios.interceptors.response.use(function (response) {
+                    // Any status code that lie within the range of 2xx cause this function to trigger
+                    // Do something with response data
+                    removespinner();
+                    return response;
+                }, function (error) {
+                    // Any status codes that falls outside the range of 2xx cause this function to trigger
+                    // Do something with response error
+                    removespinner();
+                    return Promise.reject(error);
+                });
+
+                var params = {
+                    key:this.key,
+                    name:this.name
+                };
+
+
+                axios.get('/ocr/get/imgdata/',{params})
+                    .then(function (response) {
+                        var data=response.data;
+                        //console.log(data);
+                        if(data.hasOwnProperty("texts"))
+                        {
+                            app.textExtract=data.texts;
+                        }
+                        if(data.hasOwnProperty("invoice_no"))
+                        {
+                            app.invoice_no=data.invoice_no;
+                        }
+                        if(data.hasOwnProperty("gst_no"))
+                        {
+                            app.gst_no=data.gst_no;
+                        }
+                        if(data.hasOwnProperty("invoice_date"))
+                        {
+                            app.invoice_date=data.invoice_date;
+                            console.log(app.invoice_date);
+                        }
+
+                        console.log("Hey whats up?");
+                        app.$nextTick(function(){
+                            app.initialize_ocrimage();
+                        });
+
+
+
+                    }).catch(function(error){
+                        console.log(error);
+                    console.log("Error");
+                });
+
+
+
+                var slider = $("#invoice-slider");
+                var sliderId = slider.attr('id');
+                var minValue = slider.data('range-value-min');
+                var maxValue = slider.data('range-value-max');
+
+
+
+                var c = document.getElementById(sliderId),
+                    d = document.getElementById("input-slider-value");
+
+                noUiSlider.create(c, {
+                    start: [parseInt(minValue)],
+                    connect: [true, false],
+                    //step: 1000,
+                    range: {
+                        'min': [parseInt(minValue)],
+                        'max': [parseInt(maxValue)]
+                    }
+                });
+
+
+
+
+
+            }
+        });
+
+
+
+
+    });
+</script>
+
+{% endblock %}

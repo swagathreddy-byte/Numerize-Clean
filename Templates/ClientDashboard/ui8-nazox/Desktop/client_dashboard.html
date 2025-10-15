@@ -1,0 +1,2706 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'assets/img/apple-icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'assets/img/Shape.png' %}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        FirstCourse Accounting Solutions
+    </title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <!-- CSS Files -->
+    <!--    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" />-->
+
+    <link href="{% static 'assets/vendor/nucleo/css/nucleo.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/css/argon.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/vendor/fullcalendar/dist/fullcalendar.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/vendor/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <!--    <link href="{% static 'assets/css/smart-ca.css' %}" rel="stylesheet" />-->
+    <!--    <link href="{% static 'assets/css/notifications.css' %}" rel="stylesheet" />-->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+    .changeConsumptionDetail
+    {
+        height:100px !important;
+    }
+    .d-grid
+    {
+    display:grid !important;
+    }
+    .bg-dark h2,.bg-dark h3,.bg-dark h5,.bg-dark .text-color
+    {
+            color: #e6e2e2 !important;
+    }
+    .bg-danger h2,.bg-danger h3,.bg-danger h5,.bg-danger .text-color
+    {
+            color: #e6e2e2 !important;
+    }
+    .bg-dark hr,.bg-danger hr
+    {
+
+    border-color: #fff !important;
+    }
+    .detailActive
+    {
+        background-color: #212529 !important;
+    }
+    .detailActive h3,.detailActive h4,.detailActive h5,.detailActive .text-dark
+    {
+        color:#ffffff !important;
+    }
+
+
+        .dot {
+            height: 15px;
+            width: 15px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .bg-parrotgreen{
+            background-color: #7fc342;
+        }
+
+        .text-parrotgreen{
+            color:#7fc342;
+        }
+        @media only screen and (max-width: 600px){
+            h1{
+                font-size:18px;
+            }
+            h2 {
+                font-size:14px;
+            }
+
+            h3{
+                font-size:12px;
+            }
+
+            h4 {
+                font-size:10px;
+            }
+            h5 {
+                font-size: 8px;
+            }
+
+            h6 {
+                font-size: 6px;
+            }
+
+            .tns-outer {
+                margin-bottom:30px;
+            }
+
+            .tns-ovh{
+                height:160px;
+            }
+
+
+
+        }
+
+        .accordion .card-header:after{
+            display:none;
+        }
+
+        .tns-controls { text-align: center; margin-bottom: 10px; }
+        .tns-controls [aria-controls] {
+            font-size: 25px;
+            margin: 0 5px;
+            padding: 0 0.5em;
+            height: 1.5em;
+            color: white;
+            background: transparent;
+            border-radius: 3px;
+            border: 0;
+        }
+
+
+        .tns-nav {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .tns-nav > [aria-controls] {
+            width: 9px;
+            height: 9px;
+            padding: 0;
+            margin: 0 5px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 0;
+        }
+        .tns-item {
+        opacity: 0;
+        transition: 0.3s opacity;
+    }
+
+    .tns-slide-active {
+        opacity: 1;
+    }
+    </style>
+    {% load pwa %}
+    {% progressive_web_app_meta %}
+</head>
+{% load home_extras %}
+<body>
+
+    {% include "sidebarlinks.html" %}
+    <div class="main-content" id="panel">
+        <!-- Navbar -->
+        {% include "ClientDashboard/ui8-nazox/Desktop/navbar-clientdashboard.html" %}
+        <div class="header bg-primary pb-6">
+            <div class="container-fluid">
+                <div class="header-body">
+                    <div class="row align-items-center py-4">
+                        <div class="col-lg-6 col-7">
+                            <h6 class="h2 text-white d-inline-block mb-0">Dashboard</h6>
+                            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                    <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                                    <li class="breadcrumb-item"><a href="#">Dashboards</a></li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="my-slider">
+                        <div>
+                            <div class="card   card-stats ml-1" style="position:relative;"  >
+                            <!-- Card body -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="card-title text-uppercase text-muted mb-0">Profit and Loss Report  </h4>
+                                            <span class="h3 font-weight-bold mb-0">$100,000</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                                <i class="ni ni-money-coins"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 mb-0 text-sm">
+                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                        <span class="text-nowrap">Since last month</span>
+                                    </p>
+                                    <button type="button" id="showpl" class="cardforresult badge badge-default">Show</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="card  card-stats ml-1" style="position:relative;">
+                            <!-- Card body -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="card-title text-uppercase text-muted mb-0">GST Report  </h4>
+                                            <span class="h3 font-weight-bold mb-0">$100,000</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                                <i class="ni ni-money-coins"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 mb-0 text-sm">
+                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                        <span class="text-nowrap">Since last month</span>
+                                    </p>
+                                    <button type="button" id="showgst"  class="cardforresult badge badge-default">Show</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div >
+                            <div class="card   card-stats ml-1" style="position:relative;"  >
+                            <!-- Card body -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="card-title text-uppercase text-muted mb-0">Purchase Efficiency  </h4>
+                                            <span class="h3 font-weight-bold mb-0">$100,000</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                                <i class="ni ni-money-coins"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 mb-0 text-sm">
+                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                        <span class="text-nowrap">Since last month</span>
+                                    </p>
+                                    <button type="button" id="showpe" class="cardforresult badge badge-default">Show</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="card   card-stats ml-1" style="position:relative;"  >
+                            <!-- Card body -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="card-title text-uppercase text-muted mb-0">Consumption Analysis  </h4>
+                                            <span class="h3 font-weight-bold mb-0">$100,000</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                                <i class="ni ni-money-coins"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 mb-0 text-sm">
+                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                        <span class="text-nowrap">Since last month</span>
+                                    </p>
+                                    <button type="button" id="showcon_analysis" class="cardforresult badge badge-default">Show</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="card   card-stats ml-1" style="position:relative;"  >
+                            <!-- Card body -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="card-title text-uppercase text-muted mb-0"> Sales Reconciliation </h4>
+                                            <span class="h3 font-weight-bold mb-0">$100,000</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                                <i class="ni ni-money-coins"></i>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <p class="mt-3 mb-0 text-sm">
+                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                        <span class="text-nowrap">Since last month</span>
+                                    </p>
+                                    <button type="button" id="showsales_recon" class="cardforresult badge badge-default">Show</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    <div class="row align-items-center py-4">-->
+<!--                        <div class="col-6 col-md-3">-->
+<!--                            <div class="form-group">-->
+<!--                                <div class="input-group">-->
+<!--                                    <div class="input-group-prepend">-->
+<!--                                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>-->
+<!--                                    </div>-->
+<!--                                    <input class="form-control datepicker" v-model="query_date" placeholder="Select date" type="text">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-6 col-md-9">-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+
+                    <!-- Card stats -->
+<!--                    <div class="row">-->
+<!--                        <div class="col-xl-3 col-md-6">-->
+<!--                            <div class="card card-stats">-->
+<!--                                &lt;!&ndash; Card body &ndash;&gt;-->
+<!--                                <div class="card-body">-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col">-->
+<!--                                            <h5 class="card-title text-uppercase text-muted mb-0">Total Profit</h5>-->
+<!--                                            <span class="h2 font-weight-bold mb-0"> $100,000</span>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-auto">-->
+<!--                                            <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">-->
+<!--                                                <i class="ni ni-active-40"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <p class="mt-3 mb-0 text-sm">-->
+<!--                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>-->
+<!--                                        <span class="text-nowrap">Since last month</span>-->
+<!--                                    </p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-xl-3 col-md-6">-->
+<!--                            <div class="card card-stats">-->
+<!--                                &lt;!&ndash; Card body &ndash;&gt;-->
+<!--                                <div class="card-body">-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col">-->
+<!--                                            <h5 class="card-title text-uppercase text-muted mb-0">Total Loss </h5>-->
+<!--                                            <span class="h2 font-weight-bold mb-0">$100,000</span>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-auto">-->
+<!--                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">-->
+<!--                                                <i class="ni ni-chart-bar-32"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <p class="mt-3 mb-0 text-sm">-->
+<!--                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>-->
+<!--                                        <span class="text-nowrap">Since last month</span>-->
+<!--                                    </p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-xl-3 col-md-6">-->
+<!--                            <div class="card card-stats">-->
+<!--                                &lt;!&ndash; Card body &ndash;&gt;-->
+<!--                                <div class="card-body">-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col">-->
+<!--                                            <h5 class="card-title text-uppercase text-muted mb-0">Total Revenue</h5>-->
+<!--                                            <span class="h2 font-weight-bold mb-0">$100,000</span>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-auto">-->
+<!--                                            <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">-->
+<!--                                                <i class="ni ni-chart-pie-35"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <p class="mt-3 mb-0 text-sm">-->
+<!--                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>-->
+<!--                                        <span class="text-nowrap">Since last month</span>-->
+<!--                                    </p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-xl-3 col-md-6">-->
+<!--                            <div class="card card-stats">-->
+<!--                                &lt;!&ndash; Card body &ndash;&gt;-->
+<!--                                <div class="card-body">-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col">-->
+<!--                                            <h5 class="card-title text-uppercase text-muted mb-0">Inventory</h5>-->
+<!--                                            <span class="h2 font-weight-bold mb-0">$100,000</span>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-auto">-->
+<!--                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">-->
+<!--                                                <i class="ni ni-money-coins"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <p class="mt-3 mb-0 text-sm">-->
+<!--                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>-->
+<!--                                        <span class="text-nowrap">Since last month</span>-->
+<!--                                    </p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid mt--6">
+            <div class="row resultpane d-none" v-if="pl_loaded" id="P_L_Result">
+                <div class="col-xl-12">
+                    <div class="card ">
+                        <div class="card-header bg-transparent">
+                            <div class="row">
+                                <div class="col-12 col-md-7">
+                                    <h4 class="text-dark text-uppercase ls-1 mb-1">Profit Loss Statement</h4>
+                                </div>
+
+                                <div class="col-12 col-md-5  text-md-right">
+                                    <div class="row">
+                                        <div class="col-md-9 col-sm-12">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                                    </div>
+                                                    <input class="form-control datepicker" id="pldatepicker" v-model="query_date" placeholder="Select date" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-12">
+                                            <button id="updatepl" class="btn btn-warning">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-4 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="card card-stats bg-dark" >
+                                        <!-- Card body -->
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 p-1">
+                                                    <h5 v-if="ismobile" class="card-title text-uppercase text-muted mb-0">[[pl_data.results.Page2.table1.records[3].Col1]]</h5>
+                                                    <h4 v-if="ismobile" >&#8377 [[pl_data.results.Page2.table1.records[3].Col4 | toCurrency]] </h4>
+                                                    <h2 v-if="!ismobile" class="card-title text-uppercase text-muted mb-0">[[pl_data.results.Page2.table1.records[3].Col1]]</h2>
+                                                    <h3 v-if="!ismobile" >&#8377 [[pl_data.results.Page2.table1.records[3].Col4 | toCurrency]] </h3>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 p-1">
+                                                    <h5 v-if="ismobile" class="mb-0"><span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span> </h5>
+                                                    <h5 v-if="ismobile" ><span class="text-nowrap">Since last month</span> </h5>
+
+                                                    <h4 v-if="!ismobile" class="mb-0"><span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span> </h4>
+                                                    <h5 v-if="!ismobile" ><span class="text-nowrap">Since last month</span> </h5>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-4 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="card card-stats bg-dark" >
+                                        <!-- Card body -->
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 p-1">
+                                                    <h5 v-if="ismobile" class="card-title text-uppercase text-muted mb-0">[[pl_data.results.Page2.table1.records[12].Col1]]</h5>
+                                                    <h4 v-if="ismobile" >&#8377 [[pl_data.results.Page2.table1.records[12].Col4 | toCurrency]] </h4>
+                                                    <h2 v-if="!ismobile" class="card-title text-uppercase text-muted mb-0">[[pl_data.results.Page2.table1.records[12].Col1]]</h2>
+                                                    <h3 v-if="!ismobile" >&#8377 [[pl_data.results.Page2.table1.records[12].Col4 | toCurrency]] </h3>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 p-1">
+                                                    <h5 v-if="ismobile" class="mb-0"><span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span> </h5>
+                                                    <h5 v-if="ismobile" ><span class="text-nowrap">Since last month</span> </h5>
+
+                                                    <h4 v-if="!ismobile" class="mb-0"><span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span> </h4>
+                                                    <h5 v-if="!ismobile" ><span class="text-nowrap">Since last month</span> </h5>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4 col-4 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="card card-stats bg-parrotgreen" >
+                                        <!-- Card body -->
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 p-1">
+                                                    <h5 v-if="ismobile" class="card-title text-uppercase mb-0">[[pl_data.results.Page2.table1.records[14].Col1]]</h5>
+                                                    <h4 v-if="ismobile" >&#8377 [[pl_data.results.Page2.table1.records[14].Col4 | toCurrency]] </h4>
+                                                    <h2 v-if="!ismobile" class="card-title text-uppercase mb-0">[[pl_data.results.Page2.table1.records[14].Col1]]</h2>
+                                                    <h3 v-if="!ismobile" >&#8377 [[pl_data.results.Page2.table1.records[14].Col4 | toCurrency]] </h3>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 p-1">
+                                                    <h5 v-if="ismobile" class="mb-0"><span class="mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span> </h5>
+                                                    <h5 v-if="ismobile" ><span class="text-nowrap">Since last month</span> </h5>
+
+                                                    <h4 v-if="!ismobile" class="mb-0"><span class="mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span> </h4>
+                                                    <h5 v-if="!ismobile" ><span class="text-nowrap">Since last month</span> </h5>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1">
+                                    <div class="accordion" id="dropdownsummary">
+                                        <div class="card rounded">
+                                            <div class="card-header p-0 mb-1" id="headingOne" data-toggle="collapse" data-target="#TotalIncome" aria-expanded="true" aria-controls="TotalIncome">
+                                                <div class="row ml-0 mr-0">
+                                                    <div class="col-lg-10 col-md-8 col-8 pl-md-3 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                        <h3 class="mb-0 ">[[pl_data.results.Page2.table1.records[3].Col1]]</h3>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end bg-parrotgreen">
+                                                        <h3 class="mb-0 text-dark">&#8377 [[ pl_data.results.Page2.table1.records[3].Col4 | toCurrency]]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="TotalIncome" class="collapse" aria-labelledby="headingtwo" >
+                                                <div class="card border border-light m-2 mb-md-3 rounded">
+                                                    <div class="card-header p-2 mb-md-0 " id="headingTwo" data-toggle="collapse" data-target="#TotalSales" aria-expanded="true" aria-controls="TotalIncome">
+                                                        <div class="row  ml-0 mr-0 ">
+                                                            <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                                <h4 class="mb-0 text-dark">[[ pl_data.results.Page2.table1.records[0].Col1]]</h4>
+                                                                <h5 class="mb-0 text-dark">&#8377 [[ pl_data.results.Page2.table1.records[0].Col4 | toCurrency]]</h5>
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                                <h4 class="mb-0 text-dark">[[ pl_data.results.Page2.table1.records[0].Col4 | toPercent(pl_data.results.Page2.table1.records[3].Col4) ]] %</h4>
+                                                                <h5 class="mb-0 text-dark">of total income</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="TotalSales" class="collapse" aria-labelledby="headingOne" >
+                                                        <canvas id="salesChart" class="mt-md-4 mb-md-4 ml-auto mr-auto pl-md-5 pr-md-5" style="max-height:700px!important;max-width:100%!important;" height="400"></canvas>
+                                                        <div v-for="(item,index) in salesinfo" class="row border-bottom border-light mr-0 ml-0 pb-2 pl-5 pr-5 pt-2 ">
+                                                            <div class="col-6">
+                                                                <h4 class="mb-0 ">[[item.Col1]]</h4>
+                                                            </div>
+                                                            <div class="col-6 text-right">
+                                                                <div class="row">
+                                                                    <div class="col-md-6 col-2 text-right">
+                                                                        <div class="dot" v-bind:style="{ backgroundColor: salescolors[index]}"></div>
+                                                                    </div>
+                                                                    <div class="col-9 col-md-6 text-left">
+                                                                        <h4>&#8377 [[ item.Col3 | toCurrency]]</h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-header p-2 rounded mb-0" id="headingThree" data-toggle="collapse" data-target="#OtherSales" aria-expanded="true" aria-controls="TotalIncome" >
+                                                        <div class="row ml-0 mr-0 ">
+                                                            <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0  rounded-left">
+                                                                <h4 class="mb-0 text-dark">[[ pl_data.results.Page2.table1.records[1].Col1]]</h4>
+                                                                <h5 class="mb-0 text-dark">&#8377 [[ pl_data.results.Page2.table1.records[1].Col4 | toCurrency]]</h5>
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end bg-parrotgreen border border-left-0  rounded-right border-light">
+                                                                <h4 class="mb-0 text-dark"> [[ pl_data.results.Page2.table1.records[1].Col4 | toPercent(pl_data.results.Page2.table1.records[3].Col4) ]] % </h4>
+                                                                <h5 class="mb-0 text-dark">of total Income</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="OtherSales" class="collapse" aria-labelledby="headingOne" data-parent="#TotalIncome">
+                                                        <div v-for="item in othersalesinfo"class="row border-bottom border-light mr-0 ml-0 pb-2 pt-2 ">
+                                                            <div class="col-6 pl-md-5 pl-md-3 pt-4 col-md-8">
+                                                                <h4 class="mb-0 ">[[item.Col1]]</h4>
+                                                            </div>
+                                                            <div class="col-6 col-md-4 text-left">
+                                                                <h4>&#8377 [[ item.Col3 | toCurrency]]</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-header p-0" id="headingFive" data-toggle="collapse" data-target="#TotalExpenses" aria-expanded="true" aria-controls="TotalIncome">
+                                                <div class="row ml-0 mr-0">
+                                                    <div class="col-lg-10 col-md-8 col-8 pl-md-3 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                        <h3 class="mb-0 ">[[pl_data.results.Page2.table1.records[12].Col1]]</h3>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end bg-parrotgreen">
+                                                        <h3 class="mb-0 text-dark">&#8377 [[ pl_data.results.Page2.table1.records[12].Col4 | toCurrency]]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="TotalExpenses" class="collapse" aria-labelledby="headingtwo" >
+                                                <div class="card border border-light m-2 mb-md-3 rounded">
+                                                    <div v-for="(it,index) in pl_data_detail">
+                                                        <div class="card-header p-2 mb-md-0 " id="headingFoodCost" data-toggle="collapse"  :data-target="'#subitem'+String(index)" aria-expanded="true" aria-controls="TotalIncome">
+                                                            <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                                    <h4 class="mb-0 text-dark">[[ it.name ]]</h4>
+                                                                    <h5 class="mb-0 text-dark">&#8377 [[ it.total | toCurrency]]</h5>
+                                                                </div>
+                                                                <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                                    <h4 class="mb-0 text-dark">[[ it.total | toPercent(pl_data.results.Page2.table1.records[3].Col4) ]] %</h4>
+                                                                    <h5 class="mb-0 text-dark">of total expense</h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div :id="'subitem'+String(index)" class="collapse" aria-labelledby="headingOne" >
+                                                            <div class="row border-bottom border-light mr-0 ml-0 pb-2 pt-2" v-for="item in it.records">
+                                                                <div class="col-6 pl-md-5 pl-md-3 col-md-8">
+                                                                    <h4 class="mb-0 "> [[ item.Col1 ]]</h4>
+                                                                </div>
+                                                                <div class="col-6 col-md-4 text-left">
+                                                                    <h4>&#8377 [[ item.Col3 | toCurrency ]]</h4>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row resultpane d-none" v-if="gst_loaded" id="GST_Result">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header bg-transparent">
+                            <div class="row">
+                                <div class="col-12 col-md-7">
+                                    <h4 class="text-dark text-uppercase ls-1 mb-1">GST Statement</h4>
+                                </div>
+
+                                <div class="col-12 col-md-5  text-md-right">
+                                    <div class="row">
+                                        <div class="col-md-9 col-sm-12">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                                    </div>
+                                                    <input class="form-control datepicker" id="gstdatepicker" v-model="query_date" placeholder="Select date" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-12">
+                                            <button id="updategst" class="btn btn-warning">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="card card-stats bg-dark">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <h5 v-if="ismobile" class="card-title text-white text-uppercase mb-0">GST Summary</h5>
+
+                                                    <h2 v-if="!ismobile" class="card-title text-white text-uppercase mb-0">GST Summary</h2>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <h5 v-if="ismobile" class="card-title text-uppercase text-success  mb-0">Net GST Payable : &#8377 [[gst_data.net_gst_payable]]</h5>
+
+                                                    <h4 v-if="!ismobile" class="card-title text-uppercase text-success  mb-0">Net GST Payable : &#8377 [[gst_data.net_gst_payable]]</h4>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-12">
+                                    <div class="accordion" >
+                                        <div class="card rounded">
+                                            <div class="card-header p-0 mb-1" id="headingB2C" data-toggle="collapse" data-target="#B2C" aria-expanded="true" aria-controls="B2C">
+                                                <div class="row ml-0 mr-0">
+                                                    <div class="col-lg-8 col-md-8 col-8 pl-md-3 pt-4 pb-4 detailDiv  border border-light border-right-0 rounded-left">
+                                                        <h3 class="mb-0 ">B2C Sales (To Direct Customers) </h3>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right bg-parrotgreen">
+                                                        <h3 class="mb-0 text-dark">&#8377 [[ gst_data.b2c_total | toCurrency]]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="B2C" class="collapse" aria-labelledby="headingtwo" data-parent="#dropdownsummary">
+                                                <div class="card border border-light m-2 mb-md-3 rounded">
+                                                    <div class="card-header p-2 mb-md-0 " v-for="item in gst_data.b2c" aria-expanded="true" aria-controls="TotalIncome">
+                                                        <div class="row  ml-0 mr-0 ">
+                                                            <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 border border-light border-right-0 rounded-left">
+                                                                <h4 class="mb-0 text-dark">[[item.name]]</h4>
+<!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                                <h4 class="mb-0 text-dark">&#8377 [[ item.total_gst | toCurrency]]</h4>
+<!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-header p-0 mb-1" id="headingB2B" data-toggle="collapse" data-target="#B2B" aria-expanded="true" aria-controls="B2B">
+                                                <div class="row ml-0 mr-0">
+                                                    <div class="col-lg-8 col-md-8 col-8 pl-md-3 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                        <h3 class="mb-0 ">B2B (To Business)</h3>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                        <h3 class="mb-0 text-dark">&#8377 [[ gst_data.b2b_total | toCurrency]]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="B2B" class="collapse" aria-labelledby="headingtwo" data-parent="#dropdownsummary">
+                                                <div class="card border border-light m-2 mb-md-3 rounded">
+                                                    <div class="card-header p-2 mb-md-0 " v-for="item in gst_data.b2b" aria-expanded="true" aria-controls="TotalIncome">
+                                                        <div class="row  ml-0 mr-0 ">
+                                                            <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 border border-light border-right-0 rounded-left">
+                                                                <h4 class="mb-0 text-dark">[[item.name]]</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                                <h4 class="mb-0 text-dark">&#8377 [[ item.total_gst | toCurrency ]]</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-header p-0 mb-1" id="headinginputtaxcredit" data-toggle="collapse" data-target="#ITC" aria-expanded="true" aria-controls="ITC">
+                                                <div class="row ml-0 mr-0">
+                                                    <div class="col-lg-8 col-md-8 col-8 pl-md-3 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                        <h3 class="mb-0 ">Input Tax Credit</h3>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right bg-parrotgreen">
+                                                        <h3 class="mb-0 text-dark">&#8377 [[gst_data.input_tax_credit]]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="ITC" class="collapse" aria-labelledby="headingtwo" data-parent="#dropdownsummary">
+                                                <div class="card border border-light m-2 mb-md-3 rounded">
+                                                    <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome">
+                                                        <div class="row  ml-0 mr-0 ">
+                                                            <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 border border-light border-right-0 rounded-left">
+                                                                <h4 class="mb-0 text-dark">RCM</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right bg-parrotgreen ">
+                                                                <h4 class="mb-0 text-dark">&#8377 [[gst_data.rcm | toCurrency]]</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome">
+                                                        <div class="row  ml-0 mr-0 ">
+                                                            <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 border border-light border-right-0 rounded-left">
+                                                                <h4 class="mb-0 text-dark">Input Tax Credit</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right bg-parrotgreen">
+                                                                <h4 class="mb-0 text-dark">&#8377 [[gst_data.input_tax_credit | toCurrency]]</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-header p-0 mb-1" id="headingmisc" data-toggle="collapse" data-target="#MISC" aria-expanded="true" aria-controls="MISC">
+                                                <div class="row ml-0 mr-0">
+                                                    <div class="col-lg-8 col-md-8 col-8 pl-md-3 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                        <h3 class="mb-0 ">Interest & Penalty</h3>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right bg-parrotgreen">
+                                                        <h3 class="mb-0 text-dark">&#8377 [[gst_data.interest + gst_data.late_payment_fees | toCurrency]]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="MISC" class="collapse" aria-labelledby="headingtwo" data-parent="#dropdownsummary">
+                                                <div class="card border border-light m-2 mb-md-3 rounded">
+                                                    <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome">
+                                                        <div class="row  ml-0 mr-0 ">
+                                                            <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 border border-light border-right-0 rounded-left">
+                                                                <h4 class="mb-0 text-dark">Interest</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                                <h4 class="mb-0 text-dark">&#8377 [[ gst_data.interest | toCurrency ]]</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome">
+                                                        <div class="row  ml-0 mr-0 ">
+                                                            <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 border border-light border-right-0 rounded-left">
+                                                                <h4 class="mb-0 text-dark">Late Payment Fees</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right bg-parrotgreen">
+                                                                <h4 class="mb-0 text-dark">&#8377 [[ gst_data.late_payment_fees | toCurrency]]</h4>
+                                                                <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--                    <div class="dashboard container"  style="margin-top:80px">-->
+
+
+                    <!--                        <div class="accordion" id="accordion1">-->
+                    <!--                            <div class="row justify-content-md-center">-->
+
+                    <!--                                <div class="col-md-10" v-for="(list,index) in detailedDataList">-->
+                    <!--                                    <div class="card text-center text-black card-gray" >-->
+
+                    <!--                                        <div class="card-body">-->
+                    <!--                                            <div class="row">-->
+                    <!--                                                <div class="col no-padding text-left"><h6>[[list.name]]</h6></div>-->
+                    <!--                                                <div class="col no-padding text-right"> <h6><span class="rupee"></span> [[list.value | toCurrency]]</h6></div>-->
+                    <!--                                            </div>-->
+
+                    <!--                                            <div class="row sub-data-card" v-for="(sublist,index1) in list.subData">-->
+
+                    <!--                                                <div class="col-md-9 col-9 padding5px" v-bind:class="[isActive===index+''+index1 && isCollapse===index+''+index1+'true'? 'active' : '']">-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6 class="text-capitalize">[[sublist.name]]</h6></div>-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6><span class="rupee"></span> [[sublist.value | toCurrency]]</h6></div>-->
+                    <!--                                                </div>-->
+
+                    <!--                                                <div class="col-md-3 col-3 card-green padding5px" v-on:click="toggleClass(index,index1,sublist)" data-toggle="collapse" :data-target="'#'+sublist.type+index+index1">-->
+                    <!--                                                    <span class="font10px font-weight-bold">[[sublist.percentage]]</span><br>-->
+                    <!--                                                    <span class="font10px">of Income</span>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'graph'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='graph'">-->
+
+                    <!--                                                    <canvas id="myChart" class="mt-4 mb-4" style="max-height:300px;max-width: 600px !important;"></canvas>-->
+                    <!--                                                    <div class="row " v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="col text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                        <div class="col text-left display-flex"> <span class="legend" v-bind:style="{ backgroundColor: colorlist[index2]}"></span> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'list'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='list'">-->
+                    <!--                                                    <div class="mt-2" v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="row">-->
+                    <!--                                                            <div class="col-md-7 col-7 text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                            <div class="col-md-5 col-5  text-left "> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                        </div><hr>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                        </div>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+
+                    <!--                    </div>-->
+
+
+                </div>
+            </div>
+            <div class="row resultpane d-none" v-if="ca_loaded" id="Con_Result" >
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header bg-transparent">
+                            <div class="row">
+                                <div class="col-12 col-md-7">
+                                    <div class="col">
+                                        <h4 class="text-dark text-uppercase ls-1 mb-1">Consumption Analysis Statement</h4>
+                                        <!--                                <h5 class="h3 text-white mb-0">Sales value</h5>-->
+                                    </div>
+                                    <div class="col-6">
+                                        <h4 class="text-dark text-uppercase ls-1 mb-1">[[ query_month ]]/[[ query_year ]]</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-5  text-md-right">
+                                    <div class="row">
+                                        <div class="col-md-9 col-sm-12">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                                    </div>
+                                                    <input class="form-control datepicker" id="cadatepicker" v-model="query_date" placeholder="Select date" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-12">
+                                            <button id="updatecon_analysis" class="btn btn-warning">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="card border border-light" id="consumption">
+                                        <div class="card-header pb-1">
+                                            <h3> Consumption</h3>
+                                        </div>
+                                        <hr class="border-dark mt-0 mb-0"/>
+                                        <div class="card-body pt-1">
+                                            <div class="row">
+                                                <div class="col-6 col">
+                                                    <h5 v-if="ismobile" class="card-title mb-0">Consumption in Value</h5>
+                                                    <h3 v-if="!ismobile" class="card-title  mb-0">Consumption in Value</h3>
+                                                </div>
+                                                <div class="col-6">
+                                                    <h4 v-if="ismobile" >&#8377  [[ca_data.results.totalConsumption | toCurrency]] </h4>
+                                                    <h3 v-if="!ismobile" >&#8377  [[ca_data.results.totalConsumption | toCurrency]] </h3>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 col">
+                                                    <h5 v-if="ismobile" class="card-title mb-0">% of consumption to total sales</h5>
+                                                    <h3 v-if="!ismobile" class="card-title  mb-0">% of consumption to total sales</h3>
+                                                </div>
+                                                <div class="col-6">
+                                                    <h4 v-if="ismobile" >[[ca_data.results.totalPerConsumption]] % </h4>
+                                                    <h3 v-if="!ismobile" >[[ca_data.results.totalPerConsumption]] % </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 d-grid">
+                                    <div class="card card-stats border border-light" id="changeConsumption">
+                                        <div class="card-body">
+                                          <div class="row h-100 d-table w-100">
+                                            <div class="col d-table-cell text-center align-middle">
+                                                <h3> Change in Consumption</h3>
+                                            </div>
+                                          </div>
+                                    </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="changeConsumptionDtl">
+                                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                            <div class="carousel-inner" v-if="ismobile">
+                                                    <div  class="carousel-item"  v-for="(it,index) in ca_data.results.changeConsumptionList">
+                                                <div  :id="'carousel-item'+index">
+                                                    <div class="col-md-4">
+                                                <div class="card card-stats border border-light pl-0 pr-0 changeConsumptionDetail" style="position:relative;" :id="'changeConsumptionDtl'+index" v-on:click="showDetailedDiv(it.ItemId,$event)">
+                                                    <div class="card-body rounded h-100 d-table w-100" >
+                                                      <div class="row d-table-cell text-center align-middle">
+                                                        <div class="col">
+                                                          <h3 class="card-title text-color text-capitalize mb-0" >[[it.detail]]</h3>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                                        </div>
+                                            </div>
+                                                    </div>
+                                        </div>
+
+
+                                        <div class="carousel-inner" v-if="!ismobile">
+
+                                                    <div  class="carousel-item"  v-for="(n, i) in Math.ceil(ca_data.results.changeConsumptionList.length/3)"  >
+                                                <div  class="row" :id="'carousel-item'+i" >
+
+
+                                                    <div class="col-md-4" v-if="3*i < ca_data.results.changeConsumptionList.length">
+                                                <div class="card card-stats border border-light pl-0 pr-0 changeConsumptionDetail" style="position:relative;" :id="'changeConsumptionDtl'+(3*i+0)" v-on:click="showDetailedDiv(ca_data.results.changeConsumptionList[3*i+0].ItemId,$event)">
+                                                    <div class="card-body rounded h-100 d-table w-100" >
+                                                      <div class="row d-table-cell text-center align-middle">
+                                                        <div class="col">
+                                                          <h3 class="card-title text-color text-capitalize mb-0" >[[ca_data.results.changeConsumptionList[3*i+0].detail]]</h3>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                                        </div>
+                                                    <div class="col-md-4" v-if="3*i+1 < ca_data.results.changeConsumptionList.length">
+                                                <div class="card card-stats border border-light pl-0 pr-0 changeConsumptionDetail" style="position:relative;" :id="'changeConsumptionDtl'+(3*i+1)" v-on:click="showDetailedDiv(ca_data.results.changeConsumptionList[3*i+1].ItemId,$event)">
+                                                    <div class="card-body rounded h-100 d-table w-100" >
+                                                      <div class="row d-table-cell text-center align-middle">
+                                                        <div class="col">
+                                                          <h3 class="card-title text-color text-capitalize mb-0" >[[ca_data.results.changeConsumptionList[3*i+1].detail]]</h3>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                                        </div>
+                                                    <div class="col-md-4" v-if="3*i+2 < ca_data.results.changeConsumptionList.length">
+                                                <div class="card card-stats border border-light pl-0 pr-0 changeConsumptionDetail" style="position:relative;" :id="'changeConsumptionDtl'+(3*i+2)" v-on:click="showDetailedDiv(ca_data.results.changeConsumptionList[3*i+2].ItemId,$event)">
+                                                    <div class="card-body rounded h-100 d-table w-100" >
+                                                      <div class="row d-table-cell text-center align-middle">
+                                                        <div class="col">
+                                                          <h3 class="card-title text-color text-capitalize mb-0" >[[ca_data.results.changeConsumptionList[3*i+2].detail]]</h3>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                                        </div>
+                                            </div>
+                                                    </div>
+                                        </div>
+
+                                         <!--Controls-->
+                                          <div class="controls-top text-center">
+                                            <a class="btn-floating p-3" href="#carouselExampleIndicators" data-slide="prev" style="background: transparent;box-shadow: none;"><i class="fa fa-chevron-left" style="color: black;"></i></a>
+                                            <a class="btn-floating p-3" href="#carouselExampleIndicators" data-slide="next" style="background: transparent;box-shadow: none;"><i class="fa fa-chevron-right" style="color: black;"></i></a>
+                                          </div>
+                                          <!--/.Controls-->
+
+                        </div>
+                        </div>
+
+                            <div class="row" >
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="accordion changeConsumptionDtl" id="ChangeinConsumptionByValue" >
+                                        <div class="card rounded">
+                                            <div class="card-header">
+                                                <h3>Change in Consumption (By Value)</h3>
+                                            </div>
+                                            <div v-for="(it,index) in ca_data.results.ChangeinConsumptionByValue">
+                                                <div class="card-header p-0 mb-1" :id="'#ChangeConsumptionByValHead'+index"  data-toggle="collapse" :data-target="'#ChangeConsumptionByVal'+index" aria-expanded="true" aria-controls="TotalIncome">
+                                                    <div class="row ml-0 mr-0" >
+                                                        <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.ItemName ]]</h4>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen" >
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.consumptionVariation]] % </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div :id="'ChangeConsumptionByVal'+index" class="collapse" aria-labelledby="headingtwoCa" data-parent="#ChangeinConsumptionByValue">
+                                                    <div class="card border border-light m-2 mb-md-3 rounded">
+                                                        <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome" >
+                                                            <div v-for="(itSub,index) in it.detailedList">
+                                                                <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark text-capitalize">[[itSub.Name]]</h4>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-endrounded-right  ">
+                                                                    <h4 class="mb-0 text-dark">&#8377  [[itSub.value | toCurrency ]]</h4>
+
+                                                                </div>
+                                                            </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="accordion changeConsumptionDtl" id="ChangeinConsumptionByQuantity" >
+                                        <div class="card rounded">
+                                            <div class="card-header">
+                                                <h3>Change in Consumption (By Quantity)</h3>
+                                            </div>
+                                            <div v-for="(it,index) in ca_data.results.ChangeinConsumptionByQuantity">
+                                                <div class="card-header p-0 mb-1" :id="'#ChangeConsumptionByQtyHead'+index"  data-toggle="collapse" :data-target="'#ChangeConsumptionByQty'+index" aria-expanded="true" aria-controls="TotalIncome">
+                                                    <div class="row ml-0 mr-0" >
+                                                        <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.ItemName ]]</h4>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen" >
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.consumptionVariation]] % </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div :id="'ChangeConsumptionByQty'+index" class="collapse" aria-labelledby="headingtwoCa" data-parent="#ChangeinConsumptionByQuantity">
+                                                    <div class="card border border-light m-2 mb-md-3 rounded">
+                                                        <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome" >
+                                                            <div v-for="(itSub,index) in it.detailedList">
+                                                                <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark text-capitalize">[[itSub.Name]]</h4>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-endrounded-right  ">
+                                                                    <h4 class="mb-0 text-dark"> [[itSub.value | toString ]] [[it.ItemSummary.ItemName | getUOM]] </h4>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="accordion changeConsumptionDtl" id="ChangeinConsumptionByofsales" >
+                                        <div class="card rounded">
+                                            <div class="card-header">
+                                                <h3>Change in Consumption (By % of sales)</h3>
+                                            </div>
+                                            <div v-for="(it,index) in ca_data.results.ChangeinConsumptionByofsales">
+                                                <div class="card-header p-0 mb-1" :id="'#ChangeConsumptionBySalesHead'+index"  data-toggle="collapse" :data-target="'#ChangeConsumptionBySales'+index" aria-expanded="true" aria-controls="TotalIncome">
+                                                    <div class="row ml-0 mr-0" >
+                                                        <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.ItemName ]]</h4>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen" >
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.consumptionVariation]] % </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div :id="'ChangeConsumptionBySales'+index" class="collapse" aria-labelledby="headingtwoCa" data-parent="#ChangeinConsumptionByofsales">
+                                                    <div class="card border border-light m-2 mb-md-3 rounded">
+                                                        <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome" >
+                                                            <div v-for="(itSub,index) in it.detailedList">
+                                                                <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark text-capitalize">[[itSub.Name]]</h4>
+                                                                    </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-endrounded-right  ">
+                                                                    <h4 class="mb-0 text-dark"> [[itSub.value | toString ]] %</h4>
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="accordion changeConsumptionDtl" id="ChangeinPricescomparedtopreviousmonths" >
+                                        <div class="card rounded">
+                                            <div class="card-header">
+                                                <h3>Change in Prices (compared to previous months)</h3>
+                                            </div>
+                                            <div v-for="(it,index) in ca_data.results.ChangeinPricescomparedtopreviousmonths">
+                                                <div class="card-header p-0 mb-1" :id="'#ChangeinPricesPrevMonHead'+index"  data-toggle="collapse" :data-target="'#ChangeinPricesPrevMon'+index" aria-expanded="true" aria-controls="TotalIncome">
+                                                    <div class="row ml-0 mr-0" >
+                                                        <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.ItemName ]]</h4>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.PriceVariation]] % </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div :id="'ChangeinPricesPrevMon'+index" class="collapse" aria-labelledby="headingtwoCa" data-parent="#ChangeinPricescomparedtopreviousmonths">
+                                                    <div class="card border border-light m-2 mb-md-3 rounded">
+                                                        <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome" >
+                                                            <div v-for="(itSub,index) in it.detailedList">
+                                                                <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark text-capitalize">[[itSub.Name]]</h4>
+                                                                    </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-endrounded-right  ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[itSub.value | toCurrency ]]</h4>
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1" >
+                                    <div class="accordion changeConsumptionDtl" id="ChangeinPricesComparisionwithinthemonth" >
+                                        <div class="card rounded">
+                                            <div class="card-header">
+                                                <h3>Change in Prices (Comparision within the month)</h3>
+                                            </div>
+                                            <div v-for="(it,index) in ca_data.results.ChangeinPricesComparisionwithinthemonth">
+                                                <div class="card-header p-0 mb-1" :id="'#ChangeinPricesWithinMonHead'+index"  data-toggle="collapse" :data-target="'#ChangeinPricesWithinMon'+index" aria-expanded="true" aria-controls="TotalIncome">
+                                                    <div class="row ml-0 mr-0" >
+                                                        <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.ItemName ]]</h4>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.PriceFluctuation]] % </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div :id="'ChangeinPricesWithinMon'+index" class="collapse" aria-labelledby="headingtwoCa" data-parent="#ChangeinPricesComparisionwithinthemonth">
+                                                    <div class="card border border-light m-2 mb-md-3 rounded">
+                                                        <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome" >
+                                                            <div v-for="(itSub,index) in it.detailedList">
+                                                                <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark text-capitalize">[[itSub.Name]]</h4>
+                                                                    </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-endrounded-right  ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[itSub.value | toCurrency ]]</h4>
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1">
+                                    <div class="accordion" id="dropdownsummaryCa" >
+                                        <div class="card rounded ">
+                                            <div class="card-header">
+                                                <h3>Summary</h3>
+                                            </div>
+                                            <div v-for="(it,index) in ca_data.results.consumptionTable">
+                                            <div class="card-header p-0 mb-1" id="headingOneCa" data-toggle="collapse" :data-target="'#Item'+index" aria-expanded="true" aria-controls="TotalIncome">
+                                                    <div class="row ml-0 mr-0" >
+                                                        <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 border detailDiv border-light border-right-0 rounded-left">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemSummary.ItemName ]]</h4>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right  bg-parrotgreen" >
+                                                            <h4 class="mb-0 text-dark">&#8377 [[ it.ItemSummary.consumption | toCurrency ]] </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div :id="'Item'+index" class="collapse" aria-labelledby="headingtwoCa" data-parent="#dropdownsummaryCa">
+                                                    <div class="card border border-light m-2 mb-md-3 rounded">
+                                                        <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome" >
+                                                            <div v-for="(itSub,index) in it.detailedList">
+                                                                <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark text-capitalize">[[itSub.Name]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-endrounded-right  ">
+                                                                    <h4 class="mb-0 text-dark"> [[itSub.value | toString ]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                                </div>
+                                                            </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!--                    <div class="dashboard container"  style="margin-top:80px">-->
+
+
+                    <!--                        <div class="accordion" id="accordion1">-->
+                    <!--                            <div class="row justify-content-md-center">-->
+
+                    <!--                                <div class="col-md-10" v-for="(list,index) in detailedDataList">-->
+                    <!--                                    <div class="card text-center text-black card-gray" >-->
+
+                    <!--                                        <div class="card-body">-->
+                    <!--                                            <div class="row">-->
+                    <!--                                                <div class="col no-padding text-left"><h6>[[list.name]]</h6></div>-->
+                    <!--                                                <div class="col no-padding text-right"> <h6><span class="rupee"></span> [[list.value | toCurrency]]</h6></div>-->
+                    <!--                                            </div>-->
+
+                    <!--                                            <div class="row sub-data-card" v-for="(sublist,index1) in list.subData">-->
+
+                    <!--                                                <div class="col-md-9 col-9 padding5px" v-bind:class="[isActive===index+''+index1 && isCollapse===index+''+index1+'true'? 'active' : '']">-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6 class="text-capitalize">[[sublist.name]]</h6></div>-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6><span class="rupee"></span> [[sublist.value | toCurrency]]</h6></div>-->
+                    <!--                                                </div>-->
+
+                    <!--                                                <div class="col-md-3 col-3 card-green padding5px" v-on:click="toggleClass(index,index1,sublist)" data-toggle="collapse" :data-target="'#'+sublist.type+index+index1">-->
+                    <!--                                                    <span class="font10px font-weight-bold">[[sublist.percentage]]</span><br>-->
+                    <!--                                                    <span class="font10px">of Income</span>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'graph'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='graph'">-->
+
+                    <!--                                                    <canvas id="myChart" class="mt-4 mb-4" style="max-height:300px;max-width: 600px !important;"></canvas>-->
+                    <!--                                                    <div class="row " v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="col text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                        <div class="col text-left display-flex"> <span class="legend" v-bind:style="{ backgroundColor: colorlist[index2]}"></span> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'list'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='list'">-->
+                    <!--                                                    <div class="mt-2" v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="row">-->
+                    <!--                                                            <div class="col-md-7 col-7 text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                            <div class="col-md-5 col-5  text-left "> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                        </div><hr>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                        </div>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+
+                    <!--                    </div>-->
+
+
+                </div>
+            </div>
+            <div class="row resultpane d-none" id="Sales_Result">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header bg-transparent">
+                            <div class="col">
+                                <h4 class="text-dark text-uppercase ls-1 mb-1">Sales Analysis Statement</h4>
+                                <!--                                <h5 class="h3 text-white mb-0">Sales value</h5>-->
+                            </div>
+                            <div class="col-6">
+                                <h4 class="text-dark text-uppercase ls-1 mb-1">[[ query_month ]]/[[ query_year ]]</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+
+                        </div>
+                    </div>
+
+                    <!--                    <div class="dashboard container"  style="margin-top:80px">-->
+
+
+                    <!--                        <div class="accordion" id="accordion1">-->
+                    <!--                            <div class="row justify-content-md-center">-->
+
+                    <!--                                <div class="col-md-10" v-for="(list,index) in detailedDataList">-->
+                    <!--                                    <div class="card text-center text-black card-gray" >-->
+
+                    <!--                                        <div class="card-body">-->
+                    <!--                                            <div class="row">-->
+                    <!--                                                <div class="col no-padding text-left"><h6>[[list.name]]</h6></div>-->
+                    <!--                                                <div class="col no-padding text-right"> <h6><span class="rupee"></span> [[list.value | toCurrency]]</h6></div>-->
+                    <!--                                            </div>-->
+
+                    <!--                                            <div class="row sub-data-card" v-for="(sublist,index1) in list.subData">-->
+
+                    <!--                                                <div class="col-md-9 col-9 padding5px" v-bind:class="[isActive===index+''+index1 && isCollapse===index+''+index1+'true'? 'active' : '']">-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6 class="text-capitalize">[[sublist.name]]</h6></div>-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6><span class="rupee"></span> [[sublist.value | toCurrency]]</h6></div>-->
+                    <!--                                                </div>-->
+
+                    <!--                                                <div class="col-md-3 col-3 card-green padding5px" v-on:click="toggleClass(index,index1,sublist)" data-toggle="collapse" :data-target="'#'+sublist.type+index+index1">-->
+                    <!--                                                    <span class="font10px font-weight-bold">[[sublist.percentage]]</span><br>-->
+                    <!--                                                    <span class="font10px">of Income</span>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'graph'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='graph'">-->
+
+                    <!--                                                    <canvas id="myChart" class="mt-4 mb-4" style="max-height:300px;max-width: 600px !important;"></canvas>-->
+                    <!--                                                    <div class="row " v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="col text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                        <div class="col text-left display-flex"> <span class="legend" v-bind:style="{ backgroundColor: colorlist[index2]}"></span> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'list'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='list'">-->
+                    <!--                                                    <div class="mt-2" v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="row">-->
+                    <!--                                                            <div class="col-md-7 col-7 text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                            <div class="col-md-5 col-5  text-left "> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                        </div><hr>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                        </div>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+
+                    <!--                    </div>-->
+
+
+                </div>
+            </div>
+            <div class="row resultpane d-none" id="PE_Result" v-if="pe_loaded">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header bg-transparent">
+                            <div class="row">
+                                <div class="col-12 col-md-7">
+                                    <h4 class="text-dark text-uppercase ls-1 mb-1">Purchase Efficiency Statement</h4>
+                                </div>
+
+                                <div class="col-12 col-md-5  text-md-right">
+                                    <div class="row">
+                                        <div class="col-md-9 col-sm-12">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                                    </div>
+                                                    <input class="form-control datepicker" id="pedatepicker" v-model="query_date" placeholder="Select date" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-12">
+                                            <button id="updatepe" class="btn btn-warning">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="card border border-light bg-danger">
+                                        <div class="card-header bg-danger pb-1">
+                                            <h3> Purchase Efficiency Loss</h3>
+                                        </div>
+                                        <hr class="border-dark mt-0 mb-0"/>
+                                        <div class="card-body pt-1">
+                                            <div class="row">
+                                                <div class="col-6 col">
+                                                    <h5 v-if="ismobile" class="card-title mb-0">Actual Purchasing Cost</h5>
+                                                    <h3 v-if="!ismobile" class="card-title  mb-0">Actual Purchasing Cost</h3>
+                                                </div>
+                                                <div class="col-6">
+                                                    <h4 v-if="ismobile" >&#8377 1,200 </h4>
+                                                    <h3 v-if="!ismobile" >&#8377 1,200 </h3>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-6 col">
+                                                    <h5 v-if="ismobile" class="card-title   mb-0">Ideal Purchasing Cost</h5>
+                                                    <h3 v-if="!ismobile" class="card-title   mb-0">Ideal Purchasing Cost</h3>
+                                                </div>
+                                                <div class="col-6">
+                                                    <h4 v-if="ismobile" >&#8377 1,000 </h4>
+                                                    <h3 v-if="!ismobile" >&#8377 1,000 </h3>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row">
+                                                <div class="col-6 col">
+                                                    <h5 v-if="ismobile" class="card-title   mb-0">Purchase Efficiency Loss</h5>
+                                                    <h3 v-if="!ismobile" class="card-title   mb-0">Purchase Efficiency Loss</h3>
+                                                </div>
+                                                <div class="col-6">
+                                                    <h4 v-if="ismobile" class="text-danger"> &#8377 -200 </h4>
+                                                    <h3 v-if="!ismobile" class="text-danger" >&#8377 -200 </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 pl-1 pr-1 pl-md-2 pr-md-1">
+
+                                    <div class="accordion" id="dropdownsummary1">
+                                        <div class="card rounded bg-lighter">
+                                            <div class="card-header">
+                                                <h3>Summary</h3>
+                                            </div>
+                                            <div v-for="(it,index) in pe_data.results.itemsummaryTable">
+                                                <div class="card-header p-0 mb-1" id="headingOne1" data-toggle="collapse" :data-target="'#'+it.ItemName" aria-expanded="true" aria-controls="TotalIncome">
+                                                    <div class="row ml-0 mr-0" >
+                                                        <div class="col-lg-10 col-md-8 col-8 pl-md-5 pt-4 pb-4 detailDiv border border-light border-right-0 rounded-left">
+                                                            <h4 class="mb-0 text-dark">[[ it.ItemName ]]</h4>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end border  border-light border-left-0 rounded-right bg-danger" >
+                                                            <h4 class="mb-0 text-white">&#8377 [[ it.EfficiencyLoss ]] </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div :id="it.ItemName" class="collapse" aria-labelledby="headingtwo" data-parent="#dropdownsummary">
+                                                    <div class="card m-2 mb-md-3 rounded">
+                                                        <div class="card-header p-2 mb-md-0 " aria-expanded="true" aria-controls="TotalIncome" >
+                                                            <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark">Total Quantity Purchased</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-endrounded-right  ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[it.Quantity]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4  rounded-left">
+                                                                    <h4 class="mb-0 text-dark">Average Price of all Purchases</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end rounded-right  ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[it.PurchasePrice | toCurrency]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4   rounded-left">
+                                                                    <h4 class="mb-0 text-dark">Least Price of Purchases</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end   rounded-right  ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[it.IdealPrice | toCurrency]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4  rounded-left">
+                                                                    <h4 class="mb-0 text-dark">Actual Purchasing Cost</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end  rounded-right ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[it.ActualPurchasingCost | toCurrency]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <h4 class="mb-0 text-dark">Ideal Purchasing Cost</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end rounded-right ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[it.IdealPurchasingCost | toCurrency]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row  ml-0 mr-0 ">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4  rounded-left">
+                                                                    <h4 class="mb-0 text-dark">Efficiency Loss</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-white">&#8377 [[ itemvalue | toCurrency]]</h5>-->
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-4 pl-md-3 pt-4 pb-4 justify-content-end rounded-right  ">
+                                                                    <h4 class="mb-0 text-dark">&#8377 [[it.EfficiencyLoss | toCurrency]]</h4>
+                                                                    <!--                                                                <h5 class="mb-0 text-dark">of total income</h5>-->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row ml-0 mr-0">
+                                                                <div class="col-lg-8 col-md-8 col-8 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                    <button class="btn btn-primary" type="button" data-toggle="collapse" :data-target="'#detail-'+it.ItemName" aria-expanded="false" aria-controls="collapseExample">
+                                                                        Show Detail
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="collapse" :id="'detail-'+it.ItemName">
+
+                                                                <div class="row ml-0 mr-0">
+                                                                    <div class="col-lg-12 col-md-12 col-12 pl-md-5 pt-4 pb-4 rounded-left">
+                                                                        <div class="table-responsive">
+                                                                            <div>
+                                                                                <table class="table align-items-center">
+                                                                                    <thead class="thead-light">
+                                                                                    <tr>
+                                                                                        <th scope="col" class="sort" data-sort="date">Date</th>
+                                                                                        <th scope="col" class="sort" data-sort="vendor">Vendor</th>
+                                                                                        <th scope="col" >Bill No.</th>
+                                                                                        <th scope="col">ItemName</th>
+                                                                                        <th scope="col" >Quantity</th>
+                                                                                        <th scope="col">IdealPrice</th>
+                                                                                        <th scope="col">PurchasePrice</th>
+                                                                                        <th scope="col">EfficiencyLoss</th>
+                                                                                        <th scope="col">ExtraPricePaid</th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody class="list">
+                                                                                    <tr v-for="item in  pe_data.detailedlist[index]">
+                                                                                        <th scope="row">
+                                                                                            [[item.Date]]
+                                                                                        </th>
+                                                                                        <td class="vendor">
+                                                                                            [[item.Vendor]]
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            [[item.Vendor]]
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            [[item.ItemName]]
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            [[item.Quantity]]
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            [[item.IdealPrice]]
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            [[item.PurchasePrice]]
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            [[item.EfficiencyLoss]]
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            [[item.ExtraPricePaid]]
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!--                    <div class="dashboard container"  style="margin-top:80px">-->
+
+
+                    <!--                        <div class="accordion" id="accordion1">-->
+                    <!--                            <div class="row justify-content-md-center">-->
+
+                    <!--                                <div class="col-md-10" v-for="(list,index) in detailedDataList">-->
+                    <!--                                    <div class="card text-center text-black card-gray" >-->
+
+                    <!--                                        <div class="card-body">-->
+                    <!--                                            <div class="row">-->
+                    <!--                                                <div class="col no-padding text-left"><h6>[[list.name]]</h6></div>-->
+                    <!--                                                <div class="col no-padding text-right"> <h6><span class="rupee"></span> [[list.value | toCurrency]]</h6></div>-->
+                    <!--                                            </div>-->
+
+                    <!--                                            <div class="row sub-data-card" v-for="(sublist,index1) in list.subData">-->
+
+                    <!--                                                <div class="col-md-9 col-9 padding5px" v-bind:class="[isActive===index+''+index1 && isCollapse===index+''+index1+'true'? 'active' : '']">-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6 class="text-capitalize">[[sublist.name]]</h6></div>-->
+                    <!--                                                    <div class="col-12 no-padding text-left"><h6><span class="rupee"></span> [[sublist.value | toCurrency]]</h6></div>-->
+                    <!--                                                </div>-->
+
+                    <!--                                                <div class="col-md-3 col-3 card-green padding5px" v-on:click="toggleClass(index,index1,sublist)" data-toggle="collapse" :data-target="'#'+sublist.type+index+index1">-->
+                    <!--                                                    <span class="font10px font-weight-bold">[[sublist.percentage]]</span><br>-->
+                    <!--                                                    <span class="font10px">of Income</span>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'graph'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='graph'">-->
+
+                    <!--                                                    <canvas id="myChart" class="mt-4 mb-4" style="max-height:300px;max-width: 600px !important;"></canvas>-->
+                    <!--                                                    <div class="row " v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="col text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                        <div class="col text-left display-flex"> <span class="legend" v-bind:style="{ backgroundColor: colorlist[index2]}"></span> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                                <div :id="'list'+index+index1" class="col-md-12 col-12 collapse"  data-parent="#accordion1" v-if="sublist.type=='list'">-->
+                    <!--                                                    <div class="mt-2" v-for="(subDetaillist,index2) in sublist.subDetailData">-->
+                    <!--                                                        <div class="row">-->
+                    <!--                                                            <div class="col-md-7 col-7 text-left "><h6 class="text-capitalize font-weight-normal">[[subDetaillist.name]]</h6></div>-->
+                    <!--                                                            <div class="col-md-5 col-5  text-left "> <h6 class="font-weight-normal"><span class="rupee"></span>[[subDetaillist.value | toCurrency]]</h6></div>-->
+                    <!--                                                        </div><hr>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                        </div>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+
+                    <!--                    </div>-->
+
+
+                </div>
+            </div>
+            <footer class="footer pt-0">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6">
+                        <div class="copyright text-center text-lg-left text-muted">
+                            &copy; 2019 <a href="https://www.firstcourse.in" class="font-weight-bold ml-1" target="_blank">FirstCourse</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                            <li class="nav-item">
+                                <a href="https://www.firstcourse.in" class="nav-link" target="_blank">FirstCourse</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://www.firstcourse.in/aboutus" class="nav-link" target="_blank">About Us</a>
+                            </li>
+                            <!--                                <li class="nav-item">-->
+                            <!--                                    <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>-->
+                            <!--                                </li>-->
+                            <!--                                <li class="nav-item">-->
+                            <!--                                    <a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>-->
+                            <!--                                </li>-->
+                        </ul>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+
+{% include 'footer.html' %}
+<script src="{% static 'js/insights.js' %}"></script>
+<script src="{% static 'js/jquery.color.js' %}"></script>
+<script src="{% static 'assets/js/jsonQ.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script>
+    // $('#dropdownsummary .collapse').collapse('show');
+
+    const vueApp = new Vue({
+        el: '#panel',
+        delimiters: ['[[', ']]'],
+        data: {
+            pl_data:'',
+            gst_data:'',
+            pe_data:'',
+            ca_data:'',
+
+            myChart:null,
+            colorlist:['rgb(0,174,237)','rgb(14,49,117)','rgb(0,191,142)','rgb(255,123,0)','rgb(218,34,24)'],
+            isActive: "",
+            isCollapse:"",
+            current_result:'',
+            custid:0,
+            userinfo:[],
+            results:'',
+            saleschart:null,
+            ismobile:false,
+            query_date:'',
+            salesvalues:[],
+            saleslabels:[],
+            salescolors:[],
+            query_month:'',
+            query_year:'',
+            query_type:'',
+            pl_loaded:false,
+            gst_loaded:false,
+            pe_loaded:false,
+            ca_loaded:false,
+            plotdata: [{
+                values: [19, 26, 55],
+                labels: ['Residential', 'Non-Residential', 'Utility'],
+                type: 'pie',
+                textinfo: "label+percent",
+                textposition: "outside",
+            }],
+            colors:[
+                "#2ecc71",
+                "#3498db",
+                "#95a5a6",
+                "#9b59b6",
+                "#f1c40f",
+            ],
+        },
+        mounted:function(){
+            // console.log(this.custid);
+            var d = new Date(),
+                n = d.getMonth(),
+                y = d.getFullYear();
+
+            if(this.query_month == ''){
+                this.query_month=n;
+            }
+            if(this.query_year == ''){
+                this.query_year=y;
+            }
+
+            var userinfourl='/get/myinfo';
+
+            $(document).on('click','#showpl',function(){
+                //console.log("Show PL clicked");
+                //vueApp.show_pl_report();
+                vueApp.toggleresult(1);
+                $('.collapse').on('show.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").addClass("detailActive");
+                });
+                $('.collapse').on('hide.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").removeClass("detailActive");
+                });
+            });
+
+            $(document).on('click','#updatepl',function(){
+                //console.log("Show PL clicked");
+                vueApp.show_pl_report();
+            });
+
+
+            $(document).on('click','#showpe',function(){
+                //console.log("Show PL clicked");
+                //vueApp.show_pe_report();
+                vueApp.toggleresult(3);
+                $('.collapse').on('show.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").addClass("detailActive");
+                });
+                $('.collapse').on('hide.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").removeClass("detailActive");
+                });
+            });
+
+            $(document).on('click','#updatepe',function(){
+                //console.log("Show PL clicked");
+                vueApp.show_pe_report();
+            });
+
+
+            $(document).on('click',"#showgst",function(){
+                //console.log("Show GST clicked");
+                //vueApp.show_gst_report();
+                vueApp.toggleresult(2);
+                $('.collapse').on('show.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").addClass("detailActive");
+                });
+                $('.collapse').on('hide.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").removeClass("detailActive");
+                });
+            });
+
+            $(document).on('click',"#updategst",function(){
+                //console.log("Update GST clicked");
+                vueApp.show_gst_report();
+            });
+
+            $(document).on('click',"#showcon_analysis",function(){
+                //console.log("Consumption Analysis")
+              //vueApp.initialize_ca_data();
+
+               vueApp.toggleresult(5);
+               $('.collapse').on('show.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").addClass("detailActive");
+                });
+                $('.collapse').on('hide.bs.collapse', function (e) {
+                    console.log(e.target.id);
+                    $('[data-target="#'+e.target.id+'"]').find(".detailDiv").removeClass("detailActive");
+                });
+
+            });
+
+            $(document).on('click',"#updatecon_analysis",function(){
+                //console.log("Consumption Analysis")
+                vueApp.show_ca_report();
+            });
+            $('#carouselExampleIndicators').carousel({interval: false});
+
+                $(document).on('mouseleave', '#carouselExampleIndicators', function() {
+
+                    $(this).carousel('pause');
+                });
+
+
+
+            $(document).on('click',"#showsales_recon",function(){
+                //console.log("Sales recon");
+                vueApp.toggleresult(4);
+            });
+
+            $(document).on('click',"#showcon_analysis",function(){
+                //console.log("Consumption Analysis")
+                vueApp.toggleresult(5);
+            });
+            $(document).on('click',"#consumption",function(){
+                $("#dropdownsummaryCa").show();
+                $("#consumption,#consumption .card-header").addClass("bg-dark");
+                $("#changeConsumptionDtl").hide();
+                $(".changeConsumptionDtl").hide();
+                $("#changeConsumption,#changeConsumption .card-header").removeClass("bg-dark");
+
+            });
+            $(document).on('click',"#changeConsumption",function(){
+                //console.log("Consumption Analysis")
+                $("#dropdownsummaryCa").hide();
+                $("#consumption,#consumption .card-header,.changeConsumptionDetail").removeClass("bg-dark");
+                $("#carousel-item0").parent().addClass("active");
+                $("#changeConsumptionDtl").show();
+                $(".changeConsumptionDtl").hide();
+                $("#changeConsumption,#changeConsumption .card-header").addClass("bg-dark");
+            });
+
+
+
+            axios.get(userinfourl)
+                .then(function (response) {
+                    //console.log(response.data.id);
+                    vueApp.userinfo=response.data;
+                    vueApp.custid=response.data.id;
+                }).catch(function(error){
+                //console.log("Error");
+            });
+
+            // var resulturl='/reports/get/result/all/';
+            // axios.get(resulturl)
+            //     .then(function (response) {
+            //         vueApp.results=response.data.result;
+            //     }).catch(function(error){
+            //     //console.log("Error");
+            // });
+
+
+            this.detectmobile();
+            var slider = tns({
+                container: '.my-slider',
+                items: 1,
+                mouseDrag: true,
+                controls: true,
+                controlsPosition:"bottom",
+                center: true,
+                nav:false,
+                navPosition:"bottom",
+                controlsText:["<",">"],
+                // autoplay:true,
+                // autoplayButtonOutput:false,
+                // autoplayHoverPause:true,
+                responsive: {
+                    640: {
+                        edgePadding: 20,
+                        gutter: 20,
+                        items: 1,
+                        fixedWidth: 200,
+                        items: 1,
+                    },
+                    700: {
+                        gutter: 30,
+                        fixedWidth: 200
+                    },
+                    900: {
+                        items: 2,
+                        fixedWidth:300
+                    },
+                    1200: {
+                        items: 3,
+                        fixedWidth:400
+                    }
+                }
+            });
+            //console.log("Before mapping data");
+
+
+
+            this.initialize_pl_data();
+            this.initialize_gst_data();
+            this.initialize_pe_data();
+            this.initialize_ca_data();
+
+
+            //console.log("After Axios PL API Pull")
+            //console.log(current_result);
+
+
+        },
+        computed:{
+            salesinfo:function(){
+
+                function rainbow() {
+                    // 30 random hues with step of 12 degrees
+                    var hue = Math.floor(Math.random() * 30) * 12;
+
+                    return $.Color({
+                        hue: hue,
+                        saturation: 0.9,
+                        lightness: 0.6,
+                        alpha: 1
+                    }).toHexString();
+                }
+                //console.log("Sales Info called");
+                var values=[];
+                this.salesvalues=[];
+                this.saleslabels=[];
+                this.salescolors=[];
+                if(this.pl_loaded){
+
+                    values=this.pl_data.results.Page3.table[0].records.slice(0,this.pl_data.results.Page3.table[0].records.length-1);
+                    $.each(values,function(index,value){
+                       vueApp.salesvalues.push(value.Col3);
+                       vueApp.saleslabels.push(value.Col1);
+                       vueApp.salescolors.push(rainbow());
+                    });
+                    return values;
+
+                }
+            },
+            othersalesinfo:function(){
+                //console.log("Sales Info called");
+                var values=[];
+                if(this.pl_loaded){
+                    console.log(this.pl_data.results.Page3.table[1].records);
+                    if(this.pl_data.results.Page3.table[1].records.length<=1){
+                        values=this.pl_data.results.Page3.table[1].records;
+                    }
+                    else{
+                        values=this.pl_data.results.Page3.table[1].records.slice(0,this.pl_data.results.Page3.table[1].records.length-1);
+                    }
+
+                    return values;
+
+                }
+            },
+            pl_data_detail:function(){
+                var valuesdetail=[];
+                var valuesdetail1=[];
+                if(this.pl_loaded){
+                    //console.log(this.pl_data.results.Page3.table);
+                    detailvalues=this.pl_data.results.Page3.table;
+                    detailvalues1=detailvalues.slice(2,detailvalues.length);
+                    $.each(detailvalues1,function(index,value){
+                        $.each(detailvalues1[index].records,function(ind,val){
+                            if(val.Col1 === "Total" || val.Col1 === "total"){
+                                detailvalues1[index].total=val.Col3;
+                            }
+                        })
+                    })
+                    //console.log(detailvalues1);
+                    return detailvalues1;
+                }
+
+            },
+        },
+        updated:function(){
+            $('#pldatepicker').datepicker({
+                format: "mm yyyy",
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+            }).on('changeDate',function(e){
+                vueApp.query_date=$('#pldatepicker').val();
+                vueApp.query_month=vueApp.query_date.substr(0,vueApp.query_date.indexOf(' '));
+                vueApp.query_year=vueApp.query_date.substr(vueApp.query_date.indexOf(' ')+1);
+            });
+
+            $('#pedatepicker').datepicker({
+                format: "mm yyyy",
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+            }).on('changeDate',function(e){
+                vueApp.query_date=$('#pedatepicker').val();
+                vueApp.query_month=vueApp.query_date.substr(0,vueApp.query_date.indexOf(' '));
+                vueApp.query_year=vueApp.query_date.substr(vueApp.query_date.indexOf(' ')+1);
+            });
+            $('#cadatepicker').datepicker({
+                format: "mm yyyy",
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+            }).on('changeDate',function(e){
+                vueApp.query_date=$('#cadatepicker').val();
+                vueApp.query_month=vueApp.query_date.substr(0,vueApp.query_date.indexOf(' '));
+                vueApp.query_year=vueApp.query_date.substr(vueApp.query_date.indexOf(' ')+1);
+            });
+
+            $('#gstdatepicker').datepicker({
+                format: "mm yyyy",
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+            }).on('changeDate',function(e){
+                vueApp.query_date=$('#gstdatepicker').val();
+                vueApp.query_month=vueApp.query_date.substr(0,vueApp.query_date.indexOf(' '));
+                vueApp.query_year=vueApp.query_date.substr(vueApp.query_date.indexOf(' ')+1);
+            });
+            $('#TotalSales').on('shown.bs.collapse', function () {
+                setTimeout(function() {
+                    if(vueApp.saleschart == null)
+                        vueApp.createChart();
+
+                },200);
+            });
+
+        },
+        methods: {
+            showDetailedDiv:function(id,selId)
+            {
+                //console.log(id);
+                //console.log(selId.target);
+                $('#Con_Result .collapse').collapse('hide');
+                $(".changeConsumptionDtl").hide();
+                $(".changeConsumptionDetail").removeClass("bg-dark");
+                //console.log($(selId.target).closest(".card").attr("id"));
+                 $("#"+id).show();
+                 $(selId.target).closest(".card").addClass("bg-dark");
+
+            },
+            map_pl_data: function(){
+                var resulturl='/reports/get/result/specific/';
+                //console.log("Map PL Data");
+                var current_result='';
+                axios.get(resulturl,{
+                        params: {
+                            query_month: this.query_month,
+                            query_year: this.query_year,
+                            report_type: "P_L"
+                        }
+                    }).then(function (response) {
+                        //console.log(response.data.result);
+                        if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                            //console.log("Hey its map PL API");
+                            current_result=response.data.result;
+                            vueApp.pl_data=response.data.result;
+                            vueApp.pl_loaded=true;
+                            //console.log(vueApp.pl_data.results);
+
+                            //console.log("Printing PL results")
+                            //console.log(current_result);
+                        }
+                    }).catch(function(error){
+                    //console.log("Error");
+                });
+                //console.log("After Axios PL API Pull")
+                //console.log(current_result);
+            },
+            map_gst_data: function(){
+                var resulturl='/reports/get/result/specific/';
+                var current_result='';
+                //console.log("Map GST Data");
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "GST"
+                    }
+                }).then(function (response) {
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        current_result=response.data.result;
+                        vueApp.gst_data = response.data.result.results;
+                        var b2b_total=0;
+                        var b2c_total=0
+                        vueApp.gst_loaded=true;
+                        $.each(vueApp.gst_data.b2b,function(index,value){
+                            b2b_total+=value.total_gst;
+                            //console.log(value.total_gst);
+                        });
+                        //console.log(b2b_total);
+                        vueApp.gst_data.b2b_total=b2b_total;
+
+                        //console.log(vueApp.gst_data.b2b_total);
+                        $.each(vueApp.gst_data.b2c,function(index,value){
+                            b2c_total+=value.total_gst;
+                            //console.log(value.total_gst);
+                        });
+                        //console.log(b2c_total);
+                        vueApp.gst_data.b2c_total=b2c_total;
+                        //console.log(vueApp.gst_data.b2c_total);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+
+            },
+            map_pe_data: function(){
+                var resulturl='/reports/get/result/specific/';
+                console.log("Map PE Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "PUR_EFF"
+                    }
+                }).then(function (response) {
+                    console.log(respvueApp.pe_dataonse.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        console.log("Hey its map PUR_EFF API");
+                        current_result=response.data.result;
+                        vueApp.pe_data=response.data.result;
+                        console.log(vueApp.pe_data);
+                        var detailedlist=[];
+                        var itemlist=[];
+                        var finaldetailedlist=[];
+                        var summary={
+                            "EfficiencyLoss":0,
+                            "IdealPurchasingCost":0,
+                            "ActualPurchasingCost":0
+                        };
+                        $.each(vueApp.pe_data.results.itemsummaryTable,function(index,item){
+                            itemlist.push(item.ItemName);
+                        });
+
+
+                        $.each(vueApp.pe_data.results.datesummaryTable,function(index,item){
+                            console.log(item);
+                            summary.EfficiencyLoss+=item.EfficiencyLoss;
+                            summary.IdealPurchasingCost+=item.IdealPurchasingCost;
+                            summary.ActualPurchasingCost+=item.ActualPurchasingCost;
+                        });
+                        vueApp.pe_data.summary=summary;
+                        console.log(summary);
+                        // console.log(vueApp.pe_data);
+                        // var jsonQobj=jsonQ(vueApp.pe_data.results.billdetailedTable);
+
+                        $.each(itemlist,function(index,value){
+                            var values1=[];
+                            $.each(vueApp.pe_data.results.billdetailedTable,function(ind,val){
+                                if(val.ItemName === itemlist[index])
+                                {
+                                    values1.push(val)
+                                }
+                            });
+                            detailedlist.push(values1);
+                        });
+
+                        vueApp.pe_data.detailedlist=detailedlist;
+                        vueApp.pe_loaded=true;
+                        console.log(vueApp.pe_data.results);
+
+                        //console.log(vueApp.pl_data.results);
+
+                        //console.log("Printing PL results")
+                        //console.log(current_result);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            map_ca_data: function(){
+                var resulturl='/reports/get/result/specific/';
+                console.log("Map CA Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "CON_ANA"
+                    }
+                }).then(function (response) {
+
+                    //console.log(" conumption analysis report  response");
+                    //console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+
+                        current_result=response.data.result;
+                        vueApp.ca_data=response.data.result;
+                        //console.log("ca result");
+                        //console.log(vueApp.ca_data);
+                        var totalConsumption=0;
+                        var totalPerConsumption=0.00;
+                        var changeConsumptionList=[];
+                        var consumpQtyTypeList={};
+                        $.each(vueApp.ca_data.results.consumptionTable,function(index,item){
+                            totalConsumption=totalConsumption+parseInt(item.ItemSummary.consumption);
+
+                              consumpQtyTypeList[item.ItemSummary.ItemName.replace(/ /g,'')]=item.ItemSummary.UOM.toString();
+                             $.each(item.detailedList,function(dtlindex,dtlitem){
+
+                             if(dtlitem.Name=="% of consumption to total sales")
+                                {
+                                    totalPerConsumption=totalPerConsumption+dtlitem.value;
+                                    //console.log(totalPerConsumption);
+                                }
+                            });
+                        });
+
+                        $.each(vueApp.ca_data.results,function(key,keyval){
+
+
+                             if(!key.includes("consumptionTable"))
+                                {
+                                    var itemId=key.replace(/[%()_]/g,'');
+                                    var itemChangeConsJson = {ItemId:itemId,detail: key.replace(/_/g,' ')};
+
+                                    changeConsumptionList.push(itemChangeConsJson);
+                                    vueApp.ca_data.results[itemId]=vueApp.ca_data.results[key];
+                                }
+                            });
+
+
+                        vueApp.ca_data.results.totalConsumption=totalConsumption;
+                        vueApp.ca_data.results.totalPerConsumption=totalPerConsumption.toFixed(2);
+                        vueApp.ca_data.results.changeConsumptionList=changeConsumptionList;
+                        vueApp.ca_data.results.consumpQtyTypeList=consumpQtyTypeList;
+
+                        vueApp.ca_loaded=true;
+                        console.log("result");
+                        console.log(vueApp.ca_data.results);
+
+
+                    }
+
+
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+
+
+            initialize_pl_data:function(){
+                var resulturl='/reports/get/result/latest/';
+                //console.log("Map PL Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "P_L"
+                    }
+                }).then(function (response) {
+                    //console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        //console.log("Hey its map PL API");
+                        current_result=response.data.result;
+                        vueApp.pl_data=response.data.result;
+                        vueApp.pl_loaded=true;
+                        //console.log(vueApp.pl_data.results);
+
+                        //console.log("Printing PL results")
+                        //console.log(current_result);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            initialize_gst_data:function(){
+                var resulturl='/reports/get/result/latest/';
+                var current_result='';
+                //console.log("Map GST Data");
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "GST"
+                    }
+                }).then(function (response) {
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        current_result=response.data.result;
+                        vueApp.gst_data = response.data.result.results;
+                        var b2b_total=0;
+                        var b2c_total=0
+                        vueApp.gst_loaded=true;
+                        $.each(vueApp.gst_data.b2b,function(index,value){
+                            b2b_total+=value.total_gst;
+                            //console.log(value.total_gst);
+                        });
+                        //console.log(b2b_total);
+                        vueApp.gst_data.b2b_total=b2b_total;
+
+                        //console.log(vueApp.gst_data.b2b_total);
+                        $.each(vueApp.gst_data.b2c,function(index,value){
+                            b2c_total+=value.total_gst;
+                            //console.log(value.total_gst);
+                        });
+                        //console.log(b2c_total);
+                        vueApp.gst_data.b2c_total=b2c_total;
+                        //console.log(vueApp.gst_data.b2c_total);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            initialize_pe_data:function(){
+                var resulturl='/reports/get/result/latest/';
+                console.log(" initialise Map PE Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "PUR_EFF"
+                    }
+                }).then(function (response) {
+                    console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+                        console.log("Hey its map PUR_EFF API");
+                        current_result=response.data.result;
+                        vueApp.pe_data=response.data.result;
+                        console.log(vueApp.pe_data);
+                        var detailedlist=[];
+                        var itemlist=[];
+                        var finaldetailedlist=[]
+                        $.each(vueApp.pe_data.results.itemsummaryTable,function(index,item){
+                            itemlist.push(item.ItemName);
+                        });
+                        console.log(itemlist);
+                        // var jsonQobj=jsonQ(vueApp.pe_data.results.billdetailedTable);
+
+                        $.each(itemlist,function(index,value){
+                            var values1=[];
+                            $.each(vueApp.pe_data.results.billdetailedTable,function(ind,val){
+                                if(val.ItemName === itemlist[index])
+                                {
+                                    values1.push(val)
+                                }
+                            });
+                            detailedlist.push(values1);
+                        });
+                        console.log(detailedlist);
+
+                        vueApp.pe_data.detailedlist=detailedlist;
+                        vueApp.pe_loaded=true;
+                        console.log(vueApp.pe_data.results);
+
+                        //console.log(vueApp.pl_data.results);
+
+                        //console.log("Printing PL results")
+                        //console.log(current_result);
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            initialize_ca_data: function(){
+                var resulturl='/reports/get/result/latest/';
+                console.log("initialise Map CA Data");
+                var current_result='';
+                axios.get(resulturl,{
+                    params: {
+                        query_month: this.query_month,
+                        query_year: this.query_year,
+                        report_type: "CON_ANA"
+                    }
+                }).then(function (response) {
+                    //console.log(" conumption analysis report  response");
+                    //console.log(response.data.result);
+                    if(response.data.result!='' && response.data.result.length!=0 && (typeof response.data.result.results !== "undefined")){
+
+                        current_result=response.data.result;
+                        vueApp.ca_data=response.data.result;
+                        //console.log("ca result");
+                        //console.log(vueApp.ca_data);
+                        var totalConsumption=0;
+                        var totalPerConsumption=0.00;
+                        var changeConsumptionList=[];
+                        var consumpQtyTypeList={};
+                        $.each(vueApp.ca_data.results.consumptionTable,function(index,item){
+                            totalConsumption=totalConsumption+parseInt(item.ItemSummary.consumption);
+
+                              consumpQtyTypeList[item.ItemSummary.ItemName.replace(/ /g,'')]=item.ItemSummary.UOM.toString();
+                             $.each(item.detailedList,function(dtlindex,dtlitem){
+
+                             if(dtlitem.Name=="% of consumption to total sales")
+                                {
+                                    totalPerConsumption=totalPerConsumption+dtlitem.value;
+                                    //console.log(totalPerConsumption);
+                                }
+                            });
+                        });
+
+                        $.each(vueApp.ca_data.results,function(key,keyval){
+
+
+                             if(!key.includes("consumptionTable"))
+                                {
+                                    var itemId=key.replace(/[%()_]/g,'');
+                                    var itemChangeConsJson = {ItemId:itemId,detail: key.replace(/_/g,' ')};
+
+                                    changeConsumptionList.push(itemChangeConsJson);
+                                    vueApp.ca_data.results[itemId]=vueApp.ca_data.results[key];
+                                }
+                            });
+
+
+                        vueApp.ca_data.results.totalConsumption=totalConsumption;
+                        vueApp.ca_data.results.totalPerConsumption=totalPerConsumption.toFixed(2);
+                        vueApp.ca_data.results.changeConsumptionList=changeConsumptionList;
+                        vueApp.ca_data.results.consumpQtyTypeList=consumpQtyTypeList;
+
+                        vueApp.ca_loaded=true;
+                        console.log("result");
+                        console.log(vueApp.ca_data.results);
+
+
+                    }
+                }).catch(function(error){
+                    //console.log("Error");
+                });
+            },
+            show_pl_report: function(){
+                vueApp.map_pl_data();
+                vueApp.toggleresult(1);
+            },
+
+            show_gst_report:function(){
+                vueApp.map_gst_data();
+                vueApp.toggleresult(2);
+            },
+            show_pe_report: function(){
+                vueApp.map_pe_data();
+                vueApp.toggleresult(3);
+            },
+            show_ca_report: function(){
+                console.log("show_ca_report");
+                vueApp.map_ca_data();
+                vueApp.toggleresult(5);
+            },
+            detectmobile:function(){
+                if(window.matchMedia("(max-width: 767px)").matches){
+                    this.ismobile=true;
+                }
+            },
+            toggleClass: function(index,index1,sublist){
+                this.isActive = index+''+index1;
+                if(this.isCollapse==null)
+                    this.isCollapse=index+''+index1+"true";
+                else if(this.isCollapse===index+''+index1+"true")
+                    this.isCollapse=index+''+index1+"false";
+                else
+                    this.isCollapse=index+''+index1+"true";
+
+                if(sublist.type=='graph')
+                    this.createChart(sublist.subDetailData);
+            },
+            toggleresult:function(ind){
+                var elems=$('.resultpane');
+                console.log("toggle result");
+
+                $('.resultpane').each(function(index){
+                    if(!$(this).hasClass('d-none')){
+                        $(this).addClass('d-none');
+                    }
+                });
+
+                $('.cardforresult').each(function(){
+                    $(this).html('Show');
+                    $(this).removeClass('badge-success');
+                    $(this).addClass('badge-default');
+                });
+
+                if(ind==1){ //Profit and Loss statement
+                    //console.log("I am here.");
+                    $("#P_L_Result").removeClass('d-none');
+                    $("#showpl").removeClass('badge-default');
+                    $("#showpl").addClass('badge-success');
+                    //console.log($("#showpl").html());
+                    $("#showpl").html("Selected");
+                }
+                else if(ind ==2){ // GST Statement
+                    $("#GST_Result").removeClass('d-none');
+                    $("#showgst").removeClass('badge-default');
+                    $("#showgst").addClass('badge-success');
+                    $("#showgst").html("Selected");
+                }
+                else if(ind ==3){ // Purchase Efficiency Statement
+                    $("#PE_Result").removeClass('d-none');
+                    $("#showpe").removeClass('badge-default');
+                    $("#showpe").addClass('badge-success');
+                    $("#showpe").html("Selected");
+                }
+                else if(ind == 4){ // Sales Channel Reconciliation
+                    $("#Sales_Result").removeClass('d-none');
+                    $("#showsales_recon").removeClass('badge-default');
+                    $("#showsales_recon").addClass('badge-success');
+                    $("#showsales_recon").html("Selected");
+                }
+                else if(ind == 5){ // Consumption Analysis
+                    console.log("consumption analysis");
+                    $("#Con_Result").removeClass('d-none');
+                    $("#dropdownsummaryCa").show();
+                    $("#consumption,#consumption .card-header").addClass("bg-dark");
+                    $("#changeConsumptionDtl").hide();
+                    $(".changeConsumptionDtl").hide();
+                    $("#changeConsumption,#changeConsumption .card-header").removeClass("bg-dark");
+                    $("#showcon_analysis").removeClass('badge-default');
+                    $("#showcon_analysis").addClass('badge-success');
+                    $("#showcon_analysis").html("Selected");
+                }
+            },
+            createChart: function() {
+                var ctx = document.getElementById("salesChart").getContext('2d');
+                this.saleschart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: this.saleslabels,
+                        datasets: [{
+                            backgroundColor: this.salescolors,
+                            data: this.salesvalues
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        legend: {
+                            display: false,
+                            position: 'bottom',
+                            onClick: null
+                        },
+                    }
+                });
+
+            }
+        },
+        watch:{
+          pl_loaded: function(){
+              //console.log("Hey Called PL watch");
+
+          },
+        },
+        filters: {
+            toString:function(x)
+            {
+                if (!x) return ''
+                x=x.toString();
+                return x;
+            },
+            getUOM:function(x)
+            {
+                if (!x) return ''
+                x=x.replace(/ /g,'');
+                var val=vueApp.ca_data.results.consumpQtyTypeList[x];
+                return val;
+            },
+            toCurrency: function (x) {
+                if (!x) return ''
+                x=x.toString();
+                var afterPoint = '';
+                if(x.indexOf('.') > 0)
+                    afterPoint = x.substring(x.indexOf('.'),x.length);
+                    afterPoint=afterPoint.substring(0,3);
+                x = Math.floor(x);
+                x=x.toString();
+                var lastThree = x.substring(x.length-3);
+                var otherNumbers = x.substring(0,x.length-3);
+                if(otherNumbers != '')
+                    lastThree = ',' + lastThree;
+                var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+
+                return res;
+            },
+            toPercent: function(x,y) {
+                var value=parseFloat(x)/parseFloat(y);
+                value=value*100;
+                value=value.toFixed(2);
+
+                // console.log("Percentage Value is ");
+                // console.log(value);
+                return value;
+            }
+
+        }
+    });
+
+</script>
+</body>
+
+
+
+</html>

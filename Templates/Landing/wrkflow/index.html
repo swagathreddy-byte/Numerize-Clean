@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Firstcourse Accounting Solutions</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#fff">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="description" content="Page description">
+    <!--Twitter Card data-->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@publisher_handle">
+    <meta name="twitter:title" content="Page Title">
+    <meta name="twitter:description" content="Page description less than 200 characters">
+    <meta name="twitter:creator" content="@author_handle">
+    <meta name="twitter:image" content="http://www.example.com/image.jpg">
+    <!--Open Graph data-->
+    <meta property="og:title" content="Title Here">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://www.example.com/">
+    <meta property="og:image" content="http://example.com/image.jpg">
+    <meta property="og:description" content="Description Here">
+    <meta property="og:site_name" content="Site Name, i.e. Moz">
+    <meta property="fb:admins" content="Facebook numeric ID">
+    <link rel="stylesheet" media="all" href="{% static 'wrkflow/css/app.css' %}">
+    <script>var viewportmeta = document.querySelector('meta[name="viewport"]');
+if (viewportmeta) {
+  if (screen.width < 375) {
+    var newScale = screen.width / 375;
+    viewportmeta.content = 'width=375, minimum-scale=' + newScale + ', maximum-scale=1.0, user-scalable=no, initial-scale=' + newScale + '';
+  } else {
+    viewportmeta.content = 'width=device-width, maximum-scale=1.0, initial-scale=1.0';
+  }
+}</script>
+  </head>
+  <body>
+    <div class="page" style="background-color: white;">
+      <header class="header js-header">
+        <div class="header__center center"><a class="header__logo" href="#"><img class="header__pic header__pic_dark" src="{% static 'wrkflow/img/First Course Final Logo black.png' %}" alt=""><img class="header__pic header__pic_white" src="{% static 'wrkflow/img/First Course Final Logo black.png' %}" alt=""></a>
+          <div class="header__wrap js-header-wrap">
+            <nav class="header__nav"><a class="header__link js-popup-open" href="#popup-pricing" data-effect="mfp-zoom-in">Pricing</a><a class="header__link js-popup-open" href="#popup-work" data-effect="mfp-zoom-in">How it Works</a><a class="header__link js-popup-open" href="#popup-faq" data-effect="mfp-zoom-in">FAQ</a></nav>
+            <div class="header__control"><a class="header__login" href="/accounts/login" data-effect="mfp-zoom-in"><span class="header__text">Sign In</span><svg class="icon icon-arrow-right">
+                  <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-right' %} "></use>
+                </svg></a><a class="header__btn btn btn_green js-popup-open" href="#popup-pricing" data-effect="mfp-zoom-in">Get Started</a></div>
+          </div><button class="header__burger js-header-burger"></button>
+        </div>
+      </header>
+      <div class="main section">
+        <div class="main__center center">
+          <div class="main__wrap">
+            <h1 class="main__title title title_big" data-aos="animation-scale-y-and-color">Manage your Accounting & Financial Operations Better.</h1>
+            <div class="main__info info" data-aos="animation-scale-y" data-aos-delay="150">Change the way you manage your F&B business.</div>
+            <div class="main__btns" data-aos="animation-scale-y" data-aos-delay="300"><a class="main__btn btn btn_green js-popup-open" href="#popup-pricing" data-effect="mfp-zoom-in"><svg class="icon icon-arrow-right">
+                  <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-right' %}"></use>
+                </svg><span class="btn__text">Get Started</span></a><a class="main__btn btn btn_border js-popup-open" href="#popup-pricing" data-effect="mfp-zoom-in">Schedule a Demo</a></div>
+          </div>
+          <div class="main__preview"><img class="main__pic" src="{% static 'wrkflow/img/Restaurant Isometric.png' %} " alt=""></div>
+        </div>
+      </div>
+      <div class="quality section">
+        <div class="quality__center center">
+          <div class="quality__head" data-aos="animation-scale-y">
+            <h2 class="quality__title title">Get business insights at <a class="title__link" href="#">affordable cost</a></h2>
+            <div class="quality__info info">Simple, fast, effortlessly.</div>
+          </div>
+          <div class="quality__list">
+            <div class="quality__item" data-aos="animation-scale-y">
+              <div class="quality__icon"><img class="quality__pic" src="{% static 'wrkflow/img/pricing.svg' %} " alt=""></div>
+              <div class="quality__text">Affordable Pricing</div>
+            </div>
+            <div class="quality__item" data-aos="animation-scale-y" data-aos-delay="150">
+              <div class="quality__icon"><img class="quality__pic" src="{% static 'wrkflow/img/integrations.svg' %} " alt=""></div>
+              <div class="quality__text">Exhaustive Accounting & Analytical Insights</div>
+            </div>
+            <div class="quality__item" data-aos="animation-scale-y" data-aos-delay="300">
+              <div class="quality__icon"><img class="quality__pic" src="{% static 'wrkflow/img/increase.svg' %} " alt=""></div>
+              <div class="quality__text">Improved Operating Efficiency</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="details section">
+        <div class="details__center center">
+          <div class="details__item">
+            <div class="details__preview">
+              <div class="details__icon"><img class="details__pic js-parallax" src="{% static 'wrkflow/img/Japanesse Restaurant Isometric.jpg' %}  " alt=""></div>
+            </div>
+            <div class="details__box" data-aos>
+              <h2 class="details__title title">Revolutionize your workflow</h2>
+              <div class="details__info info">By leveraging the latest technologies such as AI/ML, we help you digitizing and automating your workflows. This enables you easily keep a track of your business metrics such as profitability, cash flow etc.</div><a class="details__link" href="#">Learn More<svg class="icon icon-arrow-right">
+                  <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-right' %}"></use>
+                </svg></a>
+            </div>
+          </div>
+          <div class="details__item">
+            <div class="details__box" data-aos>
+              <h2 class="details__title title">Wide range of reporting & analytical insights choices</h2>
+              <div class="details__info info">Firstcourse helps you understand your business from several vantage points. We offer a variety of insights such Profit Loss Statement, Kitchen Efficiency, Purchase Efficiency, GST Summary. By targeting the complete F&B full supply chain, we help you optimize costs across the entire vertical resulting in an enormous savings. All this at an affordable price!</div><a class="details__link" href="#">Watch the Video<svg class="icon icon-arrow-right">
+                  <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-right' %}"></use>
+                </svg></a>
+            </div>
+            <div class="details__preview">
+              <div class="details__icon"><img class="details__pic js-parallax-left" src="{% static 'wrkflow/img/datanalytics.jpg' %} " alt=""></div>
+            </div>
+          </div>
+          <div class="details__item">
+            <div class="details__preview">
+              <div class="details__icon"><img class="details__pic js-parallax-right" src="{% static 'wrkflow/img/brands.jpg' %} " alt=""></div>
+            </div>
+            <div class="details__box" data-aos>
+              <h2 class="details__title title">Used by trusted brands</h2>
+              <div class="details__info info">Our services has been trusted by many reputed F&B brands and these brands have experienced dramatic improvements in their operating efficiencies</div><a class="details__link" href="#">See Reviews<svg class="icon icon-arrow-right">
+                  <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-right' %}"></use>
+                </svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="system section">
+        <div class="system__center center">
+          <div class="system__head" data-aos="animation-scale-y">
+            <h2 class="system__title title">Digitization of end-to-end supply chain to help you <a class="title__link" href="#">optimize costs</a></h2>
+            <div class="system__info info">Focus on what matters most, our digital superpowers will handle the rest ☕️</div>
+          </div>
+          <div class="system__preview" data-aos><video src="{% static 'wrkflow/img/Isometric1_loop_1200x1200.mp4' %} " autoplay loop></video></div>
+        </div>
+      </div>
+      <div class="review section">
+        <div class="review__center center">
+          <h2 class="review__title title" data-aos="animation-scale-y">Taking efficiency & profitability of F&B business to a whole new level.</h2>
+          <div class="review__container">
+            <div class="review__slider owl-carousel js-slider-review">
+              <div class="review__item">
+                <div class="review__ava" data-aos="animation-scale-y" data-aos-delay="50"><img class="review__pic" src="{% static 'wrkflow/img/golisoda.png' %} " alt=""></div>
+                <div class="review__details">
+                  <div class="review__blockquote" data-aos="animation-scale-y" data-aos-delay="100">“A great problem solving solution”</div>
+                  <div class="review__info" data-aos="animation-scale-y" data-aos-delay="200">Firstcourse solved our exact problems before we even identified them miraculously. Its terrifying to run a restaurant with messy and improper accounting</div>
+                  <div class="review__author" data-aos="animation-scale-y" data-aos-delay="300">- Ravi, Golisoda</div>
+                </div>
+              </div>
+              <div class="review__item">
+                <div class="review__ava" data-aos="animation-scale-y" data-aos-delay="50"><img class="review__pic" src="{% static 'wrkflow/img/pondyparottas.png' %}" alt=""></div>
+                <div class="review__details">
+                  <div class="review__blockquote" data-aos="animation-scale-y" data-aos-delay="100">“Enabling objective decision making backed by numbers”</div>
+                  <div class="review__info" data-aos="animation-scale-y" data-aos-delay="200">We get weekly and monthly reports directing is towards the precise problem areas. Firstcourse made our decision making objective and backed by numbers</div>
+                  <div class="review__author" data-aos="animation-scale-y" data-aos-delay="300">- Raj, Pondy Parottas</div>
+                </div>
+              </div>
+              <div class="review__item">
+                <div class="review__ava" data-aos="animation-scale-y" data-aos-delay="50"><img class="review__pic" src="{% static 'wrkflow/img/churrolto.jpg' %} " alt=""></div>
+                <div class="review__details">
+                  <div class="review__blockquote" data-aos="animation-scale-y" data-aos-delay="100">“One stop solution for all our needs”</div>
+                  <div class="review__info" data-aos="animation-scale-y" data-aos-delay="200">Firstcourse is one-stop solution for all our accounting and compliance needs. Our service manager takes care of everything so seamlessly....</div>
+                  <div class="review__author" data-aos="animation-scale-y" data-aos-delay="300">- Sneh, Churrolto</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="indicators section">
+        <div class="indicators__center center">
+          <div class="indicators__head" data-aos="animation-scale-y">
+            <h2 class="indicators__title title">One stop solution <a class="title__link" href="#">all your accounting needs</a> <br> in F&B Industry</h2>
+            <div class="indicators__info info">Join us and see why our users love us ❤️</div>
+          </div>
+          <div class="indicators__list">
+            <div class="indicators__item" data-aos="animation-scale-y">
+              <div class="indicators__icon"><img class="indicators__pic" src="{% static 'wrkflow/img/profile.svg' %} " alt=""></div>
+              <div class="indicators__counter">50+</div>
+              <div class="indicators__info info">F&B Brands using our services</div>
+            </div>
+            <div class="indicators__item" data-aos="animation-scale-y" data-aos-delay="150">
+              <div class="indicators__icon"><img class="indicators__pic" src="{% static 'wrkflow/img/task.svg' %} " alt=""></div>
+              <div class="indicators__counter">10+</div>
+              <div class="indicators__info info">Reports & Insightful Analytics</div>
+            </div>
+            <div class="indicators__item" data-aos="animation-scale-y">
+              <div class="indicators__icon"><img class="indicators__pic" src="{% static 'wrkflow/img/business.svg' %} " alt=""></div>
+              <div class="indicators__counter">3+</div>
+              <div class="indicators__info info">Years in F&B industry</div>
+            </div>
+            <div class="indicators__item" data-aos="animation-scale-y" data-aos-delay="150">
+              <div class="indicators__icon"><img class="indicators__pic" src="{% static 'wrkflow/img/positive.svg' %} " alt=""></div>
+              <div class="indicators__counter">20%</div>
+              <div class="indicators__info info">Increase in profits</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="trial section">
+        <div class="trial__center center">
+          <div class="trial__wrap" data-aos="animation-scale-y">
+            <div class="trial__box">
+              <h2 class="trial__title title">Risk-free 30 day trial to <br>level up your business’s profitability.</h2>
+              <div class="trial__info info">Get started now and take advantage of our 30 day free trial today. No credit card required.</div>
+            </div><a class="trial__btn btn btn_green js-popup-open" href="#popup-pricing" data-effect="mfp-zoom-in"><svg class="icon icon-arrow-right">
+                <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-right' %}"></use>
+              </svg><span class="btn__text">Get Started</span></a>
+          </div>
+        </div>
+      </div><!-- popup login-->
+      <div class="popup popup_login mfp-hide" id="popup-sign-up">
+        <div class="login">
+          <form class="login__form">
+            <div class="login__title title title_sm">Sign Up</div>
+            <div class="login__fieldset">
+              <div class="login__field field">
+                <div class="field__label">Email Address</div>
+                <div class="field__wrap"><input class="field__input" type="email" name="email" required>
+                  <div class="field__icon"><svg class="icon icon-email">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-email' %} "></use>
+                    </svg></div>
+                </div>
+              </div>
+              <div class="login__field field">
+                <div class="field__label">Create Password</div>
+                <div class="field__wrap"><input class="field__input" type="password" name="password" required>
+                  <div class="field__icon"><svg class="icon icon-lock">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-lock' %} "></use>
+                    </svg></div>
+                </div>
+              </div>
+            </div>
+            <div class="login__btns"><button class="login__btn btn btn_green" type="submit">Create Account</button><a class="login__btn btn btn_border js-popup-open" href="#popup-sign-in" data-effect="mfp-zoom-in">Sign In </a></div>
+          </form>
+        </div>
+      </div><!-- popup sign in-->
+      <div class="popup popup_login mfp-hide" id="popup-sign-in">
+        <div class="login">
+          <form class="login__form">
+            <div class="login__title title title_sm">Sign In</div>
+            <div class="login__fieldset">
+              <div class="login__field field">
+                <div class="field__label">Email Address</div>
+                <div class="field__wrap"><input class="field__input" type="email" name="email" required>
+                  <div class="field__icon"><svg class="icon icon-email">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-email' %} "></use>
+                    </svg></div>
+                </div>
+              </div>
+              <div class="login__field field">
+                <div class="field__line">
+                  <div class="field__label">Password</div><a class="field__link" href="#">Forgot Password?<svg class="icon icon-arrow-right">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-right' %}"></use>
+                    </svg></a>
+                </div>
+                <div class="field__wrap"><input class="field__input" type="password" name="password" required>
+                  <div class="field__icon"><svg class="icon icon-lock">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-lock' %} "></use>
+                    </svg></div>
+                </div>
+              </div>
+            </div>
+            <div class="login__btns"><button class="login__btn btn btn_green" type="submit">Sign In</button><button class="login__btn btn btn_border" type="submit">Create Account</button></div>
+          </form>
+        </div>
+      </div><!-- popup pricing-->
+      <div class="popup popup_big mfp-hide" id="popup-pricing">
+        <div class="pricing js-pricing">
+          <div class="pricing__head">
+            <h2 class="pricing__title title">Explore our Pricing</h2>
+            <div class="pricing__info">We offer one of the most affordable prices on the market right now.</div><label class="switch js-pricing-switch"><input class="switch__input" type="checkbox" checked><span class="switch__flex"><span class="switch__box"></span><span class="switch__category"><span class="switch__yearly">Billed Yearly</span><span class="switch__monthly">Billed Monthly</span></span><span class="switch__sale">Save 20%</span></span></label>
+          </div>
+          <div class="pricing__list">
+            <div class="pricing__item pricing__item_starter">
+              <div class="pricing__name">Starter</div>
+              <div class="pricing__value"><span class="pricing__money">$0</span></div>
+              <div class="pricing__details">
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-check">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-check' %} "></use>
+                    </svg></div>
+                  <div class="pricing__text">Unlimited projects </div>
+                </div>
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-check">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-check' %}  "></use>
+                    </svg></div>
+                  <div class="pricing__text">Unlimited users </div>
+                </div>
+              </div><button class="pricing__btn btn btn_red btn_sm">Get Started</button>
+            </div>
+            <div class="pricing__item pricing__item_pro">
+              <div class="pricing__name">Pro</div>
+              <div class="pricing__value"><span class="pricing__money js-pricing-money"><span class="pricing__money_yearly">$99</span><span class="pricing__money_monthly">$19</span></span> / Billed yearly</div>
+              <div class="pricing__details">
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-arrow-prev">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-prev' %} "></use>
+                    </svg></div>
+                  <div class="pricing__text">Everything in <a class="pricing__link" href="#">Starter</a></div>
+                </div>
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-check">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-check' %} "></use>
+                    </svg></div>
+                  <div class="pricing__text">7 Day version history</div>
+                </div>
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-check">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-check' %} "></use>
+                    </svg></div>
+                  <div class="pricing__text">Dedicated manager</div>
+                </div>
+              </div><button class="pricing__btn btn btn_green btn_sm">Try Free Now</button>
+            </div>
+            <div class="pricing__item pricing__item_enterprise">
+              <div class="pricing__name">Enterprise</div>
+              <div class="pricing__value"><span class="pricing__money">Custom</span></div>
+              <div class="pricing__details">
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-arrow-prev">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-arrow-prev' %} "></use>
+                    </svg></div>
+                  <div class="pricing__text">Everything in <a class="pricing__link" href="#">Pro</a></div>
+                </div>
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-check">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-check' %} "></use>
+                    </svg></div>
+                  <div class="pricing__text">Custom invoicing</div>
+                </div>
+                <div class="pricing__line">
+                  <div class="pricing__icon"><svg class="icon icon-check">
+                      <use xlink:href="{% static 'wrkflow/img/sprite.svg#icon-check' %} "></use>
+                    </svg></div>
+                  <div class="pricing__text">Additional security</div>
+                </div>
+              </div><button class="pricing__btn btn btn_purple btn_sm">Contact Sales</button>
+            </div>
+          </div>
+        </div>
+      </div><!-- popup -->
+      <div class="popup popup_big mfp-hide" id="popup-faq">
+        <div class="accord accord_faq js-accord">
+          <h2 class="accord__title title">Frequently Asked Questions</h2>
+          <div class="accord__list">
+            <div class="accord__item js-accord-item active">
+              <div class="accord__head js-accord-head">1. Do you offer services across India?</div>
+              <div class="accord__body js-accord-body" style="display: block;">Yes, we serve clients anywhere from India.</div>
+            </div>
+            <div class="accord__item js-accord-item">
+              <div class="accord__head js-accord-head">2. Do you also take care of our GST filings and tax returns?</div>
+              <div class="accord__body js-accord-body">Firstcourse is your accountant. We have partner CAs tied up who can take of all your compliances. We are a one stop solution</div>
+            </div>
+            <div class="accord__item js-accord-item">
+              <div class="accord__head js-accord-head">3. How much do you charge?</div>
+              <div class="accord__body js-accord-body">It depends on the size of the business. For a typical one outlet restaurant with about Rs 20 lakhs sale per month, we charge about Rs. 15,000 per month.</div>
+            </div>
+            <div class="accord__item js-accord-item">
+              <div class="accord__head js-accord-head">4. How are you different from a POS software?</div>
+              <div class="accord__body js-accord-body">POS helps you generate bills. We are comprehensive accounting soluton. We record all your transactions, reconcile and report.</div>
+            </div>
+            <div class="accord__item js-accord-item">
+              <div class="accord__head js-accord-head">5. Can your solution be tried for free?</div>
+              <div class="accord__body js-accord-body">Yes, of course we do. We offer a 1 month free trial.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- popup -->
+      <div class="popup popup_big mfp-hide" id="popup-work">
+        <div class="accord accord_work js-accord">
+          <h2 class="accord__title title">How it Works</h2>
+          <div class="accord__info">Learn more about our software and how to use it in the best way possible.</div>
+          <div class="accord__list">
+            <div class="accord__section">
+              <div class="accord__title title title_sm">1. Introduction</div>
+              <div class="accord__group">
+                <div class="accord__item js-accord-item active">
+                  <div class="accord__head js-accord-head">1.1 Downloading and installing our software on your computer or mobile device</div>
+                  <div class="accord__body js-accord-body" style="display: block;">In order to start using our software, you would first have to create an account. This process is pretty straight forward and all you need is your emaill address, as well as, you would also have to create a password for your new account.</div>
+                </div>
+              </div>
+            </div>
+            <div class="accord__section">
+              <div class="accord__title title title_sm">2. Set Up</div>
+              <div class="accord__group">
+                <div class="accord__item js-accord-item">
+                  <div class="accord__head js-accord-head">2.1 Creating an account to use our software</div>
+                  <div class="accord__body js-accord-body">In order to start using our software, you would first have to create an account. This process is pretty straight forward and all you need is your emaill address, as well as, you would also have to create a password for your new account.</div>
+                </div>
+                <div class="accord__item js-accord-item">
+                  <div class="accord__head js-accord-head">2.2 Choosing the plan that will be right for you and your business</div>
+                  <div class="accord__body js-accord-body">In order to start using our software, you would first have to create an account. This process is pretty straight forward and all you need is your emaill address, as well as, you would also have to create a password for your new account.</div>
+                </div>
+              </div>
+            </div>
+            <div class="accord__section">
+              <div class="accord__title title title_sm">3. Set Up</div>
+              <div class="accord__group">
+                <div class="accord__item js-accord-item">
+                  <div class="accord__head js-accord-head">3.1 Creating an account to use our software</div>
+                  <div class="accord__body js-accord-body">In order to start using our software, you would first have to create an account. This process is pretty straight forward and all you need is your emaill address, as well as, you would also have to create a password for your new account.</div>
+                </div>
+                <div class="accord__item js-accord-item">
+                  <div class="accord__head js-accord-head">3.2 Choosing the plan that will be right for you and your business</div>
+                  <div class="accord__body js-accord-body">In order to start using our software, you would first have to create an account. This process is pretty straight forward and all you need is your emaill address, as well as, you would also have to create a password for your new account.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="footer__center center">
+          <div class="footer__row">
+            <div class="footer__col"><a class="footer__logo" href="#"><img class="footer__pic footer__pic_dark" src="{% static 'wrkflow/img/First Course Final Logo black.png' %}" alt=""><img class="footer__pic footer__pic_white" src="{% static 'assets/img/First Course Final Logo black.png' %}" alt=""></a></div>
+            <div class="footer__col">
+              <div class="footer__menu"><a class="footer__link js-popup-open" href="#popup-pricing" data-effect="mfp-zoom-in">Pricing</a><a class="footer__link js-popup-open" href="#popup-work" data-effect="mfp-zoom-in">How it Works</a><a class="footer__link js-popup-open" href="#popup-faq" data-effect="mfp-zoom-in">FAQ</a></div>
+            </div>
+            <div class="footer__col">
+              <div class="footer__menu"><a class="footer__link" href="#">Terms of Service</a><a class="footer__link" href="#">Privacy Policy</a></div>
+            </div>
+            <div class="footer__col">
+              <div class="footer__social social"><a class="social__link" href="#"><svg class="icon icon-instagram">
+                    <use xlink:href="{% static 'assets/img/sprite.svg#icon-instagram' %} "></use>
+                  </svg></a><a class="social__link" href="#"><svg class="icon icon-twitter">
+                    <use xlink:href="{% static 'assets/img/sprite.svg#icon-twitter' %}  "></use>
+                  </svg></a><a class="social__link" href="#"><svg class="icon icon-facebook">
+                    <use xlink:href="{% static 'assets/img/sprite.svg#icon-facebook' %} "></use>
+                  </svg></a></div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="{% static 'wrkflow/js/app.js' %} "></script>
+    <script src="{% static 'wrkflow/js/common.js' %}"></script>
+  </body>
+</html>

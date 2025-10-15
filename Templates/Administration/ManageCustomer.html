@@ -1,0 +1,1638 @@
+{%  extends "base.html" %}
+{% load static %}
+{% load home_extras %}
+
+{% block extra_heads %}
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-alpine.css">
+{% endblock %}
+
+{% block extrastyle %}
+    <style>
+        .select2-selection--single{
+            height:100%!important;
+        }
+
+        .overlay{
+            height:100%;
+            position:fixed;
+            width:100%;
+            z-index:2000;
+            left:0px;
+            top:0px;
+            background-color: rgba(50,50,50,0.5);
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            position:fixed;
+            top:calc(50% - 60px);
+            left:calc(50% - 60px);
+            z-index:2001;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+            <li class="breadcrumb-item"><a href="#">Customer Management</a></li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block maincontent %}
+    <div class="overlay d-none">
+        <div class="loader d-none">
+
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="nav-wrapper">
+                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-cloud-upload-96 mr-2"></i>Basic Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-bell-55 mr-2"></i>Subscription Preferences</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>Master Onboarding</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-4-tab" data-toggle="tab" href="#tabs-icons-text-4" role="tab" aria-controls="tabs-icons-text-4" aria-selected="false"><i class="ni ni-bulb-61 mr-2"></i>Process Onboarding</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-5-tab" data-toggle="tab" href="#tabs-icons-text-5" role="tab" aria-controls="tabs-icons-text-5" aria-selected="false"><i class="ni ni-bulb-61 mr-2"></i>Organization Tree</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                            <form id="basicinfo" ref="basicinfo">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-12 col-lg-6">
+                                        <div class="form-group">
+                                            <label for="cust_name">Customer Name</label>
+                                            <input type="text" class="form-control" placeholder="Customer Name" v-model="customerinfo.name" id="cust_name" name="cust_name" required="true">
+                                            <p class="text-danger text-sm" v-if="errors.customer_name!=''">[[ errors.customer_name ]]</p>
+                                        </div>
+                                        <div class="form-group" for="cust_address">
+                                            <label class="form-control-label">Address</label>
+                                            <textarea rows="6" cols="80" class="form-control" placeholder="Here can be your description" v-model="customerinfo.address"  name="cust_address" id="cust_address" ></textarea>
+                                        </div>
+                                        <div class="form-group" for="cust_mobile">
+                                            <label class="form-control-label">Registered Mobile No</label>
+                                            <input type="number" class="form-control" placeholder="mobile" v-model="customerinfo.mobile" name="cust_mobile" id="cust_mobile" required="true">
+                                            <p class="text-danger text-sm" v-if="errors.customer_mobile!=''">[[ errors.customer_mobile ]]</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-control-label">Email</label>
+                                            <input type="email" class="form-control" placeholder="email" v-model="customerinfo.email"  name="cust_email" id="cust_email">
+                                            <p class="text-danger text-sm" v-if="errors.customer_email!=''">[[ errors.customer_email ]]</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Accountant</label>
+                                            <select name="cust_accountant" id="cust_accountant" class="form-control" v-model="customerinfo.accountant" style="width: 100%;">
+                                                <option></option>
+                                            </select>
+                                            <p class="text-danger text-sm" v-if="errors.customer_accountant!=''">[[ errors.customer_accountant ]]</p>
+                                            {#                                                <input type="text" class="form-control"  placeholder="Customer Name" name="cust_accountant" >#}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-control-label">QC</label>
+                                            <select name="cust_qc" id="cust_qc" class="form-control" v-model="customerinfo.qc" style="width: 100%;">
+                                                <option></option>
+                                            </select>
+                                            <p class="text-danger text-sm" v-if="errors.customer_qc!=''">[[ errors.customer_qc ]]</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-control-label">CRM</label>
+                                            <select name="cust_crm" id="cust_crm" class="form-control" v-model="customerinfo.crm" style="width: 100%;">
+                                                <option></option>
+                                            </select>
+                                            <p class="text-danger text-sm" v-if="errors.customer_crm!=''">[[ errors.customer_crm ]]</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-control-label">Username</label>
+                                            <input type="text" class="form-control" placeholder="branch" v-model="customerinfo.username" name="cust_username">
+                                            <p class="text-danger text-sm" v-if="errors.customer_username!=''">[[ errors.customer_username ]]</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-control-label">Password</label>
+                                            <input type="password" class="form-control"  v-model="customerinfo.password" id="id_cust_password" name="cust_password" >
+                                            <p class="text-danger text-sm" v-if="errors.customer_password!=''">[[ errors.customer_password ]]</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-control-label">Confirm Password</label>
+                                            <input type="password" class="form-control"   v-model="customerinfo.confirm_password" name="cust_confirm_password" >
+                                            <p class="text-danger text-sm" v-if="errors.customer_confirm_password!=''">[[ errors.customer_confirm_password ]]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="button" @click="next(0)" id="next_basic_info">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                            <form method="post" enctype="multipart/form-data" id="subscription">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-12 col-lg-12">
+                                        <h3 class="text-center"> Subscriptions </h3>
+                                        <p class="text-danger text-sm" v-if="errors.customer_subscription!=''">[[ errors.customer_subscription ]]</p>
+                                        <div class="table-responsive" v-if="input_types_loaded && frequency_types_loaded && report_types_loaded">
+                                            <div>
+                                                <table class="table align-items-center">
+                                                    <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col">Report Name</th>
+                                                        <th scope="col">Subscribe</th>
+                                                        <th scope="col">Reporting Frequency</th>
+                                                        <th scope="col">Input Granularity</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody class="list">
+
+                                                    <tr v-for="(rt,index) in report_types">
+                                                        <th scope="row">
+                                                            [[ rt[1] ]]
+                                                        </th>
+                                                        <td>
+                                                            <label class="custom-toggle">
+                                                                <input type="checkbox" :id="'subscribe_'+rt[0]" v-model="subscriptions[index].subscribe">
+                                                                <span class="custom-toggle-slider rounded-circle"  data-label-off="No" data-label-on="Yes"></span>
+                                                            </label>
+                                                        </td>
+                                                        <td>
+                                                            <select class="form-control" :id="'frequency_type_'+rt[0]" v-model="subscriptions[index].subscribe_type">
+                                                                <option v-for="ft in frequency_types"> [[ ft[1] ]]</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select class="form-control" :id="'input_type_'+rt[0]" v-model="subscriptions[index].input_type">
+                                                                <option v-for="it in input_types"> [[ it.text ]]</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="button" @click="next(1)" id="next_subscription">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                            <form method="post" enctype="multipart/form-data" id="master_onboarding">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div id="master_onboarding" style="height: 600px;width: 100%;" class="ag-theme-alpine"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="button" @click="next(2)" id="next_master_onboarding">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="tab-pane fade" id="tabs-icons-text-4" role="tabpanel" aria-labelledby="tabs-icons-text-4-tab">
+                            <form method="post" enctype="multipart/form-data" id="process_onboarding">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4> [[ process_onboarding[0].heading ]] </h4>
+                                        <div id="process_A_onboarding" style="width: 100%;" class="ag-theme-alpine pb-3"></div>
+
+                                    </div>
+                                    <div class="col-12">
+                                        <h4> [[ process_onboarding[1].heading ]] </h4>
+                                        <div id="process_B_onboarding" style="width: 100%;" class="ag-theme-alpine pb-3"></div>
+
+                                    </div>
+                                    <div class="col-12">
+                                        <h4> [[ process_onboarding[2].heading ]] </h4>
+                                        <div id="process_C_onboarding" style="width: 100%;" class="ag-theme-alpine pb-3"></div>
+                                    </div>
+                                    <div class="col-12">
+                                        <h4> [[ process_onboarding[3].heading ]] </h4>
+                                        <div id="process_D_onboarding" style="width: 100%;" class="ag-theme-alpine pb-3"></div>
+                                    </div>
+                                    <div class="col-12">
+                                        <h4> [[ process_onboarding[4].heading ]] </h4>
+                                        <div id="process_E_onboarding" style="width: 100%;" class="ag-theme-alpine pb-3"></div>
+                                    </div>
+                                    <div class="col-12">
+                                        <h4> [[ process_onboarding[5].heading ]] </h4>
+                                        <div id="process_F_onboarding" style="width: 100%;" class="ag-theme-alpine pb-3"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="button" @click="next(3)" id="next_process_onboarding">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tabs-icons-text-5" role="tabpanel" aria-labelledby="tabs-icons-text-5-tab">
+                            <p class="text-danger text-sm" v-if="errors.customer_legalentities!=''">[[ errors.customer_legalentities ]]</p>
+                            <form method="post" enctype="multipart/form-data" id="org_tree">
+                                {% csrf_token %}
+                                <h4> All entities of organizations</h4>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-responsive table-bordered">
+                                            <tbody>
+                                            <tr>
+                                                <th scope="row"> Legal Entities </th>
+                                                <td v-for="(le,index) in legalentities">
+                                                    <input type="text" :id="'le_'+index" v-model="legalentities[index].name" placeholder="Enter the legal entity name" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" type="button" @click="add_legal_entity"><i class="fa fa-plus"></i></button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table class="table table-responsive table-bordered">
+                                            <tbody>
+                                            <tr>
+                                                <th scope="row"> Outlets </th>
+                                                <td v-for="(ot,index) in outlets">
+                                                    <input type="text" :id="'ot_'+index" v-model="outlets[index].name" placeholder="Enter the outlet name" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" type="button" @click="add_outlet"><i class="fa fa-plus"></i></button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table class="table table-responsive table-bordered">
+                                            <tbody>
+                                            <tr>
+                                                <th scope="row"> Brands </th>
+                                                <td v-for="(bd,index) in brands">
+                                                    <input type="text" :id="'bd_'+index" v-model="brands[index].name" placeholder="Enter the brand name" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" type="button" @click="add_brand"><i class="fa fa-plus"></i></button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <h4> Legal entities - Outlet relationship</h4>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-dark table-responsive table-bordered">
+                                            <thead class="thead-dark">
+                                            <tr>
+                                                <th>
+
+                                                </th>
+                                                <th v-for="(ot,index1) in outlets" class="text-white">
+                                                    [[ot.name]]
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="(le,index) in legalentities">
+                                                <th class="text-uppercase table-dark">
+                                                    [[le.name]]
+                                                </th>
+                                                <td v-for="(bd,index1) in outlets">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" @change="binding('lg_ot',index,index1,)" :id="'lg_ot_'+index+'_'+index1">
+                                                        <label class="custom-control-label" :for="'lg_ot_'+index+'_'+index1">Check this</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <h4> Outlet-Brand relationship</h4>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-dark table-responsive table-bordered">
+                                            <thead class="thead-dark">
+                                            <tr>
+                                                <th>
+
+                                                </th>
+                                                <th v-for="(bd,index1) in brands" class="text-white">
+                                                    [[bd.name]]
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="(ot,index) in outlets">
+                                                <th class="text-uppercase table-dark">
+                                                    [[ot.name]]
+                                                </th>
+                                                <td v-for="(bd,index1) in brands">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" @change="binding('ot_bd',index,index1)" :id="'ot_bd_'+index+'_'+index1">
+                                                        <label class="custom-control-label" :for="'ot_bd_'+index+'_'+index1">Check this</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <h4> Organizational Tree</h4>
+                                <div id="cyat" style="height:600px;width:100%" >
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="button" @click="next(4)" id="next_org_tree">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block extrafooter %}
+    <script src="{% static 'argon/assets/vendor/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'argon/assets/vendor/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'js/insights.js' %}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <script src="https://unpkg.com/cytoscape@3.2.22/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Javascript method's body can be found in assets/js/demos.js
+
+            var customermanagement = new Vue({
+                delimiters: ['[[', ']]'],
+                el: '#panel',
+                data: {
+                    report_types:[],
+                    frequency_types:[],
+                    input_types:[],
+                    report_types_loaded:false,
+                    frequency_types_loaded:false,
+                    input_types_loaded:false,
+                    master_onboarding:{},
+                    process_onboarding:{},
+                    gridAOptions:{},
+                    gridBOptions:{},
+                    gridCOptions:{},
+                    gridDOptions:{},
+                    gridEOptions:{},
+                    gridFOptions:{},
+                    customerinfo:{
+                        "name":"",
+                        "address":"",
+                        "email":"",
+                        "mobile":"",
+                        "qc":"",
+                        "accountant":"",
+                        "crm":"",
+                        "username":"",
+                        "password":"",
+                        "confirm_password":""
+                    },
+                    subscriptions:[],
+                    legalentities:[],
+                    outlets:[],
+                    brands:[],
+                    cyto:null,
+                    errors:{
+                        "customer_name":'',
+                        "customer_mobile":'',
+                        "customer_email":'',
+                        "customer_accountant":'',
+                        "customer_qc":'',
+                        "customer_crm":'',
+                        "customer_username":'',
+                        "customer_password":'',
+                        "customer_confirm_password":'',
+                        "customer_subscription":'',
+                        "customer_legalentities":''
+                    },
+                    customerid:0
+                },
+                methods: {
+                    addspinner:function(){
+                        $(".overlay").addClass("d-block");
+                        $(".overlay").removeClass("d-none");
+                        $(".loader").removeClass("d-none");
+                        $(".loader").addClass("d-block",400);
+                    },
+                    removespinner:function (){
+                        $(".overlay").addClass("d-none");
+                        $(".overlay").removeClass("d-block");
+                        $(".loader").removeClass("d-block",400);
+                        $(".loader").addClass("d-none",400);
+                    },
+                    modifycustomer:function(){
+
+                        if(this.validate_form()){
+                            var csrftoken = Cookies.get('csrftoken');
+                            function csrfSafeMethod(method) {
+                                // these HTTP methods do not require CSRF protection
+                                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                            }
+                            $.ajaxSetup({
+                                beforeSend: function(xhr, settings) {
+                                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                    }
+                                }
+                            });
+
+                            axios.interceptors.request.use(config => {
+                                // log a message before any HTTP request is sent
+                                console.log('Request was sent');
+                                customermanagement.addspinner();
+                                return config;
+                            });
+
+
+                            axios.interceptors.response.use(function (response) {
+                                // Any status code that lie within the range of 2xx cause this function to trigger
+                                // Do something with response data
+                                customermanagement.removespinner();
+                                return response;
+                            }, function (error) {
+                                // Any status codes that falls outside the range of 2xx cause this function to trigger
+                                // Do something with response error
+                                customermanagement.removespinner();
+                                return Promise.reject(error);
+                            });
+                            axios.defaults.xsrfCookieName = csrftoken;
+                            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+                            var formData = new FormData();
+                            formData.append('cust_info', JSON.stringify(this.customerinfo));
+                            var org_tree={
+                                "legalentities":this.legalentities,
+                                "outlets":this.outlets,
+                                "brands":this.brands
+                            }
+                            formData.append('cust_org_tree',JSON.stringify(org_tree));
+                            formData.append('cust_subscriptions',JSON.stringify(this.subscriptions));
+
+                            axios.post('/customers/add/',
+                                formData,
+                                {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data',
+                                        'X-CSRFToken': csrftoken
+                                    }
+                                }
+                            ).then(function (){
+                                customermanagement.showNotification("top", "right", "success", "Customer successfully submitted");
+                                location.reload();
+                            }).catch(function (error) {
+                                customermanagement.showNotification("top", "right", "danger", " Request has been sent. But something is not right");
+                            });
+                        }
+
+
+                    },
+                    showNotification:function(from, align,color,message){
+                        $.notify({
+                            icon: "now-ui-icons ui-1_bell-53",
+                            message: message
+
+                        },{
+                            type: color,
+                            timer: 2000,
+                            placement: {
+                                from: from,
+                                align: align
+                            }
+                        });
+                    },
+                    get_report_types:function(){
+
+                        axios.get('/reports/get/choices/')
+                            .then(function (response) {
+                                customermanagement.report_types=response.data.report_type;
+                                customermanagement.report_types_loaded=true;
+                                $.each(customermanagement.report_types,function(index,value){
+                                    customermanagement.subscriptions.push({
+                                        "report_name":value[1],
+                                        "frequency_type":"",
+                                        "input_type":"",
+                                        "subscribe":false,
+                                    })
+                                })
+                            }).catch(function(error){
+
+                        }).finally(function(){
+
+                        });
+                    },
+                    get_subscription_properties:function(){
+                        axios.get('/subscriptions/get/choices/')
+                            .then(function (response) {
+
+                                customermanagement.frequency_types=response.data.cycle_type;
+                                customermanagement.input_types=response.data.input_type;
+                                customermanagement.frequency_types_loaded=true;
+                                customermanagement.input_types_loaded=true;
+
+                            }).catch(function(error){
+
+                        }).finally(function(){
+
+                        });
+                    },
+                    get_master_onboarding:function(){
+                        axios.get('/customers/get/onboarding/master/')
+                            .then(function (response) {
+                                customermanagement.master_onboarding=response.data.data;
+                            }).catch(function(error){
+
+                        }).finally(function(){
+                            //customermanagement.setup_master_onboarding();
+                        });
+                    },
+                    get_process_onboarding:function(){
+                        axios.get('/customers/get/onboarding/process/')
+                            .then(function (response) {
+                                customermanagement.process_onboarding=response.data.data;
+                            }).catch(function(error){
+
+                        }).finally(function(){
+                            customermanagement.setup_process_onboarding();
+                        });
+                    },
+                    setup_master_onboarding:function(){
+                        // specify the columns
+                        var columnDefs = [
+                            {headerName: "Make", field: "make",width:300,checkboxSelection: true,editable: true},
+                            {headerName: "Model", field: "model",width:300,minWidth: 200, maxWidth: 350,flex: 1,editable: true},
+                            {headerName: "Price", field: "price",width:300,minWidth: 200, flex: 1,editable: true}
+                        ];
+
+                        // specify the data
+                        var rowData = [
+                            {make: "Toyota", model: "Celica", price: 35000},
+                            {make: "Ford", model: "Mondeo", price: 32000},
+                            {make: "Porsche", model: "Boxter", price: 72000}
+                        ];
+
+                        // let the grid know which columns and what data to use
+                        var gridOptions = {
+                            columnDefs: columnDefs,
+                            defaultColDef: {
+                                flex: 1,
+                                minWidth: 110,
+                                editable: true,
+                                resizable: true,
+                            },
+                            rowData: rowData,
+                            defaultColDef: {
+                                resizable: true,
+                            },
+                        };
+
+                        // lookup the container we want the Grid to use
+                        var eGridDiv = document.querySelector('#master_onboarding');
+
+                        // create the grid passing in the div to use together with the columns & data we want to use
+                        new agGrid.Grid(eGridDiv, gridOptions);
+
+                    },
+                    setup_process_onboarding:function(){
+                        // specify the columns
+                        {#checkboxSelection: true,#}
+                        var columnADefs = [
+                            {headerName: "Information", field: "heading",width:300},
+                            {headerName: "Status", field: "values",width:300,minWidth: 200, maxWidth: 350,flex: 1,editable: true,cellEditor: 'agSelectCellEditor',
+                                cellEditorParams:{
+                                    values: ['Unset', 'Pending', 'Received', 'Set']
+                                }
+                            },
+                            {headerName: "Remarks", field: "remarks",width:300,minWidth: 200, flex: 1,editable: true}
+                        ];
+
+                        // specify the data
+                        var rowAData = [
+                        ];
+
+                        $.each(customermanagement.process_onboarding[0].values,function(index,value){
+                                val={
+                                    "heading":value.heading,
+                                    "values":value.status,
+                                    "remarks":value.remarks,
+                                };
+                                rowAData.push(val);
+                            }
+                        )
+
+
+                        // let the grid know which columns and what data to use
+                        customermanagement.gridAOptions = {
+                            columnDefs: columnADefs,
+                            defaultColDef: {
+                                flex: 1,
+                                minWidth: 110,
+                                editable: true,
+                                resizable: true,
+                            },
+                            rowData: rowAData,
+                            defaultColDef: {
+                                resizable: true,
+                            },
+                            domLayout:'autoHeight',
+                            onCellValueChanged: function (event) {
+                                if(event.column.getId() == "values"){
+                                    customermanagement.process_onboarding[0].values[event.rowIndex].values=event.data.values;
+                                }
+                                if(event.column.getId() == "remarks"){
+
+                                    customermanagement.process_onboarding[0].values[event.rowIndex].remarks=event.data.remarks;
+                                }
+
+                            },
+                        };
+
+                        // lookup the container we want the Grid to use
+                        var eGridADiv = document.querySelector('#process_A_onboarding');
+
+                        // create the grid passing in the div to use together with the columns & data we want to use
+                        new agGrid.Grid(eGridADiv, customermanagement.gridAOptions);
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+                        // B Section Process Onboarding //
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
+                        var columnBDefs = [
+                            {headerName: "Information", field: "heading",width:300,editable: true},
+                            {headerName: "Status", field: "values",width:300,minWidth: 200, maxWidth: 350,flex: 1,editable: true,cellEditor: 'agSelectCellEditor',
+                                cellEditorParams:{
+                                    values: ['Unset', 'Pending', 'Received', 'Set']
+                                }
+                            },
+                            {headerName: "Remarks", field: "remarks",width:300,minWidth: 200, flex: 1,editable: true}
+                        ];
+
+                        // specify the data
+                        var rowBData = [
+                        ];
+
+                        $.each(customermanagement.process_onboarding[1].values,function(index,value){
+                                val={
+                                    "heading":value.heading,
+                                    "values":value.status,
+                                    "remarks":value.remarks,
+                                };
+                                rowBData.push(val);
+                            }
+                        )
+
+
+                        // let the grid know which columns and what data to use
+                        customermanagement.gridBOptions = {
+                            columnDefs: columnBDefs,
+                            defaultColDef: {
+                                flex: 1,
+                                minWidth: 110,
+                                editable: true,
+                                resizable: true,
+                            },
+                            rowData: rowBData,
+                            defaultColDef: {
+                                resizable: true,
+                            },
+                            domLayout:'autoHeight',
+                            onCellValueChanged: function (event) {
+                                console.log(event.column.getId());
+                                if(event.column.getId() == "values"){
+                                    customermanagement.process_onboarding[1].values[event.rowIndex].values=event.data.values;
+                                }
+                                if(event.column.getId() == "remarks"){
+
+                                    customermanagement.process_onboarding[1].values[event.rowIndex].remarks=event.data.remarks;
+                                }
+
+
+
+                            },
+                        };
+
+                        // lookup the container we want the Grid to use
+                        var eGridBDiv = document.querySelector('#process_B_onboarding');
+
+                        // create the grid passing in the div to use together with the columns & data we want to use
+                        new agGrid.Grid(eGridBDiv, customermanagement.gridBOptions);
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+                        // C Section Process Onboarding //
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
+                        var columnCDefs = [
+                            {headerName: "Information", field: "heading",width:300,editable: true},
+                            {headerName: "Status", field: "values",width:300,minWidth: 200, maxWidth: 350,flex: 1,editable: true,cellEditor: 'agSelectCellEditor',
+                                cellEditorParams:{
+                                    values: ['Unset', 'Pending', 'Received', 'Set']
+                                }
+                            },
+                            {headerName: "Remarks", field: "remarks",width:300,minWidth: 200, flex: 1,editable: true}
+                        ];
+
+                        // specify the data
+                        var rowCData = [
+                        ];
+
+                        $.each(customermanagement.process_onboarding[2].values,function(index,value){
+                                val={
+                                    "heading":value.heading,
+                                    "values":value.status,
+                                    "remarks":value.remarks,
+                                };
+                                rowCData.push(val);
+                            }
+                        )
+
+
+                        // let the grid know which columns and what data to use
+                        customermanagement.gridCOptions = {
+                            columnDefs: columnCDefs,
+                            defaultColDef: {
+                                flex: 1,
+                                minWidth: 110,
+                                editable: true,
+                                resizable: true,
+                            },
+                            rowData: rowCData,
+                            defaultColDef: {
+                                resizable: true,
+                            },
+                            domLayout:'autoHeight',
+                            onCellValueChanged: function (event) {
+                                if(event.column.getId() == "values"){
+                                    customermanagement.process_onboarding[2].values[event.rowIndex].values=event.data.values;
+                                }
+                                if(event.column.getId() == "remarks"){
+
+                                    customermanagement.process_onboarding[2].values[event.rowIndex].remarks=event.data.remarks;
+                                }
+                            },
+                        };
+
+                        // lookup the container we want the Grid to use
+                        var eGridCDiv = document.querySelector('#process_C_onboarding');
+
+                        // create the grid passing in the div to use together with the columns & data we want to use
+                        new agGrid.Grid(eGridCDiv, customermanagement.gridCOptions);
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+                        // D Section Process Onboarding //
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
+                        var columnDDefs = [
+                            {headerName: "Information", field: "heading",width:300,editable: true},
+                            {headerName: "Status", field: "values",width:300,minWidth: 200, maxWidth: 350,flex: 1,editable: true,cellEditor: 'agSelectCellEditor',
+                                cellEditorParams:{
+                                    values: ['Unset', 'Pending', 'Received', 'Set']
+                                }
+                            },
+                            {headerName: "Remarks", field: "remarks",width:300,minWidth: 200, flex: 1,editable: true}
+                        ];
+
+                        // specify the data
+                        var rowDData = [
+                        ];
+
+                        $.each(customermanagement.process_onboarding[3].values,function(index,value){
+                                val={
+                                    "heading":value.heading,
+                                    "values":value.status,
+                                    "remarks":value.remarks,
+                                };
+                                rowDData.push(val);
+                            }
+                        )
+
+
+                        // let the grid know which columns and what data to use
+                        customermanagement.gridDOptions = {
+                            columnDefs: columnDDefs,
+                            defaultColDef: {
+                                flex: 1,
+                                minWidth: 110,
+                                editable: true,
+                                resizable: true,
+                            },
+                            rowData: rowDData,
+                            defaultColDef: {
+                                resizable: true,
+                            },
+                            domLayout:'autoHeight',
+                            onCellValueChanged: function (event) {
+
+                                if(event.column.getId() == "values"){
+                                    customermanagement.process_onboarding[3].values[event.rowIndex].values=event.data.values;
+                                }
+                                if(event.column.getId() == "remarks"){
+
+                                    customermanagement.process_onboarding[3].values[event.rowIndex].remarks=event.data.remarks;
+                                }
+                            },
+                        };
+
+                        // lookup the container we want the Grid to use
+                        var eGridDDiv = document.querySelector('#process_D_onboarding');
+
+                        // create the grid passing in the div to use together with the columns & data we want to use
+                        new agGrid.Grid(eGridDDiv, customermanagement.gridDOptions);
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+                        // E Section Process Onboarding //
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
+                        var columnEDefs = [
+                            {headerName: "Information", field: "heading",width:300,editable: true},
+                            {headerName: "Status", field: "values",width:300,minWidth: 200, maxWidth: 350,flex: 1,editable: true,cellEditor: 'agSelectCellEditor',
+                                cellEditorParams:{
+                                    values: ['Unset', 'Pending', 'Received', 'Set']
+                                }
+                            },
+                            {headerName: "Remarks", field: "remarks",width:300,minWidth: 200, flex: 1,editable: true}
+                        ];
+
+                        // specify the data
+                        var rowEData = [
+                        ];
+
+                        $.each(customermanagement.process_onboarding[4].values,function(index,value){
+                                val={
+                                    "heading":value.heading,
+                                    "values":value.status,
+                                    "remarks":value.remarks,
+                                };
+                                rowEData.push(val);
+                            }
+                        )
+
+
+                        // let the grid know which columns and what data to use
+                        customermanagement.gridEOptions = {
+                            columnDefs: columnEDefs,
+                            defaultColDef: {
+                                flex: 1,
+                                minWidth: 110,
+                                editable: true,
+                                resizable: true,
+                            },
+                            rowData: rowEData,
+                            defaultColDef: {
+                                resizable: true,
+                            },
+                            domLayout:'autoHeight',
+                            onCellValueChanged: function (event) {
+                                if(event.column.getId() == "values"){
+                                    customermanagement.process_onboarding[4].values[event.rowIndex].values=event.data.values;
+                                }
+                                if(event.column.getId() == "remarks"){
+
+                                    customermanagement.process_onboarding[4].values[event.rowIndex].remarks=event.data.remarks;
+                                }
+                            },
+                        };
+
+                        // lookup the container we want the Grid to use
+                        var eGridEDiv = document.querySelector('#process_E_onboarding');
+
+                        // create the grid passing in the div to use together with the columns & data we want to use
+                        new agGrid.Grid(eGridEDiv, customermanagement.gridEOptions);
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+                        // F Section Process Onboarding //
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
+                        var columnFDefs = [
+                            {headerName: "Information", field: "heading",width:300,editable: true},
+                            {headerName: "Status", field: "values",width:300,minWidth: 200, maxWidth: 350,flex: 1,editable: true,cellEditor: 'agSelectCellEditor',
+                                cellEditorParams:{
+                                    values: ['Unset', 'Pending', 'Received', 'Set']
+                                }
+                            },
+                            {headerName: "Remarks", field: "remarks",width:300,minWidth: 200, flex: 1,editable: true}
+                        ];
+
+                        // specify the data
+                        var rowFData = [
+                        ];
+
+                        $.each(customermanagement.process_onboarding[5].values,function(index,value){
+                                val={
+                                    "heading":value.heading,
+                                    "values":value.status,
+                                    "remarks":value.remarks,
+                                };
+                                rowFData.push(val);
+                            }
+                        )
+
+
+                        // let the grid know which columns and what data to use
+                        customermanagement.gridFOptions = {
+                            columnDefs: columnFDefs,
+                            defaultColDef: {
+                                flex: 1,
+                                minWidth: 110,
+                                editable: true,
+                                resizable: true,
+                            },
+                            rowData: rowFData,
+                            defaultColDef: {
+                                resizable: true,
+                            },
+                            domLayout:'autoHeight',
+                            onCellValueChanged: function (event) {
+
+                                if(event.column.getId() == "values"){
+                                    customermanagement.process_onboarding[5].values[event.rowIndex].values=event.data.values;
+                                }
+                                if(event.column.getId() == "remarks"){
+
+                                    customermanagement.process_onboarding[5].values[event.rowIndex].remarks=event.data.remarks;
+                                }
+
+                            },
+                        };
+
+                        // lookup the container we want the Grid to use
+                        var eGridFDiv = document.querySelector('#process_F_onboarding');
+
+                        // create the grid passing in the div to use together with the columns & data we want to use
+                        new agGrid.Grid(eGridFDiv, customermanagement.gridFOptions);
+                        customermanagement.initialize_cytoscape();
+                    },
+                    add_legal_entity:function(){
+                        this.legalentities.push({
+                            "name":"",
+                            "gst":"",
+                            "qb_id":""
+                        });
+                    },
+                    remove_legal_entity:function(index){
+                        this.legalentities.splice(index,1);
+                    },
+                    add_outlet:function(){
+                        this.outlets.push({
+                            "name":"",
+                            "connections":[]
+                        });
+                    },
+                    remove_outlet:function(index){
+                        this.outlets.splice(index,1);
+                    },
+                    add_brand:function(){
+                        this.brands.push({
+                            "name":"",
+                            "connections":[]
+                        });
+                    },
+                    remove_brand:function(index){
+                        this.brands.splice(index,1)
+                    },
+                    initialize_cytoscape:function(){
+
+                        this.cyto = cytoscape({
+
+                            container: $('#cyat'), // container to render in
+                            elements:[],
+
+                            style: [ // the stylesheet for the graph
+                                {
+                                    selector: 'node',
+                                    style: {
+                                        'background-color': '#666',
+                                        'label': 'data(id)'
+                                    }
+                                },
+
+                                {
+                                    selector: 'edge',
+                                    style: {
+                                        'width': 3,
+                                        'line-color': '#ccc',
+                                        'target-arrow-color': '#ccc',
+                                        'target-arrow-shape': 'triangle',
+                                        'curve-style': 'bezier'
+                                    }
+                                }
+                            ],
+
+                            layout: {
+                                name: 'grid',
+                                rows: 1
+                            }
+
+                        });
+                        this.cyto.pan({
+                            x: 700,
+                            y: 200
+                        });
+
+                    },
+                    binding:function(name,index,index1){
+
+                        var id="#"+name+"_"+index+"_"+index1;
+                        console.log(id);
+                        var value=$(id).prop("checked");
+
+                        if(name == "lg_ot"){
+                            if(value){
+                                if(!this.outlets[index1].connections.includes(index)){
+                                    this.outlets[index1].connections.push(index);
+                                }
+                            }
+                            else{
+                                if(this.outlets[index1].connections.includes(index)){
+                                    this.outlets[index1].connections.splice(this.outlets[index1].connections.indexOf(index), 1);
+                                }
+                            }
+
+                        }
+
+                        if(name == "ot_bd"){
+                            if(value){
+                                if(!this.brands[index1].connections.includes(index)){
+                                    this.brands[index1].connections.push(index);
+                                }
+                            }
+                            else{
+                                if(this.brands[index1].connections.includes(index)){
+                                    this.brands[index1].connections.splice(this.brands[index1].connections.indexOf(index), 1);
+                                }
+                            }
+                        }
+                    },
+                    validate_form:function(){
+                        if(this.customerinfo.name == '' ){
+                            this.errors.customer_name = "Customer Name is empty. This field is required";
+                            this.showNotification("top", "right", "danger", this.errors.customer_name );
+                            return false;
+                        }
+                        else{
+                            this.errors.customer_name='';
+                        }
+                        if(this.customerinfo.email == ''){
+                            this.errors.customer_email = "Customer email is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_email);
+                            return false;
+                        }
+                        else{
+                            this.errors.customer_email='';
+                        }
+                        console.log($("#cust_accountant").val());
+                        if($("#cust_accountant").val() == ''){
+                            this.errors.customer_accountant = "Accountant is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_accountant);
+                            return false;
+                        }
+                        else{
+                            this.customerinfo.accountant=$("#cust_accountant").val();
+                            this.errors.customer_accountant='';
+                        }
+
+                        if($("#cust_qc").val() == ''){
+                            this.errors.customer_qc = "QC is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_qc);
+                            return false;
+                        }
+                        else{
+                            this.customerinfo.qc = $("#cust_qc").val();
+                            this.errors.customer_qc='';
+                        }
+
+                        if($("#cust_crm").val() == ''){
+                            this.errors.customer_crm = "CRM is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_crm);
+                            return false;
+                        }
+                        else{
+                            this.customerinfo.crm = $("#cust_crm").val();
+                            this.errors.customer_crm='';
+                        }
+
+                        if(this.customerinfo.username == ''){
+                            this.errors.customer_username = "Username is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_username);
+                            return false;
+                        }
+                        else{
+                            this.errors.customer_username='';
+                        }
+
+                        if(this.customerinfo.password == ''){
+                            this.errors.customer_password = "Password is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_password);
+                            return false;
+                        }
+                        else{
+                            this.errors.customer_password='';
+                        }
+
+                        if(this.customerinfo.confirm_password == ''){
+                            this.errors.customer_confirm_password = "Confirm Password is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_confirm_password);
+                            return false;
+                        }
+                        else{
+                            if(this.customerinfo.confirm_password!=this.customerinfo.password){
+                                this.errors.customer_confirm_password = "Passwords should match";
+                                customermanagement.showNotification("top", "right", "danger", this.errors.customer_confirm_password);
+                                return false;
+                            }
+                            else{
+                                this.errors.customer_password='';
+                            }
+                        }
+                        if(this.check_subscriptions_empty()){
+                            this.errors.customer_subscription = "Subscriptions preferences is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_subscription);
+                            return false;
+                        }
+                        else{
+                            this.errors.customer_subscription = '';
+                        }
+                        if(this.legalentities.length==0){
+                            this.errors.customer_legalentities = "Customer tree is empty. This field is required";
+                            customermanagement.showNotification("top", "right", "danger", this.errors.customer_legalentities);
+                            return false;
+                        }
+                        else{
+                            this.errors.customer_legalentities = '';
+                        }
+                        return true;
+                    },
+                    get_employees:function(){
+                        var data123=[];
+                        axios.get('/employees/get/employees/Accountant/')
+                            .then(function (response) {
+                                customermanagement.accountants=response.data;
+                                var count = 1;
+                                for(i=0;i<customermanagement.accountants.length;i++){
+                                    data123.push({"id":customermanagement.accountants[i].username,"text":customermanagement.accountants[i].username});
+                                }
+                                console.log(data123);
+                                $('#cust_accountant').select2({
+                                    placeholder: "Select the Accountant",
+                                    allowClear: true,
+                                    tags: true,
+                                    data:data123,
+                                });
+
+
+                            }).catch(function(error){
+                            console.log("Error");
+                        });
+
+
+
+                        var data_qc=[]
+                        axios.get('/employees/get/employees/QC/')
+                            .then(function (response) {
+
+                                customermanagement.qc=response.data;
+                                var count = 1;
+                                for(i=0;i<customermanagement.qc.length;i++){
+                                    data_qc.push({"id":customermanagement.qc[i].username,"text":customermanagement.qc[i].username});
+                                }
+
+                                $('#cust_qc').select2({
+                                    placeholder: "Select a QC",
+                                    allowClear: true,
+                                    tags: true,
+                                    data:data_qc,
+                                });
+
+
+                            }).catch(function(error){
+                            console.log("Error");
+                        });
+
+                        var data_crm=[]
+                        axios.get('/employees/get/employees/CRM/')
+                            .then(function (response) {
+                                customermanagement.crm=response.data;
+                                var count = 1;
+                                for(i=0;i<customermanagement.crm.length;i++){
+                                    data_crm.push({"id":customermanagement.crm[i].username,"text":customermanagement.crm[i].username});
+                                }
+
+                                $('#cust_crm').select2({
+                                    placeholder: "Select a CRM",
+                                    allowClear: true,
+                                    tags: true,
+                                    data:data_crm,
+                                });
+
+                            }).catch(function(error){
+                            console.log("Error");
+                        });
+                    },
+                    next:function(index){
+                        if(index == 0){
+                            if(!$("#tabs-icons-text-2-tab").hasClass("active")){
+                                $("#tabs-icons-text-2-tab").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1-tab").hasClass("active")){
+                                $("#tabs-icons-text-1-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-3-tab").hasClass("active")){
+                                $("#tabs-icons-text-3-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-4-tab").hasClass("active")){
+                                $("#tabs-icons-text-4-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-5-tab").hasClass("active")){
+                                $("#tabs-icons-text-5-tab").removeClass("active")
+                            }
+
+                            if(!$("#tabs-icons-text-2").hasClass("show")){
+                                $("#tabs-icons-text-2").addClass("show")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("show")){
+                                $("#tabs-icons-text-1").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-3").hasClass("show")){
+                                $("#tabs-icons-text-3").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-4").hasClass("show")){
+                                $("#tabs-icons-text-4").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-5").hasClass("show")){
+                                $("#tabs-icons-text-5").removeClass("show")
+                            }
+
+                            if(!$("#tabs-icons-text-2").hasClass("active")){
+                                $("#tabs-icons-text-2").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("active")){
+                                $("#tabs-icons-text-1").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-3").hasClass("active")){
+                                $("#tabs-icons-text-3").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-4").hasClass("active")){
+                                $("#tabs-icons-text-4").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-5").hasClass("active")){
+                                $("#tabs-icons-text-5").removeClass("active")
+                            }
+                        }
+                        if(index == 1){
+                            if(!$("#tabs-icons-text-3-tab").hasClass("active")){
+                                $("#tabs-icons-text-3-tab").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1-tab").hasClass("active")){
+                                $("#tabs-icons-text-1-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-2-tab").hasClass("active")){
+                                $("#tabs-icons-text-2-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-4-tab").hasClass("active")){
+                                $("#tabs-icons-text-4-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-5-tab").hasClass("active")){
+                                $("#tabs-icons-text-5-tab").removeClass("active")
+                            }
+
+                            if(!$("#tabs-icons-text-3").hasClass("show")){
+                                $("#tabs-icons-text-3").addClass("show")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("show")){
+                                $("#tabs-icons-text-1").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-2").hasClass("show")){
+                                $("#tabs-icons-text-2").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-4").hasClass("show")){
+                                $("#tabs-icons-text-4").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-5").hasClass("show")){
+                                $("#tabs-icons-text-5").removeClass("show")
+                            }
+
+                            if(!$("#tabs-icons-text-3").hasClass("active")){
+                                $("#tabs-icons-text-3").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("active")){
+                                $("#tabs-icons-text-1").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-2").hasClass("active")){
+                                $("#tabs-icons-text-2").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-4").hasClass("active")){
+                                $("#tabs-icons-text-4").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-5").hasClass("active")){
+                                $("#tabs-icons-text-5").removeClass("active")
+                            }
+                        }
+                        if(index == 2){
+                            if(!$("#tabs-icons-text-4-tab").hasClass("active")){
+                                $("#tabs-icons-text-4-tab").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1-tab").hasClass("active")){
+                                $("#tabs-icons-text-1-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-2-tab").hasClass("active")){
+                                $("#tabs-icons-text-2-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-3-tab").hasClass("active")){
+                                $("#tabs-icons-text-3-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-5-tab").hasClass("active")){
+                                $("#tabs-icons-text-5-tab").removeClass("active")
+                            }
+
+                            if(!$("#tabs-icons-text-4").hasClass("show")){
+                                $("#tabs-icons-text-4").addClass("show")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("show")){
+                                $("#tabs-icons-text-1").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-2").hasClass("show")){
+                                $("#tabs-icons-text-2").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-3").hasClass("show")){
+                                $("#tabs-icons-text-3").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-5").hasClass("show")){
+                                $("#tabs-icons-text-5").removeClass("show")
+                            }
+
+                            if(!$("#tabs-icons-text-4").hasClass("active")){
+                                $("#tabs-icons-text-4").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("active")){
+                                $("#tabs-icons-text-1").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-2").hasClass("active")){
+                                $("#tabs-icons-text-2").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-3").hasClass("active")){
+                                $("#tabs-icons-text-3").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-5").hasClass("active")){
+                                $("#tabs-icons-text-5").removeClass("active")
+                            }
+                        }
+                        if(index == 3){
+                            if(!$("#tabs-icons-text-5-tab").hasClass("active")){
+                                $("#tabs-icons-text-5-tab").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1-tab").hasClass("active")){
+                                $("#tabs-icons-text-1-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-2-tab").hasClass("active")){
+                                $("#tabs-icons-text-2-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-4-tab").hasClass("active")){
+                                $("#tabs-icons-text-4-tab").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-3-tab").hasClass("active")){
+                                $("#tabs-icons-text-3-tab").removeClass("active")
+                            }
+
+                            if(!$("#tabs-icons-text-5").hasClass("show")){
+                                $("#tabs-icons-text-5").addClass("show")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("show")){
+                                $("#tabs-icons-text-1").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-2").hasClass("show")){
+                                $("#tabs-icons-text-2").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-4").hasClass("show")){
+                                $("#tabs-icons-text-4").removeClass("show")
+                            }
+                            if($("#tabs-icons-text-3").hasClass("show")){
+                                $("#tabs-icons-text-3").removeClass("show")
+                            }
+
+                            if(!$("#tabs-icons-text-5").hasClass("active")){
+                                $("#tabs-icons-text-5").addClass("active")
+                            }
+                            if($("#tabs-icons-text-1").hasClass("active")){
+                                $("#tabs-icons-text-1").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-2").hasClass("active")){
+                                $("#tabs-icons-text-2").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-4").hasClass("active")){
+                                $("#tabs-icons-text-4").removeClass("active")
+                            }
+                            if($("#tabs-icons-text-3").hasClass("active")){
+                                $("#tabs-icons-text-3").removeClass("active")
+                            }
+                        }
+                        if(index == 4){
+                            this.modifycustomer();
+                        }
+
+                    },
+                    check_subscriptions_empty:function(){
+                        var is_empty = true;
+                        $.each(this.subscriptions,function(index,value){
+                            console.log(value);
+                            console.log(index);
+                            if(value.subscribe){
+                                is_empty = false;
+                                return;
+                            }
+
+                        });
+                        return is_empty;
+                    },
+                    get_customer_info:function(){
+                        var url='/customers/get/'+String(this.customerid)+'/'
+                        axios.get(url)
+                            .then(function (response) {
+                                customermanagement.customerinfo.name=response.data.customer.name;
+                                customermanagement.customerinfo.address=response.data.customer.address;
+                                customermanagement.customerinfo.mobile=response.data.customer.mobile;
+                                customermanagement.customerinfo.email=response.data.customer.email;
+                                customermanagement.customerinfo.username=response.data.customer.username;
+                                //customermanagement.report_types_loaded=true;
+
+                            }).catch(function(error){
+
+                        }).finally(function(){
+
+                        });
+                    }
+
+                },
+                updated: function(){
+
+                },
+                mounted: function(){
+                    var url=window.location.href;
+                    var arr=url.split('/');
+                    var len=arr.length;
+
+                    this.customerid=arr[len-2];
+
+                    this.get_report_types();
+                    this.get_subscription_properties();
+                    this.get_master_onboarding();
+                    this.get_process_onboarding();
+                    this.get_employees();
+                    this.get_customer_info();
+
+                },
+                computed: {
+                    graphdata:function(){
+                        var data=[];
+                        $.each(this.legalentities,function(index,value){
+                            if(value.name!=''){
+                                data.push({ group: 'nodes', data: { id: value.name }, position: { x: index*200, y: -100 }})
+                            }
+
+                        });
+
+                        $.each(this.outlets,function(index,value){
+                            if(value.name!='') {
+                                data.push({group: 'nodes', data: {id: value.name}, position: {x: index * 200, y: 0}})
+                            }
+                            if(value.connections!=[]){
+                                $.each(value.connections,function(index1,value1){
+                                    ename='e_'+customermanagement.legalentities[value1].name+'_'+value.name;
+                                    console.log("Outlet - ", value)
+                                    console.log("Legal Entity - ",value1)
+                                    data.push({group: 'edges', data: { id: ename, source: customermanagement.legalentities[value1].name, target: value.name }})
+                                });
+                            }
+                        });
+                        $.each(this.brands,function(index,value){
+                            if(value.name!='') {
+                                data.push({group: 'nodes', data: {id: value.name}, position: {x: index * 200, y: 100}})
+                            }
+                            if(value.connections!=[]){
+                                $.each(value.connections,function(value1,index1){
+                                    ename='e_'+customermanagement.outlets[value1].name+'_'+value.name;
+                                    data.push({group: 'edges', data: { id: ename, source: customermanagement.outlets[value1].name, target: value.name }})
+                                });
+                            }
+                        });
+                        return data;
+                    }
+                },
+                filters: {
+
+                },
+                created: function(){
+
+                },
+                watch:{
+                    legalentities:{
+                        handler:function(){
+
+                            var newEleJsons= this.graphdata;
+                            this.cyto.elements().remove();
+                            this.cyto.add( newEleJsons );
+                            this.cyto.resize();
+
+
+                        },
+                        deep:true
+                    },
+                    brands:{
+                        handler:function(){
+
+                            var newEleJsons= this.graphdata;
+                            this.cyto.elements().remove();
+                            this.cyto.add( newEleJsons );
+                            this.cyto.resize();
+
+                        },
+                        deep:true
+
+                    },
+                    outlets:{
+                        handler:function(){
+
+                            var newEleJsons= this.graphdata;
+                            this.cyto.elements().remove();
+                            this.cyto.add( newEleJsons );
+                            this.cyto.resize();
+
+                        },
+                        deep:true
+
+                    }
+                }
+
+            });
+
+
+        });
+    </script>
+{% endblock %}

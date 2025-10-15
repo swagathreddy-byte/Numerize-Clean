@@ -1,0 +1,62 @@
+{% extends "ClientDashboard/ui8-nazox/mobile/client_base.html" %}
+
+
+{% load static %}
+
+
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <div class="card bg-success">
+                    <div class="card-body">
+                        <a href="/overview/" class="btn btn-success" style="height:100%;width:100%">
+                            <h4 class="card-title mb-4 text-white">Profit & Loss</h4>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card bg-warning">
+                    <div class="card-body">
+                        <a href="/overview/" class="btn btn-warning" style="height:100%;width:100%">
+                            <h4 class="card-title mb-4 text-white">GST</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card bg-success">
+                    <div class="card-body">
+                        <a href="/overview/" class="btn btn-success" style="height:100%;width:100%">
+                            <h4 class="card-title mb-4 text-white">Purchase Efficiency</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card bg-warning">
+                    <div class="card-body">
+                        <a href="/overview/" class="btn btn-warning" style="height:100%;width:100%">
+                            <h4 class="card-title mb-4 text-white">Consumption Analysis</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extrascript %}
+<script type="text/javascript">
+    $(window).on('load', function () {
+        $('#status').fadeOut();
+        $('#preloader').delay(350).fadeOut('slow');
+    });
+</script>
+{% endblock %}

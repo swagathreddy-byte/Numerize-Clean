@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+<style>
+    .overlay{
+        height:100%;
+        position:fixed;
+        width:100%;
+        z-index:2000;
+        left:0px;
+        top:0px;
+        background-color: rgba(50,50,50,0.5);
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position:fixed;
+        top:calc(50% - 60px);
+        left:calc(50% - 60px);
+        z-index:2001;
+    }
+    .select2-selection--single{
+        height:100%!important;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+        <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+        <li class="breadcrumb-item"><a href="#">Modules</a></li>
+        <li class="breadcrumb-item active" aria-current="page">OCR/ImageUpload</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block headercontent %}
+
+<section id="OCR" class="shadow p-3 rounded-lg ">
+    <div class="overlay d-none">
+        <div class="loader d-none">
+
+        </div>
+    </div>
+    <div class="card card-body">
+        <form>
+            <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group">
+                    <label>
+                        Customer
+                    </label>
+                    <select name="customer_name_table" class="customer_select_table form-control" style="width: 100%;"  required>
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                <div class="form-group">
+                    <label>
+                        Month of Interest
+                    </label>
+                    <div class="input-group input-group-alternative mb-4">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                        </div>
+                        <input class="form-control datepicker" id="month_of_interest" placeholder="Select date" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="imagefiles" id="imagefiles" aria-describedby="inputGroupFileAddon01" multiple>
+                        <label class="custom-file-label" for="imagefiles">Choose file</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="row">
+            <div class="offset-md-3 col-md-6 col-12 text-center">
+                <button class="btn btn-success" @click="publishimage"><i class="ni ni-cloud-upload-96"></i>Upload</button>
+            </div>
+        </div>
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block maincontent %}
+<section id="ocr-upload" class="pt-1">
+
+</section>
+{% endblock %}
+
+
+{% block extrafooter %}
+<script src="{% static 'js/insights.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+
+
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+                imglist:'',
+                gstId:'',
+                next:'',
+            },
+            methods:{
+                publishimage:function(){
+                    var csrftoken = Cookies.get('csrftoken');
+                    function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    }
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        }
+                    });
+                    axios.interceptors.request.use(config => {
+                        // log a message before any HTTP request is sent
+                        console.log('Request was sent');
+                         //$("#OCR").find('input[name="imagefiles"]')[0].val('');
+                         //$(".customer_select_table").val('');
+                         //$(".datepicker").val('');
+                        app.addspinner();
+                        return config;
+                    });
+
+                    axios.interceptors.response.use(function (response) {
+                        // Any status code that lie within the range of 2xx cause this function to trigger
+                        // Do something with response data
+                        app.removespinner();
+                        return response;
+                    }, function (error) {
+                        // Any status codes that falls outside the range of 2xx cause this function to trigger
+                        // Do something with response error
+                        app.removespinner();
+                        return Promise.reject(error);
+                    });
+
+                    axios.defaults.xsrfCookieName = csrftoken;
+                    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+                    let formData = new FormData();
+                    var files=$("#OCR").find('input[name="imagefiles"]')[0].files;
+                    for( var i = 0; i < files.length; i++ ){
+                      let file = files[i];
+
+                      formData.append('images[' + i + ']', file);
+                    }
+                    {#formData.append('images',$("#OCR").find('input[name="imagefiles"]')[0].files);#}
+                    formData.append('customer',$(".customer_select_table").val());
+                    formData.append('month-year',$(".datepicker").val());
+
+
+                    axios.post( '/ocr/upload/',
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                'X-CSRFToken':csrftoken
+                            }
+                        }
+                    ).then(function(data1){
+                         app.showNotification("top","right","success",data1.data.message);
+
+                        // window.location.href = "/dashboard";
+
+                    }).catch(function(error){
+                        console.log(error.response.data.message)
+                        app.showNotification("top","right","danger",error.response.data.message);
+                    });
+                },
+                showNotification: function (from, align,color,message){
+                    $.notify({
+                        icon: "now-ui-icons ui-1_bell-53",
+                        message: message
+
+                    },{
+                        type: color,
+                        timer: 2000,
+                        placement: {
+                            from: from,
+                            align: align
+                        }
+                    });
+                },
+                addspinner:function(){
+                        $(".overlay").addClass("d-block");
+                        $(".overlay").removeClass("d-none");
+                        $(".loader").removeClass("d-none");
+                        $(".loader").addClass("d-block",400);
+                        $('.customer_select_table').val(null).trigger('change');
+                },
+                removespinner:function (){
+                    $(".overlay").addClass("d-none");
+                    $(".overlay").removeClass("d-block");
+                    $(".loader").removeClass("d-block",400);
+                    $(".loader").addClass("d-none",400);
+                },
+
+            },
+            mounted:function(){
+
+                $('.customer_select_table').select2({
+                    placeholder: "Select the restaurant",
+                    allowClear: true,
+                    tags: true,
+                    ajax: {
+
+                        url: '/insights/get/customers/',
+                        type: 'GET',
+                        dataType: 'json',
+
+                        data: function (params) {
+                            console.log(params.term);
+                            var query = {
+
+                                name: params.term,
+                            }
+                            // Query parameters will be ?search=[term]&type=public
+                            return query;
+                        },
+                        processResults: function (data) {
+                            // Transforms the top-level key of the response object from 'items' to 'results'
+                            console.log("Process Results called");
+                            console.log(data);
+                            var data = $.map(data, function (obj) {
+                                obj.text = obj.name + "," + obj.branch+","+obj.city; // replace name with the property used for the text
+                                return obj;
+                            });
+
+                            return {
+                                results: data
+                            };
+                        },
+                        cache: false
+                    },
+                });
+
+                $('.datepicker').datepicker({
+                    format: "mm yyyy",
+                    startView: "months",
+                    minViewMode: "months",
+                    autoclose: true
+                });
+
+                $('#imagefiles').on('change',function(){
+                    //get the file name
+                    var fileName = $(this).val();
+                    //replace the "Choose a file" label
+                    $(this).next('.custom-file-label').html(fileName);
+                });
+
+
+
+            }
+        });
+
+    });
+</script>
+
+{% endblock %}
+

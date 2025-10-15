@@ -1,0 +1,392 @@
+{% include "head.html" %}
+{% load static %}
+<body>
+<div class="wrapper">
+    {% include "sidebarlinks.html" %}
+    <div class="main-panel" id="main-panel">
+        <!-- Navbar -->
+
+        <!-- Navbar -->
+        {% include "navbar.html" %}
+        <div class="content">
+            <section style="margin-top:50px;height:100%;">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="title">Add Employee</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" enctype="multipart/form-data" id="add_employee_form">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Username</label>
+                                                <input type="text" class="form-control" placeholder="Username" id="id_emp_username" name="emp_username" required>
+                                                <label id="username_available" class="text-success" hidden><i class="now-ui-icons ui-1_check"></i> Username available</label>
+                                                <label id="username_not_available" class="text-danger" hidden><i class="now-ui-icons ui-1_check"></i> Username not available</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Email address</label>
+                                                <input type="email" class="form-control" placeholder="Email" id="id_emp_email" name="emp_email" required>
+                                                <label id="email_available" class="text-success" hidden><i class="now-ui-icons ui-1_check"></i> Email available</label>
+                                                <label id="email_not_available" class="text-danger" hidden><i class="now-ui-icons ui-1_check"></i> Email not available, did you signup before?</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Password</label>
+                                                <input type="password" class="form-control" placeholder="Password" id="id_emp_password" name="emp_password" required>
+                                                <label class='text-danger password_error'  hidden> Passwords not matching </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Confirm Password</label>
+                                                <input type="password" class="form-control" placeholder="Confirm Password" id="id_emp_confirm_password" name="emp_confirm_password" required>
+                                                <label class='text-danger password_error'  hidden> Passwords not matching </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control" placeholder="First Name" name="emp_first_name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control" placeholder="Last Name" name="emp_second_name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>User Role</label>
+                                                <select class="form-control" name="emp_role" id="emp_role" required>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Team</label>
+                                                <select class="form-control" name="emp_team" id="emp_team" required>
+                                                    <option value="a" selected>Team A</option>
+                                                    <option value="b">Team B</option>
+                                                    <option value="c">Team B</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>About Me</label>
+                                                <textarea rows="4" cols="80" class="form-control" placeholder="Here can be your description" name="emp_desc">Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="custom-file">
+                                                <input type="file" name="emp_pp" id="id_emp_pp" class="form-control-file">
+                                                <label class="custom-file-label">Profile Picture</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="custom-file">
+                                                <input type="file" name="emp_back" id="id_emp_back" class="custom-file-input">
+                                                <label class="custom-file-label">Background Picture</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 offset-md-3">
+                                            <div class="form-group">
+                                                <button class="btn btn-primary" id="btn_add_employee">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</div>
+</body>
+
+{% include 'footer.html' %}
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Javascript method's body can be found in assets/js/demos.js
+        $("#admin_add_employee").addClass("active");
+        $("#fcmanage").addClass("show");
+        var csrftoken = Cookies.get('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        function addspinner(){
+
+            $(".spinner-border").removeClass("d-none");
+            $(".spinner-border").addClass("d-block",400);
+            $(".tab-content").addClass("opacity50",400);
+            $('.customer_select').val(null).trigger('change');
+
+        }
+        function removespinner(){
+
+            $(".spinner-border").removeClass("d-block",400);
+            $(".spinner-border").addClass("d-none",400);
+            $(".tab-content").removeClass("opacity50",400);
+
+        }
+        axios.interceptors.response.use(function (response) {
+            // Any status code that lie within the range of 2xx cause this function to trigger
+            // Do something with response data
+            removespinner();
+            return response;
+        }, function (error) {
+            // Any status codes that falls outside the range of 2xx cause this function to trigger
+            // Do something with response error
+            removespinner();
+            return Promise.reject(error);
+        });
+
+        var timer = null;
+        $('#id_emp_username').keyup(function(){
+            clearTimeout(timer);
+            timer = setTimeout(check_username_availability, 1000);
+            $("#username_not_available").attr("hidden","");
+            $("#username_available").attr("hidden","");
+        });
+
+        $('#id_emp_email').keyup(function(){
+            clearTimeout(timer);
+            timer = setTimeout(check_email_availability, 1000);
+            $("#email_not_available").attr("hidden","");
+            $("#email_available").attr("hidden","");
+        });
+
+        var username_available=false;
+        var email_available=false;
+        function check_email_availability() {
+            console.log("hey called me");
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            var formData = new FormData();
+            formData.append('emp_email',$("#add_employee_form").find('input[name="emp_email"]').val());
+
+            axios.post( '/employees/email_exists/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data){
+                if(data.data.status=="true"){
+                    console.log(data.data.status);
+                    $("#email_available").removeAttr("hidden");
+                    $("#email_not_available").attr("hidden","");
+                    email_available=true;
+                }
+                else{
+                    console.log("not available");
+                    console.log(data.data.status);
+                    $("#email_available").attr("hidden","");
+                    $("#email_not_available").removeAttr("hidden");
+                    email_available=false;
+                }
+            }).catch(function(){
+            });
+        }
+
+        function check_username_availability() {
+
+            axios.defaults.xsrfCookieName = csrftoken;
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            var formData = new FormData();
+            formData.append('emp_username',$("#add_employee_form").find('input[name="emp_username"]').val());
+
+
+            axios.post( '/employees/username_exists/',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken':csrftoken
+                    }
+                }
+            ).then(function(data){
+                if(data.data.status=="true"){
+                    console.log(data.data.status);
+                    $("#username_available").removeAttr("hidden");
+                    $("#username_not_available").attr("hidden","");
+                    username_available=true;
+                }
+                else{
+                    console.log("not available");
+                    console.log(data.data.status);
+                    $("#username_available").attr("hidden","");
+                    $("#username_not_available").removeAttr("hidden");
+                    username_available=false;
+                }
+            }).catch(function(){
+            });
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        axios.interceptors.request.use(config => {
+            // log a message before any HTTP request is sent
+            console.log('Request was sent');
+            addspinner();
+            return config;
+        });
+
+
+        $("#id_emp_password").on("change",function(){
+            if($("#add_employee_form").find('input[name="emp_password"]').val()!=$("#add_employee_form").find('input[name="emp_confirm_password"]').val()){
+                    $(".password_error").removeAttr("hidden");
+            }
+            else{
+                    $(".password_error").attr("hidden","");
+            }
+        });
+
+        function validateform(){
+            if($("#add_employee_form").find('input[name="emp_password"]').val()!=$("#add_employee_form").find('input[name="emp_confirm_password"]').val()){
+                console.log("Cant proceed further");
+                return false;
+            }
+            else if(username_available==false){
+                console.log("Cant proceed further");
+                return false;
+
+            }
+            else if(email_available==false){
+                console.log("Cant proceed further");
+                return false;
+
+            }
+            else{
+                return true;
+            }
+        }
+
+        $("#id_emp_confirm_password").on("change",function(){
+            if($("#add_employee_form").find('input[name="emp_password"]').val()!=$("#add_employee_form").find('input[name="emp_confirm_password"]').val()){
+                $(".password_error").removeAttr("hidden");
+            }
+            else{
+                $(".password_error").attr("hidden","");
+            }
+        });
+
+        function showNotification(from, align,color,message){
+            $.notify({
+                icon: "now-ui-icons ui-1_bell-53",
+                message: message
+
+            },{
+                type: color,
+                timer: 2000,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        $("#btn_add_employee").on('click', function(event){
+            event.preventDefault();
+            console.log("Hey clicked me");
+            if(validateform()==true) {
+                axios.defaults.xsrfCookieName = csrftoken;
+                axios.defaults.xsrfHeaderName = "X-CSRFToken";
+                var formData = new FormData();
+                formData.append('emp_username', $("#add_employee_form").find('input[name="emp_username"]').val());
+                formData.append('emp_email', $("#add_employee_form").find('input[name="emp_email"]').val());
+                formData.append('emp_first_name', $("#add_employee_form").find('input[name="emp_first_name"]').val());
+                formData.append('emp_second_name', $("#add_employee_form").find('input[name="emp_second_name"]').val());
+                formData.append('emp_password', $("#add_employee_form").find('input[name="emp_password"]').val());
+                formData.append('emp_role', $("#add_employee_form").find('select[name="emp_role"]').val());
+                formData.append('emp_team', $("#add_employee_form").find('select[name="emp_team"]').val());
+                formData.append('emp_desc', $("#add_employee_form").find('textarea[name="emp_desc"]').val());
+                formData.append('profile_picture', $("#add_employee_form").find('input[name="emp_pp"]')[0].files[0]);
+                formData.append('background', $("#add_employee_form").find('input[name="emp_back"]')[0].files[0]);
+
+                axios.post('/employees/add_employee/',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'X-CSRFToken': csrftoken
+                        }
+                    }
+                ).then(function () {
+                    console.log('SUCCESS!!');
+                    //console.log(data.message);
+                    showNotification("top", "right", "success", "Employee successfully submitted");
+                    $("#add_employee_form").trigger("reset");
+
+                }).catch(function () {
+                    showNotification("top", "right", "danger", "Employee failed");
+                });
+            }
+        });
+
+        axios.get('/employees/admin/get/groups')
+            .then(function (response) {
+                var groups=response.data;
+                console.log(groups.length)
+                var select1=$("#emp_role");
+                for (var i = 0; i<=groups.length; i++){
+                    console.log("Hello");
+
+                    var opt = document.createElement('option');
+
+                    opt.value = i;
+
+                    opt.innerHTML = i;
+
+                    $("#emp_role").append($('<option>',{
+                      value:groups[i].name,
+                      text: groups[i].name
+                    }) );
+                }
+            }).catch(function(error){
+
+        }).finally(function(){
+
+        });
+    });
+
+
+</script>
+</html>

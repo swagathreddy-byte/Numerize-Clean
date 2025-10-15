@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+
+    <meta charset="utf-8" />
+    <title>FirstCourse Accounting Solutions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />-->
+<!--    <meta content="Themesdesign" name="author" />-->
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'img/Shape.png' %}">
+
+    <!-- jquery.vectormap css -->
+<!--    <link href="{% static 'ui8-nazox/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet" type="text/css" />-->
+
+<!--    &lt;!&ndash; DataTables &ndash;&gt;-->
+<!--    <link href="{% static 'ui8-nazox/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />-->
+
+<!--    &lt;!&ndash; Responsive datatable examples &ndash;&gt;-->
+<!--    <link href="{% static 'ui8-nazox/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />-->
+
+    <link href="{% static 'ui8-nazox/assets/libs/bootstrap-editable/css/bootstrap-editable.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Bootstrap Css -->
+    <link href="{% static 'ui8-nazox/assets/css/bootstrap.min.css' %}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{% static 'ui8-nazox/assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{% static 'ui8-nazox/assets/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css" />
+
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    {% block extrahead %}
+
+    {% endblock %}
+
+    {% block extrastyle %}
+
+    {% endblock %}
+    <style>
+        .footer{
+            padding:0px;
+            position:fixed;
+            height:70px;
+            background-color: #7fc342;
+            color:white;
+            display:flex;
+            z-index:101;
+        }
+        .footer i{
+            color:white;
+        }
+
+        .navbar-brand-box{
+            background:white;
+            display:block;
+        }
+    </style>
+    {% load pwa %}
+    {% progressive_web_app_meta %}
+</head>
+
+<body data-sidebar="dark">
+<div id="preloader">
+    <div id="status">
+        <div class="spinner">
+            <i class="ri-loader-line spin-icon"></i>
+        </div>
+    </div>
+</div>
+<!-- Begin page -->
+<div id="layout-wrapper">
+
+
+    {% include "ClientDashboard/ui8-nazox/mobile/header.html" %}
+
+
+
+    {% include "ClientDashboard/ui8-nazox/mobile/sidebar.html" %}
+    <!-- ========== Left Sidebar Start ========== -->
+
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div id="app">
+            {% block content %}
+
+
+            {% endblock %}
+            <!-- End Page-content -->
+
+            {% include "ClientDashboard/ui8-nazox/mobile/footer.html" %}
+        </div>
+
+    </div>
+    <!-- end main content-->
+
+</div>
+<!-- END layout-wrapper -->
+
+
+
+<!-- JAVASCRIPT -->
+<script src="{% static 'ui8-nazox/assets/libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'ui8-nazox/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'ui8-nazox/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'ui8-nazox/assets/libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'ui8-nazox/assets/libs/node-waves/waves.min.js' %}"></script>
+
+<!-- apexcharts -->
+<script src="{% static 'ui8-nazox/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+<!-- jquery.vectormap map -->
+<!--<script src="{% static 'ui8-nazox/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>-->
+<!--<script src="{% static 'ui8-nazox/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js' %}"></script>-->
+
+<!-- Required datatable js -->
+<script src="{% static 'ui8-nazox/assets/libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'ui8-nazox/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'argon/assets/js/plugins/chartjs.min.js' %}"></script>
+<!-- Responsive examples -->
+<!--<script src="{% static 'ui8-nazox/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>-->
+<!--<script src="{% static 'ui8-nazox/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>-->
+
+<!--<script src="{% static 'ui8-nazox/assets/js/pages/dashboard.init.js' %}"></script>-->
+
+<!--<script src="{% static 'ui8-nazox/assets/js/app.js' %}"></script>-->
+
+{% block extrascript %}
+
+{% endblock %}
+
+</body>
+</html>
