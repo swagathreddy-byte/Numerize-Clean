@@ -1,0 +1,184 @@
+
+{% include "head.html" %}
+{% load static %}
+{% load home_extras %}
+<body>
+
+
+{% include "sidebarlinks.html" %}
+<div class="main-content" id="panel">
+    <!-- Navbar -->
+    {% include "navbar.html" %}
+    <div class="header bg-primary pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <!--                                <h6 class="h2 text-white d-inline-block mb-0">Default</h6>-->
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                                <!--                                        <li class="breadcrumb-item active" aria-current="page">Default</li>-->
+                            </ol>
+                        </nav>
+                    </div>
+                    <!--                            <div class="col-lg-6 col-5 text-right">-->
+                    <!--                                <a href="#" class="btn btn-sm btn-neutral">New</a>-->
+                    <!--                                <a href="#" class="btn btn-sm btn-neutral">Filters</a>-->
+                    <!--                            </div>-->
+                </div>
+                <!-- Card stats -->
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div id="webchat2" class="card">
+                    <div  class="card-body">
+                        <div id="webchat" role="main"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="footer pt-0">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6">
+                    <div class="copyright text-center text-lg-left text-muted">
+                        &copy; 2019 <a href="https://www.firstcourse.in" class="font-weight-bold ml-1" target="_blank">FirstCourse</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                        <li class="nav-item">
+                            <a href="https://www.firstcourse.in" class="nav-link" target="_blank">FirstCourse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.firstcourse.in/aboutus" class="nav-link" target="_blank">About Us</a>
+                        </li>
+                        <!--                                <li class="nav-item">-->
+                        <!--                                    <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>-->
+                        <!--                                </li>-->
+                        <!--                                <li class="nav-item">-->
+                        <!--                                    <a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>-->
+                        <!--                                </li>-->
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+</div>
+
+
+{% include 'footer.html' %}
+<script src="{% static 'argon/assets/vendor/moment/min/moment.min.js' %}"></script>
+<script src="{% static 'argon/assets/vendor/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+
+<script src="{% static 'js/insights.js' %}"></script>
+
+<script src="{% static 'js/axios.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+<script
+        crossorigin="anonymous"
+        integrity="sha384-EAMohwVGPGHagMPKSsrNj19/AUPEveyotCJG2ZriygMOR7dujHk9iLMoKOeZiETX"
+        src="https://cdn.botframework.com/botframework-webchat/4.8.0/webchat.js"
+></script>
+
+<script>
+porqybb87#
+
+
+
+
+</script>
+<script type="text/javascript">
+    var mydashboard = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#panel',
+        data: {
+            token:''
+        },
+        methods: {
+            initiate_chat:function(){
+                (async function () {
+                    // In this demo, we are using Direct Line token from MockBot.
+                    // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+                    // You should never put the Direct Line secret in the browser or client app.
+                    // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+                    // We are using a customized store to add hooks to connect event
+                    const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+                        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+                            // When we receive DIRECT_LINE/CONNECT_FULFILLED action, we will send an event activity using WEB_CHAT/SEND_EVENT
+                            dispatch({
+                                type: 'WEB_CHAT/SEND_EVENT',
+                                payload: {
+                                    name: 'webchat/join',
+                                    value: { language: window.navigator.language }
+                                }
+                            });
+                        }
+                        return next(action);
+                    });
+
+                    window.WebChat.renderWebChat({
+                        directLine: window.WebChat.createDirectLine({ token: mydashboard.token }),
+                        store,
+                        userID: 'YOUR_USER_ID',
+                        username: 'Pinky',
+                        locale: 'en-US',
+
+                        styleOptions
+                    }, document.getElementById('webchat'));
+
+                    document.querySelector('#webchat > *').focus();
+                })().catch(err => console.error(err));
+            }
+        },
+        updated: function(){
+
+        },
+        mounted: function(){
+            axios.post( 'https://directline.botframework.com/v3/directline/tokens/generate',
+                {},
+                {
+                    headers: {
+                        'Authorization': 'Bearer TQyoomCZuRI.Bxgad18VlM1F4V2ldVyB5ieCDJiAqkwIioP_NYpFWhU'
+                    }
+                }
+            ).then(function(data1){
+                console.log('SUCCESS!!');
+                console.log(data1);
+                mydashboard.token=data1.data.token;
+                mydashboard.initiate_chat();
+                //location.reload();
+                // window.location.href = "/dashboard";
+
+            }).catch(function(error){
+                console.log(error)
+                // showNotification("top","right","danger",error.data.message);
+            });
+        },
+        computed: {
+
+        },
+        filters: {
+
+        }
+
+    });
+</script>
+</body>
+
+
+
+</html>
+

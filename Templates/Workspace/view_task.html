@@ -84,10 +84,11 @@
                                 <tr class="text-white">
                                     <th class="text-center">#</th>
                                     <th>Client Name</th>
+                                    <th>Report Level</th>
                                     <th>Initiated by</th>
                                     <th>Report Type</th>
                                     <th>Report Status</th>
-                                    {% if perms.insights.add_reportrecords and  request.user|has_group:"Accountant"%}
+                                    {% if perms.ReportManagement.add_report and  request.user|has_group:"Accountant"%}
                                         <th>Task Status</th>
                                     {% endif %}
                                     <th>Generated At</th>
@@ -100,19 +101,30 @@
                                 <tbody>
                                 <tr class="text-white">
                                     <td class="text-center">1</td>
-                                    <td>[[report.customer]]  </td>
+                                    <td>[[report.customer | entityName]]  </td>
+                                    <td>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(report.report_type_id)] =='customer'"> NA </span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(report.report_type_id)] =='legalentity'"> [[report.legalentity["name"] ]]</span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(report.report_type_id)] =='outlet'"> [[report.outlet["name"] ]]</span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(report.report_type_id)] =='brand'"> [[report.brand["name"] ]]</span>
+                                    </td>
                                     <td>[[ report.owner ]]</td>
                                     <td>[[ report.report_type ]]</td>
                                     <td>[[ report.status ]]</td>
-                                    {% if perms.insights.add_reportrecords and  request.user|has_group:"Accountant"%}
+                                    {% if perms.ReportManagement.add_report and  request.user|has_group:"Accountant"%}
                                         <td>[[ task_status.status ]]</td>
                                     {% endif %}
                                     <td>[[ report.month ]]/[[ report.year ]] </td>
+
+
                                     {% if perms.ReportManagement.add_report and request.user|has_group:"Accountant" %}
                                     <td class="td-actions text-right" v-if="report.status =='Review' || report.status=='Initiated'">
                                         <a href="#" @click="processtask(report.report_type,report.id)" class="actiontask btn btn-success btn-sm btn-icon">
                                             <i class="ni ni-button-play"></i>
                                         </a>
+{#                                        <a href="#" @click="processjsontask(report.report_type,report.id)" class="actiontask btn btn-success btn-sm btn-icon">#}
+{#                                            <i class="ni ni-button-play"></i>#}
+{#                                        </a>#}
                                     </td>
                                     {% endif %}
                                     <td>
@@ -153,7 +165,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {% if perms.insights.add_reportrecords %}
+                            {% if perms.insights.add_report %}
 <!--                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
 <!--                                <div class="modal-dialog" role="document">-->
 <!--                                    <div class="modal-content">-->
@@ -211,7 +223,7 @@
                             <div class="card-header bg-transparent">
                                 <h3 class="mb-0"> Report Status Timeline</h3>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="height: 120vh;overflow-y: scroll;">
                                 <div class="timeline timeline-one-side" data-timeline-content="axis" data-timeline-axis-style="dashed">
                                     <div class="timeline-block" v-for="act in activities">
                                         <span class="timeline-step badge-success" v-if="act.eventtype == 'lifecycle' || act.eventtype == 'Lifecycle'">
@@ -474,7 +486,7 @@
                                                                 <label >
                                                                     Modify Description
                                                                 </label>
-                                                                <select id="edit_insight_notes" v-model="comments[current_comment_index].comment_description"></select>
+                                                                <select id="edit_insight_notes" ></select>
                                                             </div>
 
                                                             <div class="form-group">
@@ -1242,70 +1254,22 @@
                             {% endif %}
                         </div>
 
-                        {% if request.user|has_group:"CRM" %}
-                            <section class="shadow p-3 mb-5 rounded-lg" v-if="report.report_type == 'Profit Statement'" style="margin-top:50px;">
-                            <h4 class="text-center"> Quickbooks API </h4>
-                            <div v-show="!connected" class="row">
-                                <div class="col-md-6 col-12">
-                                    <b>Connect to Quickbooks</b><br/>
-                                    <a class="imgLink" href="#" onclick="launchPopup('/quickbooks_api/connectToQuickbooks/')">
-                                        <img
-                                                style="height: 40px"
-                                                src="{% static 'C2QB_white_btn_lg_default.png' %}"
-                                                onmouseover="this.src='{% static 'C2QB_white_btn_lg_hover.png' %}'"
-                                                onmouseout="this.src='{% static 'C2QB_white_btn_lg_default.png' %}'"
-                                        />
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div v-show="connected">
-                                <div class="row mt-5">
-                                    <div class="col-6">
-                                        <label> Initial date </label>
-                                        <input class="form-control datepicker" id="init_query_date" placeholder="Select date" type="text">
-                                    </div>
-                                    <div class="col-6">
-                                        <label> Final date </label>
-                                        <input class="form-control datepicker" id="final_query_date" placeholder="Select date" type="text">
-                                    </div>
-                                </div>
-
-                                <div class="row mt-5">
-                                    <div class="col-lg-4 col-md-4 col-sm-12">
-                                        <button class="btn btn-warning" onclick="apiCall()">QuickBooks API Call</button>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12">
-                                        <button class="btn btn-warning" onclick="refreshCall()">Refresh Token Call</button>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12">
-                                        <button class="btn btn-warning" onclick="revokeCall()">Revoke Token Call</button>
-                                    </div>
-                                </div>
-
-
-                                <!--                        <div class="col-lg-4 col-md-4 col-sm-12">-->
-                                <!--                            <button class="btn btn-warning" onclick="revokeCall()">Publish API into Report</button>-->
-                                <!--                        </div>-->
-                                <!--                        <div class="col-lg-4 col-md-4 col-sm-12">-->
-                                <!--                            <button class="btn btn-warning" onclick="revokeCall()">Revoke Token Call</button>-->
-                                <!--                        </div>-->
-                            </div>
-                            <div v-show="connected" class="row">
-                                <div><code id="result"></code></div>
-                                <div style="width:100%;" class="mt-4">
-                                    <h4 class="text-center"> JSON result</h4>
-                                    <pre id="jsonresult" style="height:400px;width:100%;"></pre></div>
-                            </div>
-                        </section>
-                        {% endif %}
 
                         <div class="row justify-content-end" >
                             <div class="col-lg-6 text-center col-sm-6" v-if="revert">
                                 <button type="button" class="btn btn-lg btn-warning" @click="submitreport" value="0"> Revert Back </button>
                             </div>
                             <div class="col-lg-6 text-center flacol-sm-6" v-if="proceed">
-                                <button type="button" class="btn btn-lg btn-success" @click="submitreport" value="1"> Proceed Forward </button>
+                                <button type="button" class="btn btn-lg btn-success" @click="submitreport" value="1">
+                                 {% if request.user|has_group:"CRM" %}
+                                    Publish
+                                 {% endif %}
+                                 {% if not request.user|has_group:"CRM" %}
+                                    Proceed Forward
+                                 {% endif %}
+
+
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1705,7 +1669,7 @@
 {% include 'footer.html' %}
 <script src="{% static 'js/insights.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/axios.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 <script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
@@ -1735,7 +1699,6 @@
             console.log('Request was sent');
             addspinner();
 
-
             return config;
         });
         function addspinner(){
@@ -1756,6 +1719,8 @@
         axios.interceptors.response.use(function (response) {
             // Any status code that lie within the range of 2xx cause this function to trigger
             // Do something with response data
+            console.log(response);
+            console.log("response");
             removespinner();
             return response;
         }, function (error) {
@@ -1764,6 +1729,8 @@
             removespinner();
             return Promise.reject(error);
         });
+
+
         $("#PLSubmit1").on('click', function(event){
             axios.defaults.xsrfCookieName = csrftoken;
             axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -1774,8 +1741,8 @@
             formData.append('report_type',$("#P_Lform1").find('input[name="report_type"]').val());
             formData.append('pl_qb_in_file', $("#P_Lform1").find('input[name="pl_qb_in_file1"]')[0].files[0]);
             formData.append('pl_cat_in_file', $("#P_Lform1").find('input[name="pl_cat_in_file1"]')[0].files[0]);
-            console.log($("#P_Lform1").find('input[name="report_id"]').val());
-            console.log(formData);
+            {#console.log($("#P_Lform1").find('input[name="report_id"]').val());#}
+            {#console.log(formData);#}
             axios.post( '/reports/process/report/',
                 formData,
                 {
@@ -1786,7 +1753,6 @@
                 }
             ).then(function(data1){
                 console.log('SUCCESS!!');
-
                 showNotification("top","right","success",data1.data.message);
                 $("#P_Lform1").trigger("reset");
                 $('#PLTask').modal('hide');
@@ -2040,8 +2006,8 @@
             '                            <td class="text-center">[[ id ]]</td>\n' +
             '                            <td class="text-left">[[comment_category]]</td>\n' +
             '                            <td class="text-left">[[comment_type]]</td>\n' +
-            '                            <td class="text-left">[[ comment_description ]]</td>\n' +
-            '                            <td class="text-left">[[ comment_remarks ]]</td>\n' +
+            '                            <td class="text-left" style="word-break: break-word;white-space: normal;">[[ comment_description ]]</td>\n' +
+            '                            <td class="text-left" style="word-break: break-word;white-space: normal;">[[ comment_remarks ]]</td>\n' +
             '                            <td class="text-left"><button class="btn btn-sm btn-warning" v-if="button_visible" @click="editcheckpoint(comment_modify)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button><button class="btn btn-sm btn-danger" v-if="button_visible" @click="deletecheckpoint(comment_delete)"><i class="ni ni-fat-remove" ></i></button></td>\n' +
             '                        </tr> ',
         methods:{
@@ -2120,105 +2086,112 @@
                     app.showNotification("top","right","danger",error.response.data.message);
                 });
             },
-            editcheckpoint:function(ind){
+                editcheckpoint:function(ind){
 
                 app.current_comment_index=ind;
+                console.log("edit check point");
+                console.log(app.comments[ind]);
+
+
                 if(app.report.report_type == "Profit Statement"){
-                    $('#edit_insight_type').select2({
-                        ajax: {
-                            placeholder: "Select the insight type",
-                        },
+
+                    $('#edit_insight_category').select2();
+                    $('#edit_insight_type').select2();
+                    $('#edit_insight_notes').select2();
+                    $("#edit_insight_category option").remove();
+
+                     var cat_url='/reports/get/insights/?type=category';
+                    axios.get(cat_url).then(function (response) {
+
+                       $.each(response.data, function(key,value) {
+
+                          var option = new Option(value.name, value.name, false, false);
+                          //console.log(option);
+                          $('#edit_insight_category').append(option);
+
+                        });
+
+                        $('#edit_insight_category').val(app.comments[ind].comment_category).trigger('change');
+
+
+
+                    }).catch(function(error){
+                    console.log("Error");
+                    console.log(error);
                     });
 
-                    $('#edit_insight_notes').select2({
-                        ajax: {
-                            placeholder: "Select the insight notes",
-                        },
-                    });
-
-                    $('#edit_insight_category').select2({
-                        ajax: {
-                            url: '/reports/get/insights/?type=category',
-                            type: 'GET',
-                            dataType: 'json',
-                            placeholder: "Select the insight category",
-                            allowClear: true,
-                            tags: true,
-                            processResults: function (data) {
-                                // Transforms the top-level key of the response object from 'items' to 'results'
-                                var data = $.map(data, function (obj) {
-                                    obj.text = obj.name ;
-                                    obj.id = obj.name;// replace name with the property used for the text
-                                    return obj;
-                                });
-                                return {
-                                    results: data
-                                };
-                            },
-                        },
-                    });
 
                     $('#edit_insight_category').on('change',function(){
-                        var url='/reports/get/insights/?type=type&cat='+String($('#edit_insight_category').val());
-                        $('#edit_insight_type').select2({
-                            ajax: {
-                                url: url,
-                                type: 'GET',
-                                dataType: 'json',
-                                placeholder: "Select the insight type",
-                                allowClear: true,
-                                tags: true,
-                                processResults: function (data) {
-                                    // Transforms the top-level key of the response object from 'items' to 'results'
-                                    var data = $.map(data, function (obj) {
-                                        obj.text = obj.name ;
-                                        obj.id = obj.name;// replace name with the property used for the text
-                                        return obj;
-                                    });
+                    $("#edit_insight_type option").remove();
 
-                                    return {
-                                        results: data
-                                    };
-                                },
-                            },
+                        var url='/reports/get/insights/?type=type&cat='+String($('#edit_insight_category').val());
+                        axios.get(url).then(function (response) {
+                        $("#edit_insight_type option").remove();
+                        var option = new Option('Select', 'Select', false, false);
+
+                          $('#edit_insight_type').append(option);
+
+
+
+                       $.each(response.data, function(key,value) {
+
+                          var option = new Option(value.name, value.name, false, false);
+
+                          $('#edit_insight_type').append(option);
+
                         });
+
+
+                       $('#edit_insight_type').val(app.comments[ind].comment_type).trigger('change');
+
+                    }).catch(function(error){
+                    console.log("Error");
+                    console.log(error);
                     });
+
+                    });
+
+
 
                     $('#edit_insight_type').on('change',function(){
+
+                        $("#edit_insight_notes option").remove();
+
                         var url='/reports/get/insights/?type=notes&intype='+String($('#edit_insight_type').val())+'&cat='+String($('#edit_insight_category').val());
-                        $('#edit_insight_notes').select2({
-                            ajax: {
-                                url: url,
-                                type: 'GET',
-                                dataType: 'json',
-                                placeholder: "Select the insight notes",
-                                allowClear: true,
-                                tags: true,
-                                processResults: function (data) {
-                                    // Transforms the top-level key of the response object from 'items' to 'results'
-                                    var data = $.map(data, function (obj) {
-                                        obj.text = obj.notes ;
-                                        obj.id = obj.notes;// replace name with the property used for the text
-                                        return obj;
-                                    });
+                        axios.get(url).then(function (response) {
+                        $("#edit_insight_notes option").remove();
+                        var option = new Option('Select', 'Select', false, false);
 
-                                    return {
-                                        results: data
-                                    };
-                                },
-                            },
+                          $('#edit_insight_notes').append(option);
+
+                       $.each(response.data, function(key,value) {
+                         //console.log(value.notes);
+
+                          var option = new Option(value.notes, value.notes, false, false);
+
+                          $('#edit_insight_notes').append(option);
+
                         });
+
+
+                    }).catch(function(error){
+                    console.log("Error");
+                    console.log(error);
                     });
+
+                    });
+                    console.log("edit insight notes "+$('#edit_insight_notes').length);
                     $('#edit_insight_notes').on('change',function(){
-                        app.notes=$('#edit_insight_notes').val();
-                    })
-                    $('#edit_insight_type').select2('data',{"id":this.comment_type,"text":this.comment_type});
-                    $('#edit_insight_category').select2('data',{"id":this.comment_category,"text":this.comment_category});
-                    $('#edit_insight_notes').select2('data',{"id":this.comment_description,"text":this.comment_description});
+                        console.log("test edit insight notes");
+                        console.log(app.comments[ind].comment_description);
+                        if($('#edit_insight_notes').val()!=null)
+                         {
+                            console.log($('#edit_insight_notes').val());
+                            $("#edit_insights_description").val($('#edit_insight_notes').val());
+                         }
+                    });
+
                 }
-
-
-
 
                 $('#EditcommentModal').modal('show');
 
@@ -2275,7 +2248,9 @@
             task_status:{
                 "status":"",
                 "traceback":""
-            }
+            },
+            reportTypeList:["P_L","CL_ST","GST","CON_ANA","S_C_R","SW_IN","SW_DUMP","TDS","PUR_EFF"],
+            reportLevelList:["outlet","customer","legalentity","outlet","customer","customer","customer","customer","customer"],
 
         },
         methods:{
@@ -2352,6 +2327,69 @@
             },
             printnotifications: function(){
 
+            },
+            processjsontask:function(type,id){
+                console.log("process json task");
+                this.current_report_id=id;
+                console.log(type)
+                var csrftoken = Cookies.get('csrftoken');
+                if(type === "Profit Statement")
+                {
+
+                    axios.defaults.xsrfCookieName = csrftoken;
+                    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+                    let formData = new FormData();
+                    formData.append('report_id',$("#P_Lform1").find('input[name="report_id"]').val());
+                    formData.append('report_type',$("#P_Lform1").find('input[name="report_type"]').val());
+                    axios.post( '/reports/process/apireport/',
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                'X-CSRFToken':csrftoken
+                            }
+                        }
+                    ).then(function(data1){
+                        console.log('SUCCESS!!');
+                        app.showNotification("top","right","success",data1.data.message);
+                        {#app.task_id=data1.data.taskid;#}
+                        {#app.get_task_status();#}
+                        //location.reload();
+                        // window.location.href = "/dashboard";
+
+                    }).catch(function(error){
+                        console.log(error)
+                        // showNotification("top","right","danger",error.data.message);
+                    });
+
+
+                }
+                else if(type == "GST Summary")
+                {
+
+
+                }
+                else if(type == "Swiggy Dump Level Reconciliation")
+                {
+
+
+                }
+                else if(type == "Purchase Efficiency")
+                {
+
+
+                }
+                else if(type == "Consumption Analysis")
+                {
+
+
+                }
+                else if(type == "Sales Channel Reconciliation")
+                {
+
+
+                }
             },
             processtask:function(type,id){
                 this.current_report_id=id;
@@ -2491,7 +2529,9 @@
                 $('#insight_notes').on('change',function(){
                     app.notes=$('#insight_notes').val();
                 })
-
+                $('#insight_category').val(null).trigger('change');
+                $('#insight_type').val(null).trigger('change');
+                $('#insight_notes').val(null).trigger('change');
                 //this.comments.push({'id':0,'description':'','comment':'','status':'NA'})
             },
             addcheckpoint:function(){
@@ -2814,6 +2854,7 @@
                     app.showNotification("top","right","danger",error.response.data.message);
                 });
             },
+
             post_anomaly:function(){
 
                 var values=this.anomalies[this.anomalies.length-1];
@@ -3012,7 +3053,8 @@
                 ).then(function(data1){
                     console.log('update SUCCESS!!');
                     app.showNotification("top","right","success",data1.data.message);
-                    // window.location.href = "/dashboard";
+                     //window.location.href = "/dashboard";
+                     location.reload();
 
                 }).catch(function(error){
                 console.log('update error!!');
@@ -3055,7 +3097,6 @@
 
             $("#fcdashboard").addClass("active");
             $("#fcdashboard").addClass("show");
-
 
 
             var data123=[];
@@ -3125,12 +3166,19 @@
                 console.log(app.report_date);
             });
             this.checkReportOwner();
-
         },
         updated: function(){
 
 
         },
+        filters: {
+            entityName:  function (x) {
+                if (!x) return ''
+                x=x.replaceAll("'","\"")
+                res=JSON.parse(x).name
+                return res;
+            }
+        }
 
     });
 
@@ -3195,4 +3243,3 @@
 
 </body>
 </html>
-

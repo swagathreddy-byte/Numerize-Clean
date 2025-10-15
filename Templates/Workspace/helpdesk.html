@@ -1,0 +1,55 @@
+
+{% include "head.html" %}
+{% load static %}
+{% load home_extras %}
+<!--<link rel="stylesheet" type="text/css" href="{% static "qb_style.css" %}">-->
+<style>
+    .overlay{
+        height:100%;
+        position:fixed;
+        width:100%;
+        z-index:2000;
+        left:0px;
+        top:0px;
+        background-color: rgba(50,50,50,0.5);
+    }
+
+    .select2-selection--single{
+        height:100%!important;
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position:fixed;
+        top:calc(50% - 60px);
+        left:calc(50% - 60px);
+        z-index:2001;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+
+<body>
+{% include "sidebarlinks.html" %}
+<div class="main-content" id="panel">
+    <!-- Navbar -->
+    {% include "navbar.html" %}
+    <div class="header bg-primary pb-6">
+    </div>
+    <div class="container-fluid">
+        <script data-jsd-embedded data-key="040cc819-906a-4913-87ff-1aa86032a6fc" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>
+
+    </div>
+</div>
+{% include 'footer.html' %}
+</body>
+</html>

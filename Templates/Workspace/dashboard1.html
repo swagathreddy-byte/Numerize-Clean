@@ -37,7 +37,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <h5 class="card-title text-uppercase text-muted mb-0">Tasks Pending</h5>
-                                                <span class="h2 font-weight-bold mb-0" v-if="havetasks">[[ mypendingtasks.length]]</span>
+                                                <span class="h2 font-weight-bold mb-0" v-if="havetasks">[[ pending_records ]]</span>
                                                 <span class="h2 font-weight-bold mb-0" v-if="!havetasks">0</span>
                                             </div>
                                             <div class="col-auto">
@@ -62,7 +62,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <h5 class="card-title text-uppercase text-muted mb-0">Sent for Approval </h5>
-                                                <span class="h2 font-weight-bold mb-0" v-if="havetasks">[[ myawaitingapprovaltasks.length]]</span>
+                                                <span class="h2 font-weight-bold mb-0" v-if="havetasks">[[ pending_approval_records ]]</span>
                                                 <span class="h2 font-weight-bold mb-0" v-if="!havetasks">0</span>
                                             </div>
                                             <div class="col-auto">
@@ -87,7 +87,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <h5 class="card-title text-uppercase text-muted mb-0">Total Tasks Completed</h5>
-                                                <span class="h2 font-weight-bold mb-0" v-if="havetasks">[[ mycompletedtasks.length]]</span>
+                                                <span class="h2 font-weight-bold mb-0" v-if="havetasks">[[ published_records ]]</span>
                                                 <span class="h2 font-weight-bold mb-0" v-if="!havetasks">0</span>
                                             </div>
                                             <div class="col-auto">
@@ -145,13 +145,36 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-12">
+                                <nav aria-label="Page navigation example">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <p class="mb-0 text-primary font-weight-bold">Total Records : [[no_records]]</p>
+                                    </div>
+                                        <div class="col-9">
+                                        <ul class="pagination justify-content-end">
+                                                    <li class="page-item">
+                                                        <a class="page-link"  tabindex="-1"><i class="fa fa-angle-left"></i><span class="sr-only">Previous</span></a>
+                                                    </li>
+                                                    <li :class="current_page==0?'page-item active':'page-item'" value="0" v-on:click="updatepagination"><a class="page-link">1</a></li>
+                                                    <li :class="current_page==page?'page-item active':'page-item'" v-on:click="updatepagination" v-for="page in no_pages" :key="page"  :value="page"><a class="page-link" >[[ page+1 ]]</a></li>
+                                                    <li class="page-item">
+                                                        <a class="page-link" >        <i class="fa fa-angle-right"></i>
+                                                            <span class="sr-only">Next</span></a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                    </div>
+
+                                            </nav>
+                            </div>
                             <div v-if="havetasks" class="table-responsive">
                                 <!-- Projects table -->
-                                <table class="table align-items-center table-flush">
+                                <table class="table align-items-center table-flush" id="datatable-basic1">
                                     <thead class="thead-light">
                                     <tr>
                                         <th scope="col">Customer Name</th>
-                                        <th class="text-center">Report Level</th>
+                                        <th class="text-center" >Report Level</th>
                                         <th scope="col">Month-Year</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Report Type</th>
@@ -159,17 +182,17 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="pt in mypendingtasks.slice(0,5)">
+                                    <tr v-for="pt in mytasks">
                                         <th scope="row">
                                             [[ pt.customer | entityName]]
                                         </th>
-                                         <td class="text-center">
+                                        <td>
 
-                                            <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='customer'"> NA </span>
-                                            <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='legalentity'"> [[pt.legalentity["name"] ]]</span>
-                                            <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='outlet'"> [[pt.outlet["name"] ]]</span>
-                                            <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='brand'"> [[pt.brand["name"] ]]</span>
-                                         </td>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='customer'"> NA </span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='legalentity'"> [[pt.legalentity["name"] ]]</span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='outlet'"> [[pt.outlet["name"] ]]</span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(pt.report_type_id)] =='brand'"> [[pt.brand["name"] ]]</span>
+                                        </td>
                                         <td>
                                             [[ pt.month ]]-[[ pt.year ]]
                                         </td>
@@ -180,10 +203,7 @@
                                             [[ pt.report_type ]]
                                         </td>
                                         <td>
-
-                                                <a class="btn btn-sm btn-success" :href="'/tasks/view/'+(pt.id)" target="_blank"><span><i class="bold-right"></i> Go </span></a>
-
-
+                                            <a class="btn btn-sm btn-success" :href="'/tasks/active?month='+(pt.month)+'&year='+(pt.year)+'&report_type='+(pt.report_type)+'&entity_id='+(pt.entity_id)+'&version=latest'" target="_blank"><span><i class="bold-right"></i> Go </span></a>
                                         </td>
                                     </tr>
 
@@ -438,6 +458,8 @@
                     </div>
                 </footer>
             </div>
+
+
     </div>
 
 
@@ -451,6 +473,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
   <script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
+  <script src="{% static 'argon/assets/vendor/datatables.net/js/jquery.dataTables.min.js' %}"></script>
   <script type="text/javascript">
         var mydashboard = new Vue({
             delimiters: ['[[', ']]'],
@@ -470,35 +493,58 @@
                 useriscrm:false,
                 useriscustomer:false,
                 havetasks:false,
-                reportTypeList:["P_L","CL_ST","GST","CON_ANA","S_C_R","SW_IN","SW_DUMP","TDS","PUR_EFF"],
-                reportLevelList:["outlet","customer","legalentity","outlet","customer","customer","customer","customer","customer"],
-
+                reportTypeList:["P_L","CL_ST","GST","CON_ANA","PUR_EFF","P_L_LE_CON","CPR"],
+                reportLevelList:["outlet","customer","legalentity","outlet","legalentity","legalentity","legalentity"],
+                current_page:0,
+                page_per_view:10,
+                no_pages:0,
+                no_records: 0,
+                pending_approval_records: 0,
+                published_records: 0,
+                pending_records: 0,
+		            status:[],
             },
             methods: {
                 gettasks: function(){
-                    axios.get('/reports/get/tasks/all')
+                    axios.get('/reports/get/tasks/'+this.status+'?active=1&page='+this.current_page)
                         .then(function (response) {
                             if(response.data.tasks!=null && response.data.tasks!='' && response.data.tasks.length!=0 && (typeof response.data.tasks !== "undefined") ){
+                                console.log(response.data);
                                 mydashboard.mytasks=response.data.tasks;
+                                mydashboard.no_records=response.data.count;
+                                mydashboard.pending_approval_records=response.data.pending_approval_records;
+                                mydashboard.published_records=response.data.published_records;
+                                mydashboard.pending_records=response.data.pending_records;
+                                mydashboard.no_pages=Math.ceil(mydashboard.no_records/mydashboard.page_per_view-1);
                                 mydashboard.havetasks=true;
+                                {#$('#datatable-basic1').DataTable();#}
                             }
 
 
                         }).catch(function(error){
                         console.log("Error");
+                        console.log(error.response.data);
                     }).finally(function(){
-                        mydashboard.getcustomers();
+                        console.log("Hey getting")
+                        // $('#datatable-basic1').DataTable();
+                       // mydashboard.getcustomers();
                     });
                 },
+                updatepagination: function(event){
+
+                    this.current_page=event.target.parentNode.value;
+                    this.gettasks();
+                },
+
                 getcustomers: function(){
-                    axios.get('/reports/get/all')
+                    axios.get('/customers/get/mine')
                         .then(function (response) {
-                            console.log("get all check response");
                             console.log(response.data);
-                            mydashboard.mycustomers=response.data;
+                            mydashboard.mycustomers=response.data.result;
 
                         }).catch(function(error){
                         console.log("Error");
+                        console.log(error);
                     }).finally(function(){
                         mydashboard.getmyinfo();
                     });
@@ -524,6 +570,8 @@
                     {
                         if(groups[i].name == "Accountant"){
                             this.userisaccountant=true;
+	                          this.status.push("Initiated");
+                            this.status.push("Review");
                         }
 
                         if(groups[i].name == "TeamLead"){
@@ -532,116 +580,127 @@
 
                         if(groups[i].name == "QC"){
                             this.userisqc=true;
+	                          this.status.push("QC");
                         }
 
                         if(groups[i].name == "CRM"){
                             this.useriscrm=true;
+	                          this.status.push("CRM");
                         }
                     }
+			              this.gettasks();
                 }
             },
             updated: function(){
 
             },
             mounted: function(){
-                this.gettasks();
+               // this.gettasks();
+		             this.getcustomers();
+
 
             },
             computed: {
-                mypendingtasks: function(){
-                    var pendingtasks=[];
-                    if(this.userisaccountant){
-
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "Initiated" || this.mytasks[i].status == "Review" ){
-                                pendingtasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return pendingtasks;
-                    }
-
-                    if(this.useristl){
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "TL"){
-                                pendingtasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return pendingtasks;
-                    }
-
-                    if(this.userisqc){
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "QC"){
-                                pendingtasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return pendingtasks;
-                    }
-
-                    if(this.useriscrm){
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "CRM"){
-                                pendingtasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return pendingtasks;
-                    }
-                },
-                myawaitingapprovaltasks: function(){
-                    var awaitingapprovaltasks=[];
-                    if(this.userisaccountant){
-                        console.log("mytasks");
-                        console.log(this.mytasks);
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "TL" ||  this.mytasks[i].status == "QC" || this.mytasks[i].status == "CRM"){
-                                awaitingapprovaltasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return awaitingapprovaltasks;
-                    }
-
-                    if(this.useristl){
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "QC" || this.mytasks[i].status == "CRM"){
-                                awaitingapprovaltasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return awaitingapprovaltasks;
-                    }
-
-                    if(this.userisqc){
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "CRM"){
-                                awaitingapprovaltasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return awaitingapprovaltasks;
-                    }
-
-                    if(this.useriscrm){
-
-                        return awaitingapprovaltasks;
-                    }
-                },
-                mycompletedtasks: function(){
-                    var completedtasks=[];
-                    if(!this.useriscustomer){
-                        console.log(this.mytasks);
-                        for(var i=0;i<this.mytasks.length;i++){
-                            if(this.mytasks[i].status == "Published"  ){
-                                completedtasks.push(this.mytasks[i]);
-                            }
-                        }
-                        return completedtasks;
-                    }
-                },
+//                 mypendingtasks: function(){
+//                     var pendingtasks=[];
+//                     if(this.userisaccountant){
+//
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "Initiated" || this.mytasks[i].status == "Review" ){
+//                                 pendingtasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return pendingtasks;
+//                     }
+//
+//                     if(this.useristl){
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "TL"){
+//                                 pendingtasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return pendingtasks;
+//                     }
+//
+//                     if(this.userisqc){
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "QC"){
+//                                 pendingtasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return pendingtasks;
+//                     }
+//
+//                     if(this.useriscrm){
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "CRM"){
+//                                 pendingtasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return pendingtasks;
+//                     }
+//                 },
+//                 myawaitingapprovaltasks: function(){
+//                     var awaitingapprovaltasks=[];
+//                     if(this.userisaccountant){
+//                         console.log("mytasks");
+//                         console.log(this.mytasks);
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "TL" ||  this.mytasks[i].status == "QC" || this.mytasks[i].status == "CRM"){
+//                                 awaitingapprovaltasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return awaitingapprovaltasks;
+//                     }
+//
+//                     if(this.useristl){
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "QC" || this.mytasks[i].status == "CRM"){
+//                                 awaitingapprovaltasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return awaitingapprovaltasks;
+//                     }
+//
+//                     if(this.userisqc){
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "CRM"){
+//                                 awaitingapprovaltasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return awaitingapprovaltasks;
+//                     }
+//
+//                     if(this.useriscrm){
+//
+//                         return awaitingapprovaltasks;
+//                     }
+//                 },
+//                 mycompletedtasks: function(){
+//                     var completedtasks=[];
+//                     if(!this.useriscustomer){
+//                         console.log(this.mytasks);
+//                         for(var i=0;i<this.mytasks.length;i++){
+//                             if(this.mytasks[i].status == "Published"  ){
+//                                 completedtasks.push(this.mytasks[i]);
+//                             }
+//                         }
+//                         return completedtasks;
+//                     }
+//                 },
             },
             filters: {
                 entityName:  function (x) {
-                    if (!x) return ''
-                    x=x.replaceAll("'","\"")
-                    res=JSON.parse(x).name
-                    return res;
+                    try{
+                        if (!x) return ''
+                        x=x.replaceAll("'","\"")
+                        res=JSON.parse(x).name
+                        return res;
+                    }
+                    catch(e){
+                        return x;
+                    }
+
                 }
             }
 

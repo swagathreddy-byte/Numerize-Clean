@@ -14,6 +14,12 @@
     #filters .card-header[aria-expanded=true] .ni {
         transform: rotate(180deg);
     }
+    .select2-selection--single{
+        height:100%!important;
+    }
+    .select2-container .select2-search--inline{
+        display: block !important;
+    }
 </style>
 <body>
 {% include "sidebarlinks.html" %}
@@ -58,7 +64,7 @@
                                                 <label>
                                                     Customers
                                                 </label>
-                                                <select name="customer_name_table" class="customer_select_table form-control" style="width: 100%;" multiple="multiple">
+                                                <select name="customer_name_table" class="customer_select_table form-control" multiple>
                                                     <option></option>
                                                 </select>
                                             </div>
@@ -132,7 +138,7 @@
                                         </div>
                                     </div>
                                     <div class="row justify-content-center">
-                                            <button class="btn bg-primary text-white " type="button" v-on:click="filterselections()">
+                                            <button class="btn bg-primary text-white " type="button" v-on:click="current_page = 0; filterselections();">
                                              Submit
                                             </button>
                                     </div>
@@ -187,8 +193,8 @@
                                                         <li class="page-item">
                                                             <a class="page-link"  tabindex="-1"><i class="fa fa-angle-left"></i><span class="sr-only">Previous</span></a>
                                                         </li>
-                                                        <li class="page-item active" value="0" v-on:click="updatepagination"><a class="page-link">1</a></li>
-                                                        <li class="page-item" v-on:click="updatepagination" v-for="page in no_pages" :key="page"  :value="page"><a class="page-link" >[[ page+1 ]]</a></li>
+                                                        <li :class="current_page==0?'page-item active':'page-item'" value="0" v-on:click="updatepagination"><a class="page-link">1</a></li>
+                                                        <li :class="current_page==page?'page-item active':'page-item'" v-on:click="updatepagination" v-for="page in no_pages" :key="page"  :value="page"><a class="page-link" >[[ page+1 ]]</a></li>
                                                         <li class="page-item">
                                                             <a class="page-link" >        <i class="fa fa-angle-right"></i>
                                                                 <span class="sr-only">Next</span></a>
@@ -207,6 +213,7 @@
                                             <tr >
                                                 <th class="text-center"  >#</th>
                                                 <th class="text-center" >Customer Name</th>
+                                                <th class="text-center" >Report Level</th>
                                                 <th class="text-center" >Report Type</th>
                                                 <th class="text-center" >Month-Year</th>
                                                 <th class="text-center" >Status</th>
@@ -216,13 +223,19 @@
                                             <tbody class="list">
                                             <tr scope="row" v-for="(item,index) in records">
                                                 <td class="text-center">[[(current_page*page_per_view)+index+1 ]]</td>
-                                                <td class="text-center">[[item.customer]]</td>
+                                                <td class="text-center">[[item.customer | entityName ]]</td>
+                                                <td class="text-center">
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(item.report_type_id)] =='customer'"> NA </span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(item.report_type_id)] =='legalentity'"> [[item.legalentity["name"] ]]</span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(item.report_type_id)] =='outlet'"> [[item.outlet["name"] ]]</span>
+                                                    <span v-if="reportLevelList[reportTypeList.indexOf(item.report_type_id)] =='brand'"> [[item.brand["name"] ]]</span>
+                                                </td>
                                                 <td class="text-center">[[item.report_type]]</td>
                                                 <td class="text-center">[[item.month]] - [[item.year]]</td>
                                                 <td class="text-center">[[item.status]]</td>
                                                 <td class="td-actions text-center">
                                                     <button type="button" rel="tooltip"  class="btn btn-success btn-sm btn-icon">
-                                                        <a style="color:white" :href="'/tasks/view/'+(item.id)" target="_blank"><i class="ni ni-bold-right"></i></a>
+                                                        <a style="color:white" :href="'/tasks/active?month='+(item.month)+'&year='+(item.year)+'&report_type='+(item.report_type)+'&entity_id='+(item.entity_id)+'&version=latest'" target="_blank"><i class="ni ni-bold-right"></i></a>
                                                     </button>
                                                     <button type="button" rel="tooltip" item.status=='Published'  class="btn btn-success btn-sm btn-icon">
                                                         <a style="color:white" :href="'/reports/get/file/'+(item.id)+'/0/excel/'" target="_blank"><i class="fa fa-file-excel-o"></i></a>
@@ -230,12 +243,19 @@
                                                     <button type="button" rel="tooltip" item.status=='Published' class="btn btn-danger btn-sm btn-icon">
                                                         <a style="color:white" :href="'/reports/get/file/'+(item.id)+'/0/pdf/'" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
                                                     </button>
-                                                    <button type="button" v-if="item.report_type=='Closing Stock' && item.status=='Published'" rel="tooltip" class="btn btn-info btn-sm btn-icon">
+                                                    <!-- <button type="button" v-if="item.report_type=='Closing Stock' && item.status=='Published'" rel="tooltip" class="btn btn-info btn-sm btn-icon">
                                                         <a :href="'/reports/get/file/'+(item.id)+'/1/excel'" target="_blank"><i class="fa fa-file-excel-o"></i></a>
                                                     </button>
                                                     <button type="button" v-if="item.report_type=='Swiggy Dump Level Reconciliation' && item.status=='Published'" rel="tooltip" class="btn btn-info btn-sm btn-icon">
                                                         <a :href="'/reports/get/file/'+(item.id)+'/1/excel'" target="_blank"><i class="fa fa-file-excel-o"></i></a>
+                                                    </button> -->
+                                                    {% if request.user|has_group:"Manager" %}
+                                                    <button type="button" v-if="item.status!='Published'" title="Deactivate" rel="tooltip" class="btn btn-warning btn-sm btn-icon" @click="deactivatetask(item.id)">
+
+                                                        <i class="fa fa-ban"></i>
+                                                        <!-- <a :href="'/reports/get/file/'+(item.id)+'/1/excel'" target="_blank"><i class="fa fa-file-excel-o"></i></a> -->
                                                     </button>
+                                                    {% endif %}
 
                                                 </td>
                                             </tr>
@@ -288,11 +308,12 @@
 {% include 'footer.html' %}
 <script src="{% static 'js/insights.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/axios.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 <script src ="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.1/qs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
 
@@ -302,49 +323,6 @@
             //app.no_pages=Math.ceil(app.no_records/app.page_per_view-1);
 
             //app.filterselections();
-        });
-
-
-        $('.customer_select_table').select2({
-            placeholder: "Select the restaurant",
-            allowClear: true,
-            tags: true,
-            ajax: {
-
-                url: '/reports/get/all/',
-                type: 'GET',
-                dataType: 'json',
-
-                data: function (params) {
-                    console.log(params.term);
-                    var query = {
-
-                        name: params.term,
-                    }
-                    // Query parameters will be ?search=[term]&type=public
-                    return query;
-                },
-                processResults: function (data) {
-                    // Transforms the top-level key of the response object from 'items' to 'results'
-                    console.log("Process Results called");
-                    console.log(data);
-                    var data = $.map(data, function (obj) {
-                        obj.text = obj.name + "," + obj.branch+","+obj.city; // replace name with the property used for the text
-                        return obj;
-                    });
-
-                    return {
-                        results: data
-                    };
-                },
-                cache: false
-            },
-        });
-
-        $('.customer_select_table').on('change',function(){
-            console.log("customer select changed");
-            //app.filterselections();
-
         });
 
         $('.record_type_table').on('change',function(){
@@ -364,55 +342,21 @@
         $('#month_of_interest').on('change',function(){
             //app.filterselections();
         });
-
-        $('.customer_select').select2({
-            placeholder: "Select the restaurant",
-            allowClear: true,
-            ajax: {
-                url: '/reports/get/all/',
-                type: 'GET',
-                dataType: 'json',
-
-                data: function (params) {
-                    console.log(params.term);
-                    var query = {
-                        name: params.term,
-                    }
-                    // Query parameters will be ?search=[term]&type=public
-                    return query;
-                },
-                processResults: function (data) {
-                    // Transforms the top-level key of the response object from 'items' to 'results'
-                    console.log("Process Results called");
-                    console.log(data);
-                    var data = $.map(data, function (obj) {
-                        obj.text = obj.name + "," + obj.branch+","+obj.city; // replace name with the property used for the text
-                        return obj;
-                    });
-
-                    return {
-                        results: data
-                    };
-                },
-                cache: false
-            },
-        });
-
-
-        function showNotification(from, align,color,message){
-            $.notify({
-                icon: "now-ui-icons ui-1_bell-53",
-                message: message
-
-            },{
-                type: color,
-                timer: 2000,
-                placement: {
-                    from: from,
-                    align: align
-                }
-            });
-        }
+        //
+        // function showNotification(from, align,color,message){
+        //     $.notify({
+        //         icon: "now-ui-icons ui-1_bell-53",
+        //         message: message
+        //
+        //     },{
+        //         type: color,
+        //         timer: 2000,
+        //         placement: {
+        //             from: from,
+        //             align: align
+        //         }
+        //     });
+        // }
         var csrftoken = Cookies.get('csrftoken');
         function csrfSafeMethod(method) {
             // these HTTP methods do not require CSRF protection
@@ -476,6 +420,7 @@
             message: 'Hello Vue!',
             no_records: 0,
             customers:null,
+            cust_accounting:{},
             records:null,
             tasks:null,
             status_types:null,
@@ -485,7 +430,9 @@
             no_pages:0,
             current_report_id:0,
             stage:'{{stage}}',
-            filtersearch:false
+            filtersearch:false,
+            reportTypeList:["P_L","CL_ST","GST","CON_ANA","PUR_EFF","P_L_LE_CON","CPR"],
+            reportLevelList:["outlet","customer","legalentity","outlet","legalentity","legalentity","legalentity"],
         },
         methods:{
             getnotifications: function(){
@@ -539,6 +486,7 @@
                 });
 
                 var url='/reports/get/tasks/all';
+                app.tasks = [];
                 axios.get(url,{params})
                     .then(function (response) {
                         app.tasks=response.data.tasks;
@@ -547,6 +495,82 @@
                     console.log("Error");
                 });
 
+            },
+            deactivatetask:function(reportid)
+            {
+              swal({
+                  // title: "Are you sure?",
+                  text: "Are you sure you want to deactivate the task ? ",
+                  // icon: "warning",
+                  buttons: {
+                      cancel: {
+                        text: "Cancel",
+                        visible: true,
+                        className: "btn-warning",
+                      },
+                      confirm: {
+                        text: "Ok",
+                        visible: true,
+                        className: "btn-success",
+                      }
+                  },
+                  dangerMode: false,
+                })
+                .then((willDelete) => {
+                  if (willDelete) {
+                    console.log(reportid);
+                    var formData = new FormData();
+                    var csrftoken = Cookies.get('csrftoken');
+                    formData.append('report_id',reportid);
+                    var url="/reports/deactivate/task/";
+                    app.addspinner();
+                    axios.post(url,
+                        formData,
+                        {
+                            headers:
+                                {
+                                    'X-CSRFToken':csrftoken
+                                }
+                        }
+                    ).then(function(data1){
+                        app.removespinner();
+                        app.showNotification("top","right","success",data1.data.message);
+                        window.location.reload();
+
+                    }).catch(function(error){
+                        app.removespinner();
+                        console.log(error)
+                        app.showNotification("top","right","danger",error.response.data.message);
+                    });
+                  }
+                });
+
+            },
+            showNotification: function (from, align, color, message) {
+                $.notify({
+                    icon: "now-ui-icons ui-1_bell-53",
+                    message: message
+
+                }, {
+                    type: color,
+                    timer: 2000,
+                    placement: {
+                        from: from,
+                        align: align
+                    }
+                });
+            },
+            addspinner: function () {
+                $(".overlay").addClass("d-block");
+                $(".overlay").removeClass("d-none");
+                $(".loader").removeClass("d-none");
+                $(".loader").addClass("d-block", 400);
+            },
+            removespinner: function () {
+                $(".overlay").addClass("d-none");
+                $(".overlay").removeClass("d-block");
+                $(".loader").removeClass("d-block", 400);
+                $(".loader").addClass("d-none", 400);
             },
             gettaskdata:function(){
             var params =
@@ -557,6 +581,7 @@
                         };
                 console.log("params data");
                 console.log(params);
+                app.records = [];
                 axios.get('/reports/get/records/',{params})
                     .then(function (response) {
                         console.log("After mounted");
@@ -569,21 +594,25 @@
                     }).catch(function(error){
                     console.log("Error");
                 });
-                var url='/reports/get/tasks/all';
-                axios.get(url,{params})
-                    .then(function (response) {
-                        app.tasks=response.data.tasks;
+<!--                var url='/reports/get/tasks/all';-->
+<!--                app.tasks = [];-->
+<!--                axios.get(url,{params})-->
+<!--                    .then(function (response) {-->
+<!--                        app.tasks=response.data.tasks;-->
 
-                    }).catch(function(error){
-                    console.log("Error");
-                });
+<!--                    }).catch(function(error){-->
+<!--                    console.log("Error");-->
+<!--                });-->
             },
             filterselections : function(){
                 console.log("filter selections");
                 var customers = $('.customer_select_table').val();
-                customers=customers.map(Number);
+                //console.log(customers);
+                //customers=customers.map(Number);
+                //console.log(customers);
                 var rtype=$('.record_type_table').val();
                 var page=app.current_page;
+                console.log(page);
                 var view_per_page=app.page_per_view;
                 var status=$('.status_select_table').val();
                 console.log(status);
@@ -598,6 +627,7 @@
                 };
 
                 var url='/reports/get/records/';
+                app.records = [];
                 axios.get(url,{params})
                     .then(function (response) {
                         console.log("response");
@@ -621,18 +651,53 @@
 
 
 
-            }
-
+            },
+            get_customers:function(){
+                axios.get('/customers/get/mine')
+                    .then(function (response) {
+                        console.log(response.data.result);
+                        var options=[]
+                        if(response.data.result!=''){
+                            app.customers=response.data.result;
+                            $.each(app.customers,function(index,value){
+                                app.cust_accounting[value._id]=value.accounting;
+                                options.push({
+                                    "id":value._id,
+                                    "text":value.name
+                                });
+                            });
+                            console.log("Options are");
+                            console.log(options);
+                            $('.customer_select_table').select2({
+                                placeholder: "Select the Customer",
+                                width: "100%",
+                                allowClear: true,
+                                data: options
+                            }).on("change", function() {
+                                console.log("customers changed");
+                            });
+                        }
+                    }).catch(function(error){
+                    console.log(error);
+                    console.log("Error");
+                }).finally(function(){
+    
+                });
+            },
 
         },
+
+        
         mounted: function(){
             console.log("mounted");
             console.log(this.stage);
+            this.get_customers();
             $("#fcdashboard").addClass("active");
             $("#fcdashboard").addClass("show");
             var status=[];
-            axios.get('/get/myinfo')
+            axios.get('/employees/get/myinfo')
                         .then(function (response) {
+                        console.log(" get my info response");
                             console.log(response.data.groups);
                             var groups=response.data.groups;
                             for(var i=0;i<groups.length;i++)
@@ -704,7 +769,6 @@
                         app.gettaskdata();
                     });
 
-
             var data123=[];
             axios.get('/reports/get/choices/')
                 .then(function (response) {
@@ -728,10 +792,10 @@
                 console.log("Error");
             });
 
-            axios.get('/reports/get/all/?format=json')
+            axios.get('/customers/get/mine/?format=json')
                 .then(function (response) {
                     // handle success
-                    app.customers=response.data;
+                    app.customers=response.data.result;
                 })
                 .catch(function (error) {
                     // handle error
@@ -756,7 +820,21 @@
 
             });
 
+        },
+        filters: {
+            entityName:  function (x) {
+                try{
+                    if (!x) return ''
+                    x=x.replaceAll("'","\"")
+                    res=JSON.parse(x).name
+                    return res;
+                }
+                catch(e){
+                    return x;
+                }
+            }
         }
+
     });
 </script>
 </body>
